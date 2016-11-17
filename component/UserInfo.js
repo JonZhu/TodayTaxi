@@ -33,10 +33,12 @@ const style = StyleSheet.create({
     row: {
         flexDirection: 'row',
         borderBottomWidth: 1,
+        borderBottomColor: '#cccccc',
         alignItems: 'center',
         marginLeft: 20,
         marginRight: 20,
         padding: 5,
+        paddingTop: 8,
     },
 
     fieldName: {
