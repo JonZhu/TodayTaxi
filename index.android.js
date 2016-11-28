@@ -15,6 +15,7 @@ import App from './component/App';
 import AppContainer from './redux/container/AppContainer';
 import { Provider } from 'react-redux';
 import storeConfig from './redux/storeConfig';
+import CallTaxi from './component/calltaxi/CallTaxi';
 
 export default class RNClient extends Component {
 
@@ -26,29 +27,12 @@ export default class RNClient extends Component {
   render() {
     return (
       <Provider store={this.store}>
-        <AppContainer/>
+        <CallTaxi/>
+
       </Provider>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
 
 AppRegistry.registerComponent('RNClient', () => RNClient);
