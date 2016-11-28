@@ -5,14 +5,19 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 class SideBar extends Component {
 
     render() {
         return (
-            <View style={style.background}>
+            
+            <View style={style.container}>
+                <TouchableWithoutFeedback onPress={()=>this.props.backgroundOnPress()}>
+                    <View style={style.background}></View>
+                </TouchableWithoutFeedback>
+
                 <View style={style.barContainer}>
                     <View style={style.headContainer}>
                         <Icon name='user-circle' style={style.userIcon}/>
@@ -55,6 +60,14 @@ class SideBar extends Component {
 }
 
 const style = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        top: 0,
+    },
+
+    // background
     background: {
         position: 'absolute',
         width: Dimensions.get('window').width,

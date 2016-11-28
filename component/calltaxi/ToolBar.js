@@ -10,13 +10,17 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 class ToolBar extends Component {
 
+    constructor() {
+        super();
+        
+    }
 
     render() {
         return (
             <View style={style.container}>
                 <Text style={style.text}>Today Taxi</Text>
                 <View style={style.buttonContainer}>
-                    <Icon name='bars' style={style.button}/>
+                    <Icon name='bars' style={style.button} onPress={()=>this.props.iconOnPress()}/>
                 </View>
             </View>
         );

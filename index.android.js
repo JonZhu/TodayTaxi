@@ -16,6 +16,7 @@ import AppContainer from './redux/container/AppContainer';
 import { Provider } from 'react-redux';
 import storeConfig from './redux/storeConfig';
 import CallTaxi from './component/calltaxi/CallTaxi';
+import CallTaxiContainer from './redux/container/CallTaxiContainer';
 
 export default class RNClient extends Component {
 
@@ -27,7 +28,7 @@ export default class RNClient extends Component {
   render() {
     return (
       <Provider store={this.store}>
-        <CallTaxi/>
+        <CallTaxiContainer/>
 
       </Provider>
     );

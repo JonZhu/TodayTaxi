@@ -12,11 +12,17 @@ import FromGo from './FromGo';
 
 class CallTaxi extends Component {
 
+    constructor() {
+        super();
+    }
+
     render() {
         return (
             <View style={{flex:1, backgroundColor: 'rgb(240,239,233)'}}>
-                <ToolBar/>
+                <ToolBar iconOnPress={this.props.toggleSideBar}/>
                 <FromGo/>
+
+                {this.props.sideBar.isShow && <SideBar backgroundOnPress={this.props.toggleSideBar}/>}
             </View>
 
         );
