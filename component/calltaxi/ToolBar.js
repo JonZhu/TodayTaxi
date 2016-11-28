@@ -33,7 +33,8 @@ const style = StyleSheet.create({
         alignItems: 'center',
         height: toolBarHeight,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgb(242,242,242)'
+        borderBottomColor: 'rgb(242,242,242)',
+        backgroundColor: '#fff'
     },
 
     text: {
