@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 class ToolBar extends Component {
@@ -19,9 +19,12 @@ class ToolBar extends Component {
         return (
             <View style={style.container}>
                 <Text style={style.text}>Today Taxi</Text>
-                <View style={style.buttonContainer}>
-                    <Icon name='bars' style={style.button} onPress={()=>this.props.iconOnPress()}/>
-                </View>
+
+                <TouchableWithoutFeedback onPress={()=>this.props.iconOnPress()}>
+                    <View style={style.buttonContainer}>
+                        <Icon name='bars' style={style.button}/>
+                    </View>
+                </TouchableWithoutFeedback>
             </View>
         );
 
@@ -48,7 +51,9 @@ const style = StyleSheet.create({
 
     buttonContainer: {
         position: 'absolute',
-        left: 30,
+        left: 0,
+        paddingLeft: 30, // 点击焦点
+        paddingRight: 30,
         height: toolBarHeight,
         justifyContent: 'center'
     },
