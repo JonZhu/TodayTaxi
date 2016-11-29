@@ -18,22 +18,21 @@ import storeConfig from './redux/storeConfig';
 import CallTaxi from './component/calltaxi/CallTaxi';
 import CallTaxiContainer from './redux/container/CallTaxiContainer';
 
-export default class RNClient extends Component {
-
+export default class TodayTaxi extends Component {
   constructor(){
     super();
     this.store = storeConfig();
   }
-
   render() {
     return (
       <Provider store={this.store}>
         <CallTaxiContainer/>
 
       </Provider>
+
     );
   }
 }
 
 
-AppRegistry.registerComponent('RNClient', () => RNClient);
+AppRegistry.registerComponent('TodayTaxi', () => TodayTaxi);
