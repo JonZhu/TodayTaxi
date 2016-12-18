@@ -4,7 +4,8 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, MapView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import MapView from '../../native/MapView';
 
 class Map extends Component {
 
@@ -20,10 +21,11 @@ class Map extends Component {
 
 const styles = StyleSheet.create({
   map: {
-    height: 150,
-    margin: 10,
-    borderWidth: 1,
-    borderColor: '#000000'
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
   }
 });
 

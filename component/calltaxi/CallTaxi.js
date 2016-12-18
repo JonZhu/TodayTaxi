@@ -21,7 +21,11 @@ class CallTaxi extends Component {
         return (
             <View style={{flex:1, backgroundColor: 'rgb(240,239,233)'}}>
                 <ToolBar iconOnPress={this.props.toggleSideBar}/>
-                <FromGo/>
+
+                <View style={{flex: 1}}>
+                    <Map/>
+                    <FromGo/>
+                </View>
 
                 {this.props.sideBar.isShow && <SideBar backgroundOnPress={this.props.toggleSideBar}/>}
             </View>
