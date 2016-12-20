@@ -114,7 +114,8 @@ const style = StyleSheet.create({
         position: 'absolute',
         color: '#fff',
         fontSize: 18,
-        left: 55
+        left: 55,
+        top: 14
     },
 
     itemIcon: {
