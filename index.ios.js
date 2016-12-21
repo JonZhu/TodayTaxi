@@ -12,7 +12,7 @@ import {
   View
 } from 'react-native';
 
-export default class RNClient extends Component {
+export default class TodayTaxi extends Component {
   render() {
     return (
       <View style={styles.container}>
@@ -50,4 +50,4 @@ const styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('RNClient', () => RNClient);
+AppRegistry.registerComponent('TodayTaxi', () => TodayTaxi);
