@@ -10,6 +10,7 @@ import ToolBar from './ToolBar';
 import SideBar from './SideBar';
 import FromGo from './FromGo';
 import Map from './Map';
+import ClickToUse from './ClickToUse';
 
 class CallTaxi extends Component {
 
@@ -25,6 +26,7 @@ class CallTaxi extends Component {
                 <View style={{flex: 1}}>
                     <Map/>
                     <FromGo/>
+                    <ClickToUse/>
                 </View>
 
                 {this.props.sideBar.isShow && <SideBar backgroundOnPress={this.props.toggleSideBar}/>}
