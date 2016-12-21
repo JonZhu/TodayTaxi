@@ -18,7 +18,11 @@ class ClickToUse extends Component {
                 <View style={{backgroundColor:'#000', flexDirection:'row', 
                     height:50, borderRadius:25, alignItems:'center', position:'relative',
                     padding: 7}}>
-                    <View style={{width:40, height:40, borderWidth:2, borderRadius:20, borderColor:'#fff'}}></View>
+                    <View style={{width:40, height:40, borderWidth:2, borderRadius:20, borderColor:'#fff', 
+                        justifyContent:'center', alignItems:'center'}}>
+                        <Text style={{color:'#fff', fontSize:12}}>8</Text>
+                        <Text style={{color:'#fff', fontSize:12, position:'relative', top:-3}}>分钟</Text>
+                    </View>
                     <Text style={{color:'#fff', fontSize:26, fontWeight:'bold', margin: 7}}>点击用车</Text>
                     <View style={{width:40, height:40, borderWidth:2, borderRadius:20, borderColor:'#fff', 
                         justifyContent:'center', alignItems:'center'}}>
