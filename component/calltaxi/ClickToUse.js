@@ -24,7 +24,7 @@ class ClickToUse extends Component {
 
     render() {
         return (
-            <View style={{alignItems:'center'}}>
+            <View style={{alignItems:'center', top:5}}>
                 
                 <View style={{backgroundColor:'#000', flexDirection:'row', 
                     height:40, borderRadius:20, alignItems:'center', position:'relative',

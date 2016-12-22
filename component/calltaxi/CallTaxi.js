@@ -26,7 +26,13 @@ class CallTaxi extends Component {
                 <View style={{flex: 1}}>
                     <Map/>
                     <FromGo/>
-                    <ClickToUse/>
+
+                    <View style={{position:'absolute', top:0, bottom:0, left:0, right:0}}>
+                        <View style={{flex:1, alignItems:'center', justifyContent:'flex-end'}}>
+                            <ClickToUse/>
+                        </View>
+                        <View style={{flex:1}}/>
+                    </View>
                 </View>
 
                 {this.props.sideBar.isShow && <SideBar backgroundOnPress={this.props.toggleSideBar}/>}
