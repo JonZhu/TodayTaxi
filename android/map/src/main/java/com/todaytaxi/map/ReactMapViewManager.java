@@ -21,7 +21,11 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
 
     public MapView createViewInstance(ThemedReactContext context) {
         MapView mapView = new MapView(context);
-        mapView.getMap().setMapType(BaiduMap.MAP_TYPE_NORMAL);
+        BaiduMap map = mapView.getMap();
+        map.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+        map.setMyLocationEnabled(true);
+        map.setMaxAndMinZoomLevel(21, 10);
+        mapView.showZoomControls(false);
         return mapView;
     }
 
