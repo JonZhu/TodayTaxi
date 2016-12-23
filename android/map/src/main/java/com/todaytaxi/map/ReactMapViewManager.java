@@ -11,6 +11,7 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -37,14 +38,32 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
         map.setMaxAndMinZoomLevel(21, 5);
         mapView.showZoomControls(false);
 
-        // 设置中心点和级别
-        MapStatus mapStatus = new MapStatus.Builder().zoom(18).target(new LatLng(30.66667, 104.06667)).build();
+        UiSettings uiSettings = map.getUiSettings();
+        uiSettings.setRotateGesturesEnabled(false); // 关闭旋转手势
+        uiSettings.setOverlookingGesturesEnabled(false); // 关闭俯瞰手势
+        uiSettings.setCompassEnabled(false);
+
+        // 设置中心点(成都)和级别
+        MapStatus mapStatus = new MapStatus.Builder().zoom(15).target(new LatLng(30.66667, 104.06667)).build();
         map.setMapStatus(MapStatusUpdateFactory.newMapStatus(mapStatus));
 
+        // 定位
         location(context, map);
 
         return mapView;
     }
+
+    /**
+     * 移动地图到某点
+     * @param map
+     * @param lat
+     * @param lng
+     */
+    private void move(BaiduMap map, double lat, double lng) {
+        MapStatus mapStatus = new MapStatus.Builder().target(new LatLng(lat, lng)).build();
+        map.setMapStatus(MapStatusUpdateFactory.newMapStatus(mapStatus));
+    }
+
 
     /**
      * 定位当前位置
@@ -82,6 +101,9 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
                             .latitude(bdLocation.getLatitude())
                             .longitude(bdLocation.getLongitude()).build();
                     map.setMyLocationData(myLocationData);
+
+                    // 移动到定位点
+                    move(map, bdLocation.getLatitude(), bdLocation.getLongitude());
 
                 } else {
                     Log.d(REACT_CLASS, "location fail, locType:" + locType);
