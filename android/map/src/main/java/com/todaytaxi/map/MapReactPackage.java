@@ -17,7 +17,9 @@ import java.util.List;
 public class MapReactPackage implements ReactPackage {
 
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Collections.emptyList();
+        List<NativeModule> modules = new ArrayList<>();
+        modules.add(new ReactMapModule(reactContext));
+        return modules;
     }
 
     public List<Class<? extends JavaScriptModule>> createJSModules() {

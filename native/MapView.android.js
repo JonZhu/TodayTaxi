@@ -6,14 +6,35 @@
  * 
  */
 
-import { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { requireNativeComponent, View } from 'react-native';
 
-var iface = {
-  name: 'MapView',
-  propTypes: {
-    ...View.propTypes // 包含默认的View的属性
-  },
+class BaiduMapView extends Component {
+
+  _onChange(event) {
+    if (event && event.nativeEvent) {
+      var eventData = event.nativeEvent;
+      var eventType = eventData.eventType;
+      if ("statusChange" === eventType && this.props.onStatusChange) {
+        this.props.onStatusChange(eventData);
+      }
+    }
+  }
+
+  render() {
+    return (
+      <RCTBaiduMapView {...this.props} onChange={this._onChange.bind(this)} />
+    );
+  }
+}
+
+BaiduMapView.propTypes = {
+  ...View.propTypes,
+  freeTaxies: React.PropTypes.array, // 空闲的taxi
+  onStatusChange: React.PropTypes.func // 地图状态改变事件, 如位置改变
 };
 
-module.exports = requireNativeComponent('RCTBaiduMapView', iface);
+
+const RCTBaiduMapView = requireNativeComponent('RCTBaiduMapView', BaiduMapView, {nativeOnly:{onChange:true, bizType:true}});
+
+export default BaiduMapView;

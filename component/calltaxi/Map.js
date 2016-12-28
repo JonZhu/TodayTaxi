@@ -11,10 +11,7 @@ class Map extends Component {
 
     render() {
         return (
-            <MapView
-                style={styles.map}
-                region={{latitude: 0,longitude: 0}}
-            />
+            <MapView style={styles.map} onStatusChange={(event)=>{console.debug(event)}} />
         );
     }
 }

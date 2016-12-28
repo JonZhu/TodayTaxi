@@ -13,8 +13,10 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.annotations.ReactProp;
 
 /**
  * React地图ui组件
@@ -46,6 +48,9 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
         // 设置中心点(成都)和级别
         MapStatus mapStatus = new MapStatus.Builder().zoom(15).target(new LatLng(30.66667, 104.06667)).build();
         map.setMapStatus(MapStatusUpdateFactory.newMapStatus(mapStatus));
+
+        // 增加状态改变事件监听器
+        map.setOnMapStatusChangeListener(new MapStatusChangeListener(context, mapView));
 
         // 定位
         location(context, map);
@@ -115,4 +120,32 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
         locationClient.start();
     }
 
+    /**
+     * 设置当前空闲的Taxi
+     *
+     * @param view
+     * @param taxies
+     */
+    @ReactProp(name = "freeTaxies")
+    public void setFreeTaxies(MapView view, ReadableArray taxies) {
+
+    }
+
+    /**
+     * 业务类型
+     *
+     * @param view
+     * @param bizType
+     */
+    @ReactProp(name = "bizType", defaultInt = 0)
+    public void setBizType(MapView view, int bizType) {
+        MapViewExtendData.setData(view, "bizType", bizType);
+    }
+
+
+    @Override
+    public void onDropViewInstance(MapView view) {
+        super.onDropViewInstance(view);
+        MapViewExtendData.remove(view); // 清理扩展数据
+    }
 }
