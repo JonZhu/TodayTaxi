@@ -19,13 +19,15 @@ class CallTaxi extends Component {
     }
 
     render() {
+        var callTaxi = this.props.callTaxi;
+
         return (
             <View style={{flex:1, backgroundColor: 'rgb(240,239,233)'}}>
                 <ToolBar iconOnPress={this.props.toggleSideBar}/>
 
                 <View style={{flex: 1}}>
-                    <Map/>
-                    <FromGo/>
+                    <Map mapStatusChange={this.props.mapStatusChange} />
+                    <FromGo from={callTaxi.from} go={callTaxi.go}/>
 
                     <View style={{position:'absolute', top:0, bottom:0, left:0, right:0}}>
                         <View style={{flex:1, alignItems:'center', justifyContent:'flex-end'}}>
@@ -42,5 +44,10 @@ class CallTaxi extends Component {
     }
 
 }
+
+CallTaxi.propTypes = {
+    toggleSideBar: React.PropTypes.func,
+    sideBar: React.PropTypes.object
+};
 
 export default CallTaxi;

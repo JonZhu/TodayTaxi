@@ -11,7 +11,7 @@ class Map extends Component {
 
     render() {
         return (
-            <MapView style={styles.map} onStatusChange={(event)=>{console.debug(event)}} />
+            <MapView style={styles.map} onStatusChange={this.props.mapStatusChange} />
         );
     }
 }

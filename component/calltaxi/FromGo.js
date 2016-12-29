@@ -17,13 +17,13 @@ class FromGo extends Component {
                 <TouchableHighlight style={{flex: 1}} underlayColor='#f0f8ff' onPress={()=>{}}>
                     <View style={[style.row, style.fromRow]}>
                         <Icon name='circle' style={style.fromIcon}/>
-                        <Text style={style.text}>天府软件园G区</Text>
+                        <Text style={style.text}>{this.props.from.address}</Text>
                     </View>
                 </TouchableHighlight>
                 <TouchableHighlight style={{flex: 1}} underlayColor='#f0f8ff' onPress={()=>{}}>
                     <View style={[style.row, style.goRow]}>
                         <Icon name='circle' style={style.goIcon}/>
-                        <Text style={style.text}>天府广场</Text>
+                        <Text style={style.text}>{this.props.go.address}</Text>
                     </View>
                 </TouchableHighlight>
             </View>
