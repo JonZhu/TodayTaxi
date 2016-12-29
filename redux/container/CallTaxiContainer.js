@@ -23,7 +23,7 @@ function mapDispatchToProps(dispatch) {
             // 反向geo解析当前坐标
             var target = event.target;
             try {
-                MapModule.reverseGeoCode(target.longitude, target.latitude)
+                MapModule.reverseGeoCode(target.lng, target.lat)
                     .then(
                         function(address){
                             console.info(address);
