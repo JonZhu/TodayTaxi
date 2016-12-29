@@ -7,6 +7,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.todaytaxi.map.util.WritableMapUtil;
 
 /**
  * 处理地图状态改变逻辑
@@ -41,16 +42,12 @@ public class MapStatusChangeListener implements BaiduMap.OnMapStatusChangeListen
 
         // 中点
         WritableMap target = Arguments.createMap();
-        target.putDouble("latitude", mapStatus.target.latitude);
-        target.putDouble("longitude", mapStatus.target.longitude);
+        WritableMapUtil.put(target, mapStatus.target);
         event.putMap("target", target);
 
         // 范围
         WritableMap bound = Arguments.createMap();
-        bound.putDouble("northeastLatitude", mapStatus.bound.northeast.latitude);
-        bound.putDouble("northeastLongitude", mapStatus.bound.northeast.longitude);
-        bound.putDouble("southwestLatitude", mapStatus.bound.southwest.latitude);
-        bound.putDouble("southwestLongitude", mapStatus.bound.southwest.longitude);
+        WritableMapUtil.put(bound, mapStatus.bound);
         event.putMap("bound", bound);
 
         // 级别
