@@ -12,10 +12,23 @@ import FromGo from './FromGo';
 import Map from './Map';
 import ClickToUse from './ClickToUse';
 
+import UserInfoContainer from '../../redux/container/UserInfoContainer';
+
 class CallTaxi extends Component {
 
     constructor() {
         super();
+
+        this._siderBarUserHeadOnPress = this._siderBarUserHeadOnPress.bind(this);
+    }
+
+
+    _siderBarUserHeadOnPress() {
+        var navigator = this.props.navigator;
+        // 跳转到用户信息页
+        navigator.push({
+            comp: UserInfoContainer
+        });
     }
 
     render() {
@@ -37,7 +50,8 @@ class CallTaxi extends Component {
                     </View>
                 </View>
 
-                {this.props.sideBar.isShow && <SideBar backgroundOnPress={this.props.toggleSideBar}/>}
+                {this.props.sideBar.isShow && <SideBar backgroundOnPress={this.props.toggleSideBar} 
+                    userHeadOnPress={this._siderBarUserHeadOnPress}/>}
             </View>
 
         );

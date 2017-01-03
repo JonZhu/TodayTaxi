@@ -19,10 +19,12 @@ class SideBar extends Component {
                 </TouchableWithoutFeedback>
 
                 <View style={style.barContainer}>
-                    <View style={style.headContainer}>
-                        <Icon name='user-circle' style={style.userIcon}/>
-                        <Text style={style.userName}>ZHU JUN</Text>
-                    </View>
+                    <TouchableWithoutFeedback onPress={()=>this.props.userHeadOnPress()}>
+                        <View style={style.headContainer}>
+                            <Icon name='user-circle' style={style.userIcon}/>
+                            <Text style={style.userName}>ZHU JUN</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
 
                     <View style={style.barItemContainer}>
                         <Icon name='credit-card' style={style.itemIcon}/>
