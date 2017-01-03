@@ -11,19 +11,43 @@
  */
 
 import React, { Component } from 'react';
-import { Navigator } from 'react-native';
+import { Navigator, BackAndroid } from 'react-native';
 import CallTaxiContainer from '../redux/container/CallTaxiContainer';
 
 class AppNavigator extends Component {
+    constructor() {
+        super();
+        this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
+    }
 
     _renderScene(route, navigator) {
         var Comp = route.comp;
         return <Comp navigator={navigator} {...route.props}/>
     }
 
+    // 处理android back键
+    _onHardwareBackPress() {
+        var navigator = this.refs.navigator;
+        var routes = navigator.getCurrentRoutes();
+        if (routes.length > 1) {
+            navigator.pop();
+            return true; // 接管默认行为
+        } else {
+            return false; // 默认行为
+        }
+    }
+
+    componentDidMount() {
+        BackAndroid.addEventListener('hardwareBackPress', this._onHardwareBackPress);
+    }
+
+    componentWillUnmount() {
+        BackAndroid.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
+    }
+
     render() {
         return (
-            <Navigator style={{flex:1}} initialRoute={{comp: CallTaxiContainer}} renderScene={this._renderScene} />
+            <Navigator ref='navigator' style={{flex:1}} initialRoute={{comp: CallTaxiContainer}} renderScene={this._renderScene} />
         );
     }
 
