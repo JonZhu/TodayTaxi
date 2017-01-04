@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import Header from './Header';
 
 class UserInfo extends Component {
     
@@ -12,6 +13,7 @@ class UserInfo extends Component {
 
         return (
             <View>
+                <Header title='用户信息' />
                 <View style={style.row}>
                     <Text style={style.fieldName}>姓名</Text>
                     <Text style={style.fieldValue}>{user.name}</Text>
