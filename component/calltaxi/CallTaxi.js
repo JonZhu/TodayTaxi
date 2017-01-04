@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, BackAndroid } from 'react-native';
 import ToolBar from './ToolBar';
 import SideBar from './SideBar';
 import FromGo from './FromGo';
@@ -20,6 +20,7 @@ class CallTaxi extends Component {
         super();
 
         this._siderBarUserHeadOnPress = this._siderBarUserHeadOnPress.bind(this);
+        this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
     }
 
 
@@ -29,6 +30,26 @@ class CallTaxi extends Component {
         navigator.push({
             comp: UserInfoContainer
         });
+
+        this.props.toggleSideBar(); // 隐藏side bar
+    }
+
+    _onHardwareBackPress() {
+        // 处理back键, 关闭sider bar
+        if (this.props.sideBar.isShow) {
+            this.props.toggleSideBar();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    componentDidMount() {
+        BackAndroid.addEventListener('hardwareBackPress', this._onHardwareBackPress);
+    }
+
+    componentWillUnmount() {
+        BackAndroid.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
     }
 
     render() {
