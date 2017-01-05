@@ -7,13 +7,24 @@ import { View, Text, StyleSheet } from 'react-native';
 import Header from './Header';
 
 class UserInfo extends Component {
-    
+    constructor() {
+        super();
+        this._headerIconOnPress = this._headerIconOnPress.bind(this);
+    }
+
+    _headerIconOnPress() {
+        var navigator = this.props.navigator;
+        if (navigator) {
+            navigator.pop();
+        }
+    }
+
     render() {
         const user = this.props.user;
 
         return (
             <View>
-                <Header title='用户信息' />
+                <Header title='用户信息' icon='back' iconOnPress={this._headerIconOnPress}/>
                 <View style={style.row}>
                     <Text style={style.fieldName}>姓名</Text>
                     <Text style={style.fieldValue}>{user.name}</Text>
