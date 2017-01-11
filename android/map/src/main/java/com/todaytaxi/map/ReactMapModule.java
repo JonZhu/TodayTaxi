@@ -1,5 +1,7 @@
 package com.todaytaxi.map;
 
+import android.util.Log;
+
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -20,6 +22,8 @@ import com.facebook.react.bridge.ReactMethod;
 
 public class ReactMapModule extends ReactContextBaseJavaModule {
 
+    private final static String LOG_TAG = ReactMapModule.class.getName();
+
     public ReactMapModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
@@ -37,6 +41,7 @@ public class ReactMapModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void reverseGeoCode(double lng, double lat, final Promise promise) {
+        Log.d(LOG_TAG, "Start reverseGeoCode, lng:"+ lng +", lat:"+ lat);
         GeoCoder geoCoder = GeoCoder.newInstance();
         try {
             geoCoder.setOnGetGeoCodeResultListener(new OnGetGeoCoderResultListener() {
@@ -50,7 +55,8 @@ public class ReactMapModule extends ReactContextBaseJavaModule {
                     if (result != null && result.error == SearchResult.ERRORNO.NO_ERROR) {
                         promise.resolve(result.getAddress());
                     } else {
-                        promise.reject("1", "Can't reverse geo code");
+                        Log.e(LOG_TAG, "Can't reverse geo code");
+                        promise.reject("2", "Can't reverse geo code");
                     }
                 }
             });
@@ -59,7 +65,8 @@ public class ReactMapModule extends ReactContextBaseJavaModule {
             option.location(new LatLng(lat, lng));
             geoCoder.reverseGeoCode(option);
         } catch (Exception e) {
-            promise.reject(e);
+            Log.e(LOG_TAG, "reverseGeoCode error", e);
+            promise.reject("1", e);
         } finally {
             geoCoder.destroy();
         }
