@@ -22,22 +22,18 @@ function mapDispatchToProps(dispatch) {
         mapStatusChange: (event) => {
             // 反向geo解析当前坐标
             var target = event.target;
-            try {
-                MapModule.reverseGeoCode(target.lng, target.lat)
-                    .then(
-                        function(address){
-                            console.info(address);
-                        }, 
-                        (e)=>{
-                            console.error(e);
-                        }
-                    );
-            } catch (e) {
-                // 出错
-                console.error(e);
-            }
-            
+            reverseGeoCode(target.lng, target.lat);
         }
+    }
+}
+
+async function reverseGeoCode(lng, lat) {
+    try {
+        var address = await MapModule.reverseGeoCode(lng, lat);
+        console.info(address);
+    } catch (e) {
+        // 出错
+        console.error(e);
     }
 }
 
