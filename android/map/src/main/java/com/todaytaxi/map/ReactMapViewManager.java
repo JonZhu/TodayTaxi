@@ -37,16 +37,16 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
         BaiduMap map = mapView.getMap();
         map.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         map.setMyLocationEnabled(true);
-        map.setMaxAndMinZoomLevel(21, 5);
+        map.setMaxAndMinZoomLevel(21, 3);
         mapView.showZoomControls(false);
 
         UiSettings uiSettings = map.getUiSettings();
         uiSettings.setRotateGesturesEnabled(false); // 关闭旋转手势
         uiSettings.setOverlookingGesturesEnabled(false); // 关闭俯瞰手势
-        uiSettings.setCompassEnabled(false);
+        uiSettings.setCompassEnabled(false); // 设置是否允许指南针
 
         // 设置中心点(成都)和级别
-        MapStatus mapStatus = new MapStatus.Builder().zoom(15).target(new LatLng(30.66667, 104.06667)).build();
+        MapStatus mapStatus = new MapStatus.Builder().zoom(17).target(new LatLng(30.66667, 104.06667)).build();
         map.setMapStatus(MapStatusUpdateFactory.newMapStatus(mapStatus));
 
         // 增加状态改变事件监听器
