@@ -22,7 +22,7 @@ import com.facebook.react.bridge.ReactMethod;
 
 public class ReactMapModule extends ReactContextBaseJavaModule {
 
-    private final static String LOG_TAG = ReactMapModule.class.getName();
+    private final static String LOG_TAG = ReactMapModule.class.getSimpleName();
 
     public ReactMapModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -42,17 +42,20 @@ public class ReactMapModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void reverseGeoCode(double lng, double lat, final Promise promise) {
         Log.d(LOG_TAG, "Start reverseGeoCode, lng:"+ lng +", lat:"+ lat);
-        GeoCoder geoCoder = GeoCoder.newInstance();
+        final GeoCoder geoCoder = GeoCoder.newInstance();
         try {
             geoCoder.setOnGetGeoCodeResultListener(new OnGetGeoCoderResultListener() {
                 @Override
-                public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
-
+                public void onGetGeoCodeResult(GeoCodeResult result) {
+                    Log.d(LOG_TAG, "geo code result: " + result.getAddress());
+                    geoCoder.destroy();
                 }
 
                 @Override
                 public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
+                    geoCoder.destroy();
                     if (result != null && result.error == SearchResult.ERRORNO.NO_ERROR) {
+                        Log.d(LOG_TAG, "reverse geo code result: " + result.getAddress());
                         promise.resolve(result.getAddress());
                     } else {
                         Log.e(LOG_TAG, "Can't reverse geo code");
@@ -63,12 +66,15 @@ public class ReactMapModule extends ReactContextBaseJavaModule {
 
             ReverseGeoCodeOption option = new ReverseGeoCodeOption();
             option.location(new LatLng(lat, lng));
-            geoCoder.reverseGeoCode(option);
+            boolean flag = geoCoder.reverseGeoCode(option);
+            if (flag == false) {
+                Log.e(LOG_TAG, "authority fail");
+                geoCoder.destroy();
+            }
         } catch (Exception e) {
+            geoCoder.destroy();
             Log.e(LOG_TAG, "reverseGeoCode error", e);
             promise.reject("1", e);
-        } finally {
-            geoCoder.destroy();
         }
 
     }
