@@ -15,11 +15,26 @@ class ClickToUse extends Component {
         super();
 
         this.state = {rotate:new Animated.Value(0)};
+        this._rotateTimeCircle = this._rotateTimeCircle.bind(this);
+        this._stopRotateTimeCircle = this._stopRotateTimeCircle.bind(this);
     }
 
     componentDidMount() {
-        var animated = Animated.timing(this.state.rotate, {toValue: 360, duration:5000});
-        animated.start();
+        this._rotateTimeCircle();
+    }
+
+    _animated;
+
+    _rotateTimeCircle() {
+        this.state.rotate.setValue(0);
+        _animated = Animated.timing(this.state.rotate, {toValue: 360, duration:5000});
+        _animated.start(()=>this._rotateTimeCircle());
+    }
+
+    _stopRotateTimeCircle() {
+        if (_animated) {
+            _animated.stop();
+        }
     }
 
     render() {
