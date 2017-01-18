@@ -20,6 +20,7 @@ function mapDispatchToProps(dispatch) {
             dispatch({type: 'toggleSideBar'});
         },
         mapStatusChange: (event) => {
+            dispatch({type:'startReverseGeoCode'}); // 开始定位action
             // 反向geo解析当前坐标
             var target = event.target;
             reverseGeoCode(dispatch, target.lng, target.lat);
@@ -31,7 +32,7 @@ async function reverseGeoCode(dispatch, lng, lat) {
     try {
         var address = await MapModule.reverseGeoCode(lng, lat);
         console.info(address);
-        dispatch({type:'reverseGeoCodeResult', address:address});
+        dispatch({type:'reverseGeoCodeResult', address:address, lng, lat});
     } catch (e) {
         // 出错
         console.error(e);

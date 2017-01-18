@@ -7,7 +7,7 @@
 export default function callTaxi(preStatus = {
     from: {
         locationed: false,
-        address: '正在定位',
+        address: '正在定位...',
         lng: 0,
         lat: 0
     },
@@ -20,13 +20,19 @@ export default function callTaxi(preStatus = {
     locationWho: 'from'
 }, action) {
     switch (action.type) {
-        case 'reverseGeoCodeResult' :
+        case 'startReverseGeoCode':
+            if (preStatus.locationWho === 'from') {
+                var status = {...preStatus, from:{...preStatus.from, address: '正在定位...', locationed: false}};
+                return status;
+            }
+            break;
+        case 'reverseGeoCodeResult':
             if (preStatus.locationWho === 'from') {
                 var status = {...preStatus, from:{...preStatus.from, address: action.address, locationed: true}};
                 return status;
             }
-            return preStatus;
-        default :
+            break;
+        default:
             return preStatus;
     }
         
