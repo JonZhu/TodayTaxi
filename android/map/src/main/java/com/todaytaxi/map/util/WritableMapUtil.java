@@ -2,6 +2,7 @@ package com.todaytaxi.map.util;
 
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
+import com.baidu.mapapi.search.core.PoiInfo;
 import com.facebook.react.bridge.WritableMap;
 
 /**
@@ -32,6 +33,15 @@ public class WritableMapUtil {
         map.putDouble("northEastLng", bounds.northeast.longitude);
         map.putDouble("southWestLat", bounds.southwest.latitude);
         map.putDouble("southWestLng", bounds.southwest.longitude);
+    }
+
+    public static void put(WritableMap map, PoiInfo poiInfo) {
+        if (poiInfo.location != null) {
+            put(map, poiInfo.location);
+        }
+        map.putString("city", poiInfo.city);
+        map.putString("address", poiInfo.address);
+        map.putString("name", poiInfo.name);
     }
 
 }
