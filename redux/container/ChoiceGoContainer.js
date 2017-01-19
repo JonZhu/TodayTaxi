@@ -16,6 +16,9 @@ function mapDispatchToProps(dispatch) {
     return {
         keywordOnChange: function(keyword) {
             searchKeywordInCity(dispatch, keyword);
+        },
+        searchAddrOnPress: function(goAddr) {
+            dispatch({type:'goAddrChanged', goAddr});
         }
     };
 }
