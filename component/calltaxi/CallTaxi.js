@@ -13,6 +13,7 @@ import Map from './Map';
 import ClickToUse from './ClickToUse';
 
 import UserInfoContainer from '../../redux/container/UserInfoContainer';
+import ChoiceGoContainer from '../../redux/container/ChoiceGoContainer';
 
 class CallTaxi extends Component {
 
@@ -21,6 +22,7 @@ class CallTaxi extends Component {
 
         this._siderBarUserHeadOnPress = this._siderBarUserHeadOnPress.bind(this);
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
+        this._goAddressOnPress = this._goAddressOnPress.bind(this);
     }
 
 
@@ -44,6 +46,14 @@ class CallTaxi extends Component {
         }
     }
 
+    _goAddressOnPress() {
+        var navigator = this.props.navigator;
+        // 跳转到选择目标地址页
+        navigator.push({
+            comp: ChoiceGoContainer
+        });
+    }
+
     componentDidMount() {
         BackAndroid.addEventListener('hardwareBackPress', this._onHardwareBackPress);
     }
@@ -61,7 +71,7 @@ class CallTaxi extends Component {
 
                 <View style={{flex: 1}}>
                     <Map mapStatusChange={this.props.mapStatusChange} />
-                    <FromGo from={callTaxi.from} go={callTaxi.go}/>
+                    <FromGo from={callTaxi.from} go={callTaxi.go} goOnPress={this._goAddressOnPress}/>
 
                     <View style={{position:'absolute', top:0, bottom:0, left:0, right:0}}>
                         <View style={{flex:1, alignItems:'center', justifyContent:'flex-end'}}>

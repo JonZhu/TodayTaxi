@@ -20,7 +20,7 @@ class FromGo extends Component {
                         <Text style={style.text}>{this.props.from.address}</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight style={{flex: 1}} underlayColor='#f0f8ff' onPress={()=>{}}>
+                <TouchableHighlight style={{flex: 1}} underlayColor='#f0f8ff' onPress={this.props.goOnPress}>
                     <View style={[style.row, style.goRow]}>
                         <Icon name='circle' style={style.goIcon}/>
                         <Text style={style.text}>{this.props.go.address}</Text>

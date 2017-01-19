@@ -17,7 +17,8 @@ export default function callTaxi(preStatus = {
         lng: 0,
         lat: 0
     },
-    locationWho: 'from'
+    locationWho: 'from',
+    goAddrSearchResult: []
 }, action) {
     switch (action.type) {
         case 'startReverseGeoCode':
@@ -32,6 +33,8 @@ export default function callTaxi(preStatus = {
                 return status;
             }
             break;
+        case 'goAddrSearchChanged':
+            return {...preStatus, goAddrSearchResult:action.searchResult};
         default:
             return preStatus;
     }
