@@ -2,6 +2,10 @@ package com.todaytaxi.map;
 
 import android.util.Log;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -204,6 +208,52 @@ public class ReactMapModule extends ReactContextBaseJavaModule {
         option.keyword(keyword);
         option.pageCapacity(dataLimit);
         search.searchInCity(option);
+    }
+
+
+    /**
+     * 定位当前位置
+     */
+    @ReactMethod
+    public void location(final Promise promise) {
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        option.setCoorType("bd09ll");
+        option.setScanSpan(1000);
+        option.setIsNeedAddress(true);
+        option.setIsNeedLocationDescribe(true);
+        option.setOpenGps(true);
+        option.setIgnoreKillProcess(false);
+        option.setEnableSimulateGps(false);
+
+        final LocationClient locationClient = new LocationClient(getReactApplicationContext());
+        locationClient.setLocOption(option);
+
+        locationClient.registerLocationListener(new BDLocationListener() {
+            @Override
+            public void onReceiveLocation(BDLocation bdLocation) {
+                locationClient.stop();
+
+                int locType = bdLocation.getLocType();
+                if (locType == BDLocation.TypeGpsLocation || locType == BDLocation.TypeNetWorkLocation
+                        || locType == BDLocation.TypeOffLineLocation) {
+                    // 定位成功
+                    Log.d(LOG_TAG, "location success, Latitude:"+ bdLocation.getLatitude()
+                            +", Longitude:" + bdLocation.getLongitude() + ", AddrStr:" + bdLocation.getAddrStr());
+
+                    WritableMap map = Arguments.createMap();
+                    WritableMapUtil.put(map, bdLocation);
+
+                    promise.resolve(map);
+                } else {
+                    Log.d(LOG_TAG, "location fail, locType:" + locType);
+                    promise.reject("1", "location fail, locType:" + locType);
+                }
+
+            }
+        });
+
+        locationClient.start();
     }
 
 

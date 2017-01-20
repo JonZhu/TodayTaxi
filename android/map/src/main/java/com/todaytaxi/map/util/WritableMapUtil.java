@@ -1,9 +1,15 @@
 package com.todaytaxi.map.util;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.Poi;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.search.core.PoiInfo;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+
+import java.util.List;
 
 /**
  * WritableMap 工具
@@ -44,4 +50,24 @@ public class WritableMapUtil {
         map.putString("name", poiInfo.name);
     }
 
+    public static void put(WritableMap map, BDLocation bdLocation) {
+        map.putDouble("lat", bdLocation.getLatitude());
+        map.putDouble("lng", bdLocation.getLongitude());
+        map.putString("city", bdLocation.getCity());
+        map.putString("cityCode", bdLocation.getCityCode());
+        map.putString("country", bdLocation.getCountry());
+        map.putString("countryCode", bdLocation.getCountryCode());
+        map.putString("address", bdLocation.getAddress().address);
+        map.putString("district", bdLocation.getDistrict());
+        map.putString("describe", bdLocation.getLocationDescribe());
+        map.putString("floor", bdLocation.getFloor());
+        List<Poi> poiList = bdLocation.getPoiList();
+        if (poiList != null && !poiList.isEmpty()) {
+            WritableArray poiArr = Arguments.createArray();
+            for(Poi poi : poiList) {
+                poiArr.pushString(poi.getName());
+            }
+            map.putArray("poiList", poiArr);
+        }
+    }
 }
