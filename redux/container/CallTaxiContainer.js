@@ -20,10 +20,14 @@ function mapDispatchToProps(dispatch) {
             dispatch({type: 'toggleSideBar'});
         },
         mapStatusChange: (event) => {
+            console.debug('mapStatusChange');
             dispatch({type:'startReverseGeoCode'}); // 开始定位action
             // 反向geo解析当前坐标
             var target = event.target;
             reverseGeoCode(dispatch, target.lng, target.lat);
+        },
+        initlocationResult: function(loc) { // 初始定位返回
+            dispatch({type:'initLocResult', loc:loc});
         }
     }
 }

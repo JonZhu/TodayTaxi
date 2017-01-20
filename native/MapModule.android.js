@@ -14,6 +14,9 @@
  * 在城市中搜索POI
  * void searchInCity(String city, String keyword, int dataLimit, final Promise promise) <br/>
  * 
+ * 定位当前位置
+ * void location(final Promise promise) <br/>
+ * 
  * </p>
  * 
  */

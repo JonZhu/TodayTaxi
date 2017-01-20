@@ -21,6 +21,13 @@ export default function callTaxi(preStatus = {
     goAddrSearchResult: []
 }, action) {
     switch (action.type) {
+        case 'initLocResult':
+            var loc = action.loc;
+            var address = loc.address;
+            if (address.indexOf('省') > -1) {
+                address = address.substring(address.indexOf('省') + 1);
+            }
+            return {...preStatus, from:{...preStatus.from, lng:loc.lng, lat:loc.lat, address:address, locationed:true}};
         case 'startReverseGeoCode':
             if (preStatus.locationWho === 'from') {
                 var status = {...preStatus, from:{...preStatus.from, address: '正在定位...', locationed: false}};

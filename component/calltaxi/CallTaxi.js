@@ -14,6 +14,7 @@ import ClickToUse from './ClickToUse';
 
 import UserInfoContainer from '../../redux/container/UserInfoContainer';
 import ChoiceGoContainer from '../../redux/container/ChoiceGoContainer';
+import MapModule from '../../native/MapModule';
 
 class CallTaxi extends Component {
 
@@ -23,6 +24,7 @@ class CallTaxi extends Component {
         this._siderBarUserHeadOnPress = this._siderBarUserHeadOnPress.bind(this);
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
         this._goAddressOnPress = this._goAddressOnPress.bind(this);
+        this._location = this._location.bind(this);
     }
 
 
@@ -56,10 +58,24 @@ class CallTaxi extends Component {
 
     componentDidMount() {
         BackAndroid.addEventListener('hardwareBackPress', this._onHardwareBackPress);
+        this._location();
     }
 
     componentWillUnmount() {
         BackAndroid.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
+    }
+
+    // 定位当前位置
+    async _location() {
+        try {
+            var loc = await MapModule.location();
+            console.info('定位结果：');
+            console.info(loc);
+
+            this.props.initlocationResult(loc);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     render() {
