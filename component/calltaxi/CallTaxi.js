@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, BackAndroid } from 'react-native';
+import { View, BackAndroid, ToastAndroid } from 'react-native';
 import ToolBar from './ToolBar';
 import SideBar from './SideBar';
 import FromGo from './FromGo';
@@ -23,8 +23,9 @@ class CallTaxi extends Component {
 
         this._siderBarUserHeadOnPress = this._siderBarUserHeadOnPress.bind(this);
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
-        this._goAddressOnPress = this._goAddressOnPress.bind(this);
+        this._gotoChoiceGoAddressPage = this._gotoChoiceGoAddressPage.bind(this);
         this._location = this._location.bind(this);
+        this._clickToUse = this._clickToUse.bind(this);
     }
 
 
@@ -48,7 +49,8 @@ class CallTaxi extends Component {
         }
     }
 
-    _goAddressOnPress() {
+    // 跳转到选择目标地址页
+    _gotoChoiceGoAddressPage() {
         var navigator = this.props.navigator;
         // 跳转到选择目标地址页
         navigator.push({
@@ -78,6 +80,23 @@ class CallTaxi extends Component {
         }
     }
 
+    _clickToUse() {
+        var {from, go} = this.props.callTaxi;
+        if (from.locationed !== true) {
+            ToastAndroid.show('开始位置未定位,请稍后', ToastAndroid.SHORT);
+            return;
+        }
+
+        if (go.locationed !== true) {
+            // 目标地址未选择
+            this._gotoChoiceGoAddressPage();
+            return;
+        }
+
+        // TODO 
+        ToastAndroid.show('todo计算价格', ToastAndroid.SHORT);
+    }
+
     render() {
         var callTaxi = this.props.callTaxi;
 
@@ -87,11 +106,11 @@ class CallTaxi extends Component {
 
                 <View style={{flex: 1}}>
                     <Map mapStatusChange={this.props.mapStatusChange} />
-                    <FromGo from={callTaxi.from} go={callTaxi.go} goOnPress={this._goAddressOnPress}/>
+                    <FromGo from={callTaxi.from} go={callTaxi.go} goOnPress={this._gotoChoiceGoAddressPage}/>
 
                     <View style={{position:'absolute', top:0, bottom:0, left:0, right:0}}>
                         <View style={{flex:1, alignItems:'center', justifyContent:'flex-end'}}>
-                            <ClickToUse/>
+                            <ClickToUse onClick={this._clickToUse}/>
                         </View>
                         <View style={{flex:1}}/>
                     </View>
