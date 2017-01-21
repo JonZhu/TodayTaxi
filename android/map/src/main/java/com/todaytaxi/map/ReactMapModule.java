@@ -21,11 +21,23 @@ import com.baidu.mapapi.search.poi.PoiDetailResult;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
+import com.baidu.mapapi.search.route.BikingRouteResult;
+import com.baidu.mapapi.search.route.DrivingRouteLine;
+import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
+import com.baidu.mapapi.search.route.DrivingRouteResult;
+import com.baidu.mapapi.search.route.IndoorRouteResult;
+import com.baidu.mapapi.search.route.MassTransitRouteResult;
+import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
+import com.baidu.mapapi.search.route.PlanNode;
+import com.baidu.mapapi.search.route.RoutePlanSearch;
+import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.todaytaxi.map.util.WritableMapUtil;
@@ -254,6 +266,74 @@ public class ReactMapModule extends ReactContextBaseJavaModule {
         });
 
         locationClient.start();
+    }
+
+    /**
+     * 驾车路线规划
+     *
+     * @param from
+     * @param go
+     * @param promise
+     */
+    @ReactMethod
+    public void drivingRoute(ReadableMap from, ReadableMap go, final Promise promise) {
+        final RoutePlanSearch search = RoutePlanSearch.newInstance();
+
+        OnGetRoutePlanResultListener listener = new OnGetRoutePlanResultListener() {
+            @Override
+            public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
+
+            }
+
+            @Override
+            public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
+
+            }
+
+            @Override
+            public void onGetMassTransitRouteResult(MassTransitRouteResult massTransitRouteResult) {
+
+            }
+
+            @Override
+            public void onGetDrivingRouteResult(DrivingRouteResult result) {
+                search.destroy();
+
+                if (result.error != DrivingRouteResult.ERRORNO.NO_ERROR) {
+                    WritableArray arr = null;
+                    List<DrivingRouteLine> lineList = result.getRouteLines();
+                    if (lineList != null && !lineList.isEmpty()) {
+                        arr = Arguments.createArray();
+                        for (DrivingRouteLine line : lineList) {
+                            WritableMap map = Arguments.createMap();
+                            WritableMapUtil.put(map, line);
+                            arr.pushMap(map);
+                        }
+                    }
+
+                    promise.resolve(arr);
+                } else {
+                    promise.reject("1", "drivingRoute error:" + result.error);
+                }
+            }
+
+            @Override
+            public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
+
+            }
+
+            @Override
+            public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
+
+            }
+        };
+        search.setOnGetRoutePlanResultListener(listener);
+
+        DrivingRoutePlanOption option = new DrivingRoutePlanOption();
+        option.from(PlanNode.withLocation(new LatLng(from.getDouble("lat"), from.getDouble("lng"))));
+        option.to(PlanNode.withLocation(new LatLng(go.getDouble("lat"), go.getDouble("lng"))));
+
+        search.drivingSearch(option);
     }
 
 

@@ -5,6 +5,7 @@ import com.baidu.location.Poi;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.search.core.PoiInfo;
+import com.baidu.mapapi.search.route.DrivingRouteLine;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
@@ -69,5 +70,12 @@ public class WritableMapUtil {
             }
             map.putArray("poiList", poiArr);
         }
+    }
+
+    public static void put(WritableMap map, DrivingRouteLine line) {
+        map.putString("title", line.getTitle());
+        map.putInt("distance", line.getDistance());
+        map.putInt("duration", line.getDuration());
+        map.putInt("lightNum", line.getLightNum());
     }
 }
