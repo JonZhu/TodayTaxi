@@ -23,7 +23,7 @@ class UserInfo extends Component {
         const user = this.props.user;
 
         return (
-            <View>
+            <View style={{flex:1, backgroundColor:'#fff'}}>
                 <Header title='用户信息' icon='back' iconOnPress={this._headerIconOnPress}/>
                 <View style={style.row}>
                     <Text style={style.fieldName}>姓名</Text>
