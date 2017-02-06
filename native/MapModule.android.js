@@ -17,6 +17,10 @@
  * 定位当前位置
  * void location(final Promise promise) <br/>
  * 
+ * 驾车路线规划
+ * void drivingRoute(ReadableMap from, ReadableMap go, final Promise promise) <br/>
+ * 返回： [{title, distance, duration, lightNum}]
+ * 
  * </p>
  * 
  */
