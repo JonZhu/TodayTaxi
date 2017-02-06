@@ -26,6 +26,7 @@ class CallTaxi extends Component {
         this._gotoChoiceGoAddressPage = this._gotoChoiceGoAddressPage.bind(this);
         this._location = this._location.bind(this);
         this._clickToUse = this._clickToUse.bind(this);
+        this._driveRoute = this._driveRoute.bind(this);
     }
 
 
@@ -93,8 +94,13 @@ class CallTaxi extends Component {
             return;
         }
 
+        this._driveRoute({lat:from.lat, lng:from.lng}, {lat:go.lat, lng:go.lng});
+    }
+
+    async _driveRoute(from, go) {
+        var routes = await MapModule.drivingRoute(from, go);
         // TODO 
-        ToastAndroid.show('todo计算价格', ToastAndroid.SHORT);
+        ToastAndroid.show('todo计算价格:' + JSON.stringify(routes), ToastAndroid.SHORT);
     }
 
     render() {
