@@ -5,10 +5,32 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAndroid } from 'react-native';
 import Header from './Header';
+import SignIn from './SignIn';
+import CallTaxi from '../redux/container/CallTaxiContainer';
 
 class Login extends Component {
+
+    constructor() {
+        super();
+        this._toSignIn = this._toSignIn.bind(this);
+        this._login = this._login.bind(this);
+    }
+
+    _toSignIn() {
+        this.props.navigator.push({comp:SignIn});
+    }
+
+    _login() {
+        var serverResult = {success:true, phone:'15888888888', name:'成龙'};
+        if (serverResult.success === true) {
+            // 登录成功
+            this.props.navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
+        } else {
+            ToastAndroid.show('登录失败', ToastAndroid.SHORT);
+        }
+    }
 
     render() {
         return (
@@ -24,7 +46,11 @@ class Login extends Component {
                         <TextInput style={{flex:1}} placeholder='请输入密码' underlineColorAndroid='transparent' secureTextEntry={true}/>
                     </View>
 
-                    <Button title='登录' onPress={()=>{}}></Button>
+                    <Button title='登录' onPress={this._login}></Button>
+                    
+                    <TouchableHighlight style={{marginTop:10}} onPress={this._toSignIn}>
+                        <Text>还没有帐号，请注册</Text>
+                    </TouchableHighlight>
                 </View>
             </View>
         );
