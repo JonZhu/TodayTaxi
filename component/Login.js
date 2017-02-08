@@ -27,6 +27,10 @@ class Login extends Component {
         var pass = this._pass;
         ToastAndroid.show(phone + '开始登录', ToastAndroid.show);
         var serverResult = {success:true, phone:'15888888888', name:'成龙'};
+        if (pass != '123') {
+            serverResult.success = false;
+        }
+
         if (serverResult.success === true) {
             // 登录成功
             this.props.navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
