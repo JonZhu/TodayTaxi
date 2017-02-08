@@ -37,13 +37,16 @@ class Login extends Component {
             <View style={{flex:1, backgroundColor:'#fff'}}>
                 <Header title='登录'/>
                 <View style={{flex:1, padding:10}}>
-                    <View style={{flexDirection:'row', alignItems:'center'}}>
-                        <Text style={{fontSize:18}}>帐户：</Text>
-                        <TextInput style={{flex:1}} placeholder='请输入帐户' underlineColorAndroid='transparent'/>
-                    </View>
-                    <View style={{flexDirection:'row', alignItems:'center'}}>
-                        <Text style={{fontSize:18}}>密码：</Text>
-                        <TextInput style={{flex:1}} placeholder='请输入密码' underlineColorAndroid='transparent' secureTextEntry={true}/>
+                    <View style={{borderWidth:1, borderRadius:3, borderColor:'rgb(205,205,211)', marginBottom:10}}>
+                        <View style={{flexDirection:'row', alignItems:'center', borderBottomWidth:1, 
+                            borderBottomColor:'rgb(205,205,211)', paddingLeft:10, height:50}}>
+                            <Text style={{fontSize:18}}>帐户：</Text>
+                            <TextInput style={{flex:1}} placeholder='请输入帐户' underlineColorAndroid='transparent'/>
+                        </View>
+                        <View style={{flexDirection:'row', alignItems:'center', paddingLeft:10, height:50}}>
+                            <Text style={{fontSize:18}}>密码：</Text>
+                            <TextInput style={{flex:1}} placeholder='请输入密码' underlineColorAndroid='transparent' secureTextEntry={true}/>
+                        </View>
                     </View>
 
                     <Button title='登录' onPress={this._login}></Button>
