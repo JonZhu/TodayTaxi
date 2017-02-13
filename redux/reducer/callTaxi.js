@@ -44,7 +44,7 @@ export default function callTaxi(preStatus = {
             return {...preStatus, goAddrSearchResult:action.searchResult};
         case 'goAddrChanged':
             var goAddr = action.goAddr;
-            return {...preStatus, go:{...preStatus.go, locationed:true, address:goAddr.address, lnt:goAddr.lnt, lat:goAddr.lat}}
+            return {...preStatus, go:{...preStatus.go, locationed:true, address:goAddr.address, lng:goAddr.lng, lat:goAddr.lat}}
         default:
             return preStatus;
     }

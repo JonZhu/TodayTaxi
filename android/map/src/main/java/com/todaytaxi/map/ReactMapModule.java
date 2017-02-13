@@ -299,7 +299,7 @@ public class ReactMapModule extends ReactContextBaseJavaModule {
             public void onGetDrivingRouteResult(DrivingRouteResult result) {
                 search.destroy();
 
-                if (result.error != DrivingRouteResult.ERRORNO.NO_ERROR) {
+                if (result != null && result.error == SearchResult.ERRORNO.NO_ERROR) {
                     WritableArray arr = null;
                     List<DrivingRouteLine> lineList = result.getRouteLines();
                     if (lineList != null && !lineList.isEmpty()) {
