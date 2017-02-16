@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, BackAndroid, ToastAndroid } from 'react-native';
+import { View, BackAndroid, ToastAndroid, Text, TouchableWithoutFeedback } from 'react-native';
 import ToolBar from './ToolBar';
 import SideBar from './SideBar';
 import FromGo from './FromGo';
@@ -15,11 +15,14 @@ import ClickToUse from './ClickToUse';
 import UserInfoContainer from '../../redux/container/UserInfoContainer';
 import ChoiceGoContainer from '../../redux/container/ChoiceGoContainer';
 import MapModule from '../../native/MapModule';
+import rest from '../api/rest';
 
 class CallTaxi extends Component {
 
     constructor() {
         super();
+
+        this.state = {showConfirm: false};
 
         this._siderBarUserHeadOnPress = this._siderBarUserHeadOnPress.bind(this);
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
@@ -27,6 +30,7 @@ class CallTaxi extends Component {
         this._location = this._location.bind(this);
         this._clickToUse = this._clickToUse.bind(this);
         this._driveRoute = this._driveRoute.bind(this);
+        this._confirmCallTaxi = this._confirmCallTaxi.bind(this);
     }
 
 
@@ -81,6 +85,7 @@ class CallTaxi extends Component {
         }
     }
 
+    // 点击叫车
     _clickToUse() {
         var {from, go} = this.props.callTaxi;
         if (from.locationed !== true) {
@@ -97,10 +102,26 @@ class CallTaxi extends Component {
         this._driveRoute({lat:from.lat, lng:from.lng}, {lat:go.lat, lng:go.lng});
     }
 
+    // 路线规则、价格预算
     async _driveRoute(from, go) {
         var routes = await MapModule.drivingRoute(from, go);
-        // TODO 
-        ToastAndroid.show('todo计算价格:' + JSON.stringify(routes), ToastAndroid.SHORT);
+        var result = await rest('/calltaxi/priceBudget', routes);
+        
+        if (result && result.code === 0) {
+            // 服务端响应成功
+            this.setState({
+                showConfirm: true,
+                priceBudget: result.payload
+            });
+        } else {
+            ToastAndroid.show('价格预算失败', ToastAndroid.SHORT);
+        }
+    }
+
+    // 用户点击确认乘车
+    _confirmCallTaxi() {
+        //TODO
+        ToastAndroid.show('TODO确认乘车逻辑', ToastAndroid.SHORT);
     }
 
     render() {
@@ -121,6 +142,22 @@ class CallTaxi extends Component {
                         <View style={{flex:1}}/>
                     </View>
                 </View>
+
+                {this.state.showConfirm && 
+                <View style={{position:'absolute', bottom:15, left:15, right:15, }}>
+                    <View style={{borderWidth:1, borderColor: 'rgb(224,224,224)', backgroundColor: '#fff', borderRadius: 3, 
+                        padding:15, alignItems:'center'}}>
+                        <Text style={{fontSize:20}}>预计{this.state.priceBudget}￥</Text>
+                    </View>
+
+                    <TouchableWithoutFeedback onPress={this._confirmCallTaxi}>
+                        <View style={{backgroundColor: '#000', borderRadius: 3, 
+                            padding:15, marginTop:10, alignItems:'center'}}>
+                            <Text style={{color:'#fff', fontSize:18}}>确认乘车</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
+                }
 
                 {this.props.sideBar.isShow && <SideBar backgroundOnPress={this.props.toggleSideBar} 
                     userHeadOnPress={this._siderBarUserHeadOnPress}/>}
