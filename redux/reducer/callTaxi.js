@@ -36,7 +36,7 @@ export default function callTaxi(preStatus = {
             break;
         case 'reverseGeoCodeResult':
             if (preStatus.locationWho === 'from') {
-                var status = {...preStatus, from:{...preStatus.from, address: action.address, locationed: true}};
+                var status = {...preStatus, from:{...preStatus.from, address: action.address, lng:action.lng, lat:action.lat, locationed: true}};
                 return status;
             }
             break;
