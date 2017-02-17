@@ -14,6 +14,8 @@ async function rest(url, param) {
     var absUrl;
     if (url.startsWith('/')) {
         absUrl = serverPrefix + url;
+    } else if (url.startsWith('http')) {
+        absUrl = url;
     } else {
         absUrl = serverPrefix + '/' + url;
     }
