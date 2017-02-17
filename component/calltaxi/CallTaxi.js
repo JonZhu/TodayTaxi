@@ -105,9 +105,14 @@ class CallTaxi extends Component {
     // 路线规则、价格预算
     async _driveRoute(from, go) {
         var routes = await MapModule.drivingRoute(from, go);
-        var result = await rest('/calltaxi/priceBudget', routes);
+        var result;
+        try {
+            result = await rest('/calltaxi/priceBudget', routes);
+        } catch (error) {
+            ToastAndroid.show('无法连接服务器', ToastAndroid.SHORT);
+        }
         
-        if (result && result.code === 0) {
+        if (result.code === 0) {
             // 服务端响应成功
             this.setState({
                 showConfirm: true,
