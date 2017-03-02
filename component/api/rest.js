@@ -8,7 +8,11 @@
  * 
  */
 
+import md5 from 'md5';
+
 const serverPrefix = 'http://10.10.10.90:8080';
+
+var sessionId;
 
 async function rest(url, param) {
     var absUrl;
@@ -19,6 +23,9 @@ async function rest(url, param) {
     } else {
         absUrl = serverPrefix + '/' + url;
     }
+
+    var queryStr = getQueryStrForSign();
+    var signInput = queryStr;
 
     var option = {
         method: 'GET',
@@ -33,9 +40,28 @@ async function rest(url, param) {
         option.method = 'POST';
         option.headers['Content-Type'] = 'application/json'; // 使用json方式提交数据
         option.body = JSON.stringify(param);
+
+        signInput += "||" + option.body;
     }
 
+    var sign = md5(signInput); // 签名
+    absUrl += "?" + queryStr + "&sign=" + sign; // 增加queryStr和签名参数
+
     return fetch(absUrl, option).then((response)=>response.json());
+}
+
+function getQueryStrForSign() {
+    var queryStr = "";
+    if (sessionId) {
+        queryStr += "sessionId=" + sessionId;
+    }
+
+    if (queryStr.length > 0) {
+        queryStr += "&";
+    }
+    queryStr += "t=" + new Date().getMilliseconds();
+
+    return queryStr;
 }
 
 export default rest;
