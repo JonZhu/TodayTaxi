@@ -9,11 +9,11 @@
  */
 
 import md5 from 'md5';
+import { getSessionId } from './session';
 
 const serverPrefix = 'http://10.10.10.90:8080';
 
-var sessionId;
-
+// 发送rest请求
 async function rest(url, param) {
     var absUrl;
     if (url.startsWith('/')) {
@@ -24,7 +24,7 @@ async function rest(url, param) {
         absUrl = serverPrefix + '/' + url;
     }
 
-    var queryStr = getQueryStrForSign();
+    var queryStr = await getQueryStrForSign();
     var signInput = queryStr;
 
     var option = {
@@ -47,11 +47,14 @@ async function rest(url, param) {
     var sign = md5(signInput); // 签名
     absUrl += "?" + queryStr + "&sign=" + sign; // 增加queryStr和签名参数
 
-    return fetch(absUrl, option).then((response)=>response.json());
+    var response = await fetch(absUrl, option);
+    return response.json();
 }
 
-function getQueryStrForSign() {
+// 组织除sign外的公共参数，做为签名的一部分
+async function getQueryStrForSign() {
     var queryStr = "";
+    var sessionId = await getSessionId();
     if (sessionId) {
         queryStr += "sessionId=" + sessionId;
     }
@@ -59,7 +62,7 @@ function getQueryStrForSign() {
     if (queryStr.length > 0) {
         queryStr += "&";
     }
-    queryStr += "t=" + new Date().getMilliseconds();
+    queryStr += "t=" + new Date().getTime();
 
     return queryStr;
 }
