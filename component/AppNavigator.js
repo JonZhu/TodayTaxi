@@ -13,6 +13,8 @@
 import React, { Component } from 'react';
 import { Navigator, BackAndroid } from 'react-native';
 import CallTaxiContainer from '../redux/container/CallTaxiContainer';
+// import Login from './Login';
+import BootPage from './BootPage';
 
 class AppNavigator extends Component {
     constructor() {
@@ -47,7 +49,7 @@ class AppNavigator extends Component {
 
     render() {
         return (
-            <Navigator ref='navigator' style={{flex:1}} initialRoute={{comp: CallTaxiContainer}} renderScene={this._renderScene} />
+            <Navigator ref='navigator' style={{flex:1}} initialRoute={{comp: BootPage}} renderScene={this._renderScene} />
         );
     }
 

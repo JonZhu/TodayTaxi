@@ -6,10 +6,24 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { View, Text, ToastAndroid, StyleSheet } from 'react-native';
+import { applySession } from './api/security';
+import Login from './Login';
 
 class BootPage extends Component {
 
+    componentDidMount() {
+        // 初始化session
+        try {
+            applySession().then(()=>{
+                // 已经成功申请到session, 跳转到登录页面
+                this.props.navigator.resetTo({comp:Login}); // 并清除所有page stack
+            });
+        } catch (error) {
+            ToastAndroid.show("无法连接服务器", ToastAndroid.SHORT);
+        }
+
+    }
 
     render() {
         return (
