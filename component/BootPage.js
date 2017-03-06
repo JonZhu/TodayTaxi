@@ -13,10 +13,21 @@ import Login from './Login';
 class BootPage extends Component {
 
     componentDidMount() {
+        var startTime = new Date().getTime();
+        var navigator = this.props.navigator;
+        var minTime = 3000; // Boot页面最少显示时间
         // 初始化session
         applySession().then(()=>{
             // 已经成功申请到session, 跳转到登录页面
-            this.props.navigator.resetTo({comp:Login}); // 并清除所有page stack
+            var useTime = new Date().getTime() - startTime;
+            if (useTime >= minTime) {
+                navigator.resetTo({comp:Login}); // 并清除所有page stack
+            } else {
+                // 时间不足, 等待时间足够才跳出boot页面
+                setTimeout(function() {
+                   navigator.resetTo({comp:Login});
+                }, minTime - useTime);
+            }
         }).catch(()=>{
             ToastAndroid.show("无法连接服务器", ToastAndroid.SHORT);
         });
