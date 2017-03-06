@@ -9,6 +9,7 @@ import { View, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAnd
 import Header from './Header';
 import SignIn from './SignIn';
 import CallTaxi from '../redux/container/CallTaxiContainer';
+import rest from './api/rest';
 
 class Login extends Component {
 
@@ -25,18 +26,26 @@ class Login extends Component {
     _login() {
         var phone = this._phone;
         var pass = this._pass;
-        ToastAndroid.show(phone + '开始登录', ToastAndroid.show);
-        var serverResult = {success:true, phone:'15888888888', name:'成龙'};
-        if (pass != '123') {
-            serverResult.success = false;
-        }
 
-        if (serverResult.success === true) {
-            // 登录成功
-            this.props.navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
-        } else {
-            ToastAndroid.show('登录失败', ToastAndroid.SHORT);
-        }
+        // 先获取加密用的盐值
+        rest("/user/getSalts.do", phone).then((result)=>{
+            if (result.code === 0) {
+                // 登录
+                return rest('/user/login.do', {phone: phone, password:''});
+            } else {
+                throw new Error('获取值值失败');
+            }
+        }).then((loginResult)=>{
+            // 登录返回
+            if (loginResult.code === 0) {
+                // 登录成功
+                this.props.navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
+            } else {
+                ToastAndroid.show('登录失败:' + loginResult.message, ToastAndroid.SHORT);
+            }
+        }).catch((reason)=>{
+            ToastAndroid.show('登录失败:' + reason, ToastAndroid.SHORT);
+        });
     }
 
     render() {
