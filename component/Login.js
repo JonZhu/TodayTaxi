@@ -60,8 +60,8 @@ class Login extends Component {
 
                     <Button title='登录' onPress={this._login}></Button>
                     
-                    <TouchableHighlight style={{marginTop:10}} onPress={this._toSignIn}>
-                        <Text>还没有帐号，请注册</Text>
+                    <TouchableHighlight style={{marginTop:20}} onPress={this._toSignIn}>
+                        <Text style={{textDecorationLine:'underline'}}>还没有帐号，请注册</Text>
                     </TouchableHighlight>
                 </View>
             </View>
