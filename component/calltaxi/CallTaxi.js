@@ -125,8 +125,19 @@ class CallTaxi extends Component {
 
     // 用户点击确认乘车
     _confirmCallTaxi() {
-        //TODO
-        ToastAndroid.show('TODO确认乘车逻辑', ToastAndroid.SHORT);
+        var callTaxi = this.props.callTaxi;
+        var from = {...callTaxi.from};
+        var to = {...callTaxi.go};
+        rest('/calltaxi/callTaxi.do', {from:from, to:to}).then((result)=>{
+
+            if (result.code === 0) {
+                // 成功叫车
+                ToastAndroid.show('成功叫车:' + JSON.stringify(result), ToastAndroid.LONG);
+            } else {
+                ToastAndroid.show(result.message, ToastAndroid.LONG);
+            }
+        });
+
     }
 
     render() {
