@@ -38,8 +38,13 @@ async function rest(url, param) {
     if (param) {
         // 需要传参数，使用post，否则使用get
         option.method = 'POST';
-        option.headers['Content-Type'] = 'application/json'; // 使用json方式提交数据
-        option.body = JSON.stringify(param);
+        if (param instanceof String) {
+            option.headers['Content-Type'] = 'text/plain';
+            option.body = param; // string参数不用再处理, 直接传给body
+        } else {
+            option.headers['Content-Type'] = 'application/json'; // 使用json方式提交数据
+            option.body = JSON.stringify(param);
+        }
 
         signInput += "||" + option.body;
     }
