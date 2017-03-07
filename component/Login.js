@@ -10,6 +10,7 @@ import Header from './Header';
 import SignIn from './SignIn';
 import CallTaxi from '../redux/container/CallTaxiContainer';
 import rest from './api/rest';
+import md5 from 'md5';
 
 class Login extends Component {
 
@@ -28,12 +29,16 @@ class Login extends Component {
         var pass = this._pass;
 
         // 先获取加密用的盐值
-        rest("/user/getSalts.do", phone).then((result)=>{
+        rest("/user/getSalts.do", {phone: phone}).then((result)=>{
             if (result.code === 0) {
+                // 密码加密
+                var staticSalt = result.payload.staticSalt;
+                var dynamicSalt = result.payload.dynamicSalt;
+                var encryptedPass = md5(md5(pass + staticSalt) + dynamicSalt);
                 // 登录
-                return rest('/user/login.do', {phone: phone, password:''});
+                return rest('/user/login.do', {phone: phone, password:encryptedPass});
             } else {
-                throw new Error('获取值值失败');
+                throw new Error('获取盐值失败');
             }
         }).then((loginResult)=>{
             // 登录返回
