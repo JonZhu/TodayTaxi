@@ -16,13 +16,15 @@ import UserInfoContainer from '../../redux/container/UserInfoContainer';
 import ChoiceGoContainer from '../../redux/container/ChoiceGoContainer';
 import MapModule from '../../native/MapModule';
 import rest from '../api/rest';
+import CallingProgress from './CallingProgress';
 
 class CallTaxi extends Component {
 
     constructor() {
         super();
 
-        this.state = {showConfirm: false};
+        this.state = {showConfirm: false, showClickToUse:true};
+        // this.state = {showConfirm:false, showClickToUse:false, showCalling:true}; // test
 
         this._siderBarUserHeadOnPress = this._siderBarUserHeadOnPress.bind(this);
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
@@ -31,6 +33,7 @@ class CallTaxi extends Component {
         this._clickToUse = this._clickToUse.bind(this);
         this._driveRoute = this._driveRoute.bind(this);
         this._confirmCallTaxi = this._confirmCallTaxi.bind(this);
+        this._cancelCallTaxi = this._cancelCallTaxi.bind(this);
     }
 
 
@@ -132,12 +135,39 @@ class CallTaxi extends Component {
 
             if (result.code === 0) {
                 // 成功叫车
-                ToastAndroid.show('成功叫车:' + JSON.stringify(result), ToastAndroid.LONG);
+                ToastAndroid.show('正在叫车:' + JSON.stringify(result), ToastAndroid.LONG);
+                this.setState({showConfirm:false, showClickToUse:false, showCalling:true});
+                this._startPushWaitTaxiLoc();
             } else {
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
             }
         });
 
+    }
+
+    // 开始轮询上报位置, 直到有司机接单或超时
+    _startPushWaitTaxiLoc() {
+        rest('/calltaxi/pushWaitTaxiLoc.do').then((result)=>{
+            if (result.code === 0) {
+                if (result.payload) {
+                    // 分配到司机
+                    ToastAndroid('司机已接单:' + JSON.stringify(result.payload));
+                } else {
+                    // 还未分配到司机, 继续轮询
+                    setTimeout(()=>{this._startPushWaitTaxiLoc()}, 1000);
+                }
+            } else {
+                // 出错
+                ToastAndroid.show(result.message, ToastAndroid.LONG);
+            }
+        }).catch((reason)=>{
+            ToastAndroid.show(reason, ToastAndroid.LONG);
+        });
+    }
+
+    // 取消叫车
+    _cancelCallTaxi() {
+        this.setState({showConfirm:false, showClickToUse:true, showCalling:false});
     }
 
     render() {
@@ -151,12 +181,14 @@ class CallTaxi extends Component {
                     <Map mapStatusChange={this.props.mapStatusChange} />
                     <FromGo from={callTaxi.from} go={callTaxi.go} goOnPress={this._gotoChoiceGoAddressPage}/>
 
+                    {this.state.showClickToUse &&
                     <View style={{position:'absolute', top:0, bottom:0, left:0, right:0}}>
                         <View style={{flex:1, alignItems:'center', justifyContent:'flex-end'}}>
                             <ClickToUse onClick={this._clickToUse}/>
                         </View>
                         <View style={{flex:1}}/>
                     </View>
+                    }
                 </View>
 
                 {this.state.showConfirm && 
@@ -175,8 +207,22 @@ class CallTaxi extends Component {
                 </View>
                 }
 
-                {this.props.sideBar.isShow && <SideBar backgroundOnPress={this.props.toggleSideBar} 
-                    userHeadOnPress={this._siderBarUserHeadOnPress}/>}
+                {this.props.sideBar.isShow && 
+                <SideBar backgroundOnPress={this.props.toggleSideBar} userHeadOnPress={this._siderBarUserHeadOnPress}/>
+                }
+
+                {this.state.showCalling && 
+                <View style={{position:'absolute', top:0, bottom:0, left:0, right:0, backgroundColor:'rgba(255,255,255,0.2)', 
+                    justifyContent:'flex-end', alignItems:'center'}}>
+                    
+                    <TouchableWithoutFeedback onLongPress={this._cancelCallTaxi}>
+                        <View style={{borderRadius:20, borderWidth:1, borderColor:'#838B8B', margin:20, padding:10, backgroundColor:'rgb(243,243,243)'}}>
+                            <Text>长按取消</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                    <CallingProgress/>
+                </View>
+                }
             </View>
 
         );
