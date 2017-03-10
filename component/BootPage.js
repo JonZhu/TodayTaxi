@@ -15,7 +15,8 @@ class BootPage extends Component {
     componentDidMount() {
         var startTime = new Date().getTime();
         var navigator = this.props.navigator;
-        var minTime = 3000; // Boot页面最少显示时间
+        // var minTime = 3000; // Boot页面最少显示时间
+        var minTime = 0; // 测试时不用等待
         // 初始化session
         applySession().then(()=>{
             // 已经成功申请到session, 跳转到登录页面

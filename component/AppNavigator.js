@@ -12,8 +12,7 @@
 
 import React, { Component } from 'react';
 import { Navigator, BackAndroid } from 'react-native';
-import CallTaxiContainer from '../redux/container/CallTaxiContainer';
-// import Login from './Login';
+// import BootPage from '../redux/container/CallTaxiContainer'; // test
 import BootPage from './BootPage';
 
 class AppNavigator extends Component {
