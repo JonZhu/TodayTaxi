@@ -159,15 +159,25 @@ class CallTaxi extends Component {
             } else {
                 // 出错
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
+                this.setState({showConfirm:false, showClickToUse:true, showCalling:false}); // 回到叫车状态
             }
         }).catch((reason)=>{
             ToastAndroid.show(reason, ToastAndroid.LONG);
+            setTimeout(()=>{this._startPushWaitTaxiLoc()}, 1000); // 未知异常, 继续轮询
         });
     }
 
     // 取消叫车
     _cancelCallTaxi() {
-        this.setState({showConfirm:false, showClickToUse:true, showCalling:false});
+        rest('/calltaxi/cancelRoute.do').then((result)=>{
+            if (result.code === 0) {
+                ToastAndroid.show('发送取消请求成功', ToastAndroid.SHORT);
+            } else {
+                ToastAndroid.show('取消失败:' + result.message, ToastAndroid.SHORT);
+            }
+        }).catch((reason)=>{
+            ToastAndroid.show('取消失败:' + reason, ToastAndroid.SHORT);
+        });
     }
 
     render() {
