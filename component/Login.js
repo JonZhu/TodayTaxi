@@ -40,13 +40,22 @@ class Login extends Component {
             } else {
                 throw new Error('获取盐值失败');
             }
-        }).then((loginResult)=>{
+        }).then((result)=>{
             // 登录返回
-            if (loginResult.code === 0) {
+            if (result.code === 0) {
                 // 登录成功
-                this.props.navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
+                return rest('/user/getStatus.do');
             } else {
-                ToastAndroid.show('登录失败:' + loginResult.message, ToastAndroid.SHORT);
+                throw new Error(result.message);
+            }
+        }).then((result)=>{
+            // 获取状态返回
+            var status = result.payload;
+            if (status.motorman) {
+                // 司机
+                ToastAndroid.show('TODO跳转到司机主机');
+            } else {
+                this.props.navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
             }
         }).catch((reason)=>{
             ToastAndroid.show('登录失败:' + reason, ToastAndroid.SHORT);
@@ -84,8 +93,5 @@ class Login extends Component {
 
 }
 
-const style = StyleSheet.create({
-    
-});
 
 export default Login;
