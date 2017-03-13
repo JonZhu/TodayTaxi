@@ -53,7 +53,7 @@ class Login extends Component {
             var status = result.payload;
             if (status.motorman) {
                 // 司机
-                ToastAndroid.show('TODO跳转到司机主机');
+                ToastAndroid.show('TODO跳转到司机主机', ToastAndroid.SHORT);
             } else {
                 this.props.navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
             }
