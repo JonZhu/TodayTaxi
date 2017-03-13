@@ -218,7 +218,8 @@ class CallTaxi extends Component {
                 }
 
                 {this.props.sideBar.isShow && 
-                <SideBar backgroundOnPress={this.props.toggleSideBar} userHeadOnPress={this._siderBarUserHeadOnPress}/>
+                <SideBar toggleSideBar={this.props.toggleSideBar} userHeadOnPress={this._siderBarUserHeadOnPress}
+                    navigator={this.props.navigator}/>
                 }
 
                 {this.state.showCalling && 
