@@ -9,6 +9,7 @@ import { View, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAnd
 import Header from './Header';
 import SignIn from './SignIn';
 import CallTaxi from '../redux/container/CallTaxiContainer';
+import Motorman from './motorman/Motorman';
 import rest from './api/rest';
 import md5 from 'md5';
 
@@ -27,6 +28,8 @@ class Login extends Component {
     _login() {
         var phone = this._phone;
         var pass = this._pass;
+
+        var navigator = this.props.navigator;
 
         // 先获取加密用的盐值
         rest("/user/getSalts.do", {phone: phone}).then((result)=>{
@@ -53,9 +56,9 @@ class Login extends Component {
             var status = result.payload;
             if (status.motorman) {
                 // 司机
-                ToastAndroid.show('TODO跳转到司机主机', ToastAndroid.SHORT);
+                navigator.resetTo({comp:Motorman});
             } else {
-                this.props.navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
+                navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
             }
         }).catch((reason)=>{
             ToastAndroid.show('登录失败:' + reason, ToastAndroid.SHORT);
