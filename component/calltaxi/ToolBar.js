@@ -16,9 +16,11 @@ class ToolBar extends Component {
     }
 
     render() {
+        var title = this.props.title;
+
         return (
             <View style={style.container}>
-                <Text style={style.text}>Today Taxi</Text>
+                <Text style={style.text}>{title ? title : 'Today Taxi'}</Text>
 
                 <TouchableWithoutFeedback onPress={()=>this.props.iconOnPress()}>
                     <View style={style.buttonContainer}>
