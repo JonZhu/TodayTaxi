@@ -18,6 +18,7 @@ class Motorman extends Component {
         super();
 
         this._startPushFreeLoc = this._startPushFreeLoc.bind(this);
+        this._stopPushRouteLoc = this._stopPushRouteLoc.bind(this);
         this._acceptRoute = this._acceptRoute.bind(this);
         this._rejectRoute = this._rejectRoute.bind(this);
     }
@@ -27,7 +28,7 @@ class Motorman extends Component {
     }
 
     componentWillUnmount() {
-        
+        this._stopPushRouteLoc();
     }
 
     // 上传空车位置
@@ -89,12 +90,17 @@ class Motorman extends Component {
     // 上报行程位置定时器
     _pushRouteLocTimer;
 
-    // 开始上报行程位置
-    _startPushRouteLoc() {
+    // 停止上报行程
+    _stopPushRouteLoc() {
         if (_pushRouteLocTimer) {
             clearInterval(_pushRouteLocTimer);
             _pushRouteLocTimer = null;
         }
+    }
+
+    // 开始上报行程位置
+    _startPushRouteLoc() {
+        this._stopPushRouteLoc();
 
         var routeId = this.state.routeId;
         function pushFun() {
