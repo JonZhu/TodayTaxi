@@ -17,22 +17,40 @@ class Motorman extends Component {
     constructor() {
         super();
 
+        this.state = {showAccept:false};
+
         this._startPushFreeLoc = this._startPushFreeLoc.bind(this);
+        this._stopPushFreeLoc = this._stopPushFreeLoc.bind(this);
+        this._startPushRouteLoc = this._startPushRouteLoc.bind(this);
         this._stopPushRouteLoc = this._stopPushRouteLoc.bind(this);
         this._acceptRoute = this._acceptRoute.bind(this);
         this._rejectRoute = this._rejectRoute.bind(this);
     }
 
     componentDidMount() {
-        // this._startPushFreeLoc();
+        this._startPushFreeLoc();
     }
 
     componentWillUnmount() {
+        this._stopPushFreeLoc();
         this._stopPushRouteLoc();
+    }
+
+
+    _pushFreeLocTimer;
+
+    // 停止上传空车位置
+    _stopPushFreeLoc() {
+        if (this._pushFreeLocTimer) {
+            clearInterval(this._pushFreeLocTimer);
+            this._pushFreeLocTimer = null;
+        }
     }
 
     // 上传空车位置
     _startPushFreeLoc() {
+        this._stopPushFreeLoc();
+
         function pushFun() {
             // 定位
             MapModule.location().then((result)=>{
@@ -42,28 +60,20 @@ class Motorman extends Component {
                 return rest('/taxi/pushFreeLoc.do', {lat:result.lat, lng:result.lng, address:result.address});
             }).then((result)=>{
                 // 上传空车位置返回
-                if (result.code === 0) {
-                    // 成功
-                    if (result.payload) {
-                        // 收到服务器预分配的单
-                        this.setState({preAllocateRoute:result.payload});
-                    } else {
-                        // 等待1秒再上报位置
-                        setTimeout(pushFun, 1000);
-                    }
-                } else {
-                    // 上传位置失败
-                    ToastAndroid.show(result.message, ToastAndroid.SHORT);
-                    // setTimeout(pushFun, 1000);
+
+                // 预分配的单
+                var route = result.payload;
+                this.setState({preAllocateRoute:route, showAccept:route != null});
+                if (result.code !== 0) {
+                    // 处理异常
                 }
             }).catch((reason)=>{
                 // 出错
-                ToastAndroid.show(JSON.stringify(reason), ToastAndroid.LONG);
-                // setTimeout(pushFun, 1000);
+                // 处理异常
             });
         };
 
-        pushFun();
+        this._pushFreeLocTimer = setInterval(pushFun, 1000);
     }
 
     // 接受预分配的行程
@@ -92,14 +102,15 @@ class Motorman extends Component {
 
     // 停止上报行程
     _stopPushRouteLoc() {
-        if (_pushRouteLocTimer) {
-            clearInterval(_pushRouteLocTimer);
-            _pushRouteLocTimer = null;
+        if (this._pushRouteLocTimer) {
+            clearInterval(this._pushRouteLocTimer);
+            this._pushRouteLocTimer = null;
         }
     }
 
     // 开始上报行程位置
     _startPushRouteLoc() {
+        this._stopPushFreeLoc();
         this._stopPushRouteLoc();
 
         var routeId = this.state.routeId;
@@ -126,6 +137,7 @@ class Motorman extends Component {
                 <View style={{flex: 1, justifyContent:'center'}}>
                     <Map mapStatusChange={this.props.mapStatusChange} />
 
+                    {this.state.showAccept &&
                     <View style={{backgroundColor:'rgb(224,224,224)', padding:10}}>
                         <Text>新的行程单</Text>
                         <View style={style.container}>
@@ -145,6 +157,7 @@ class Motorman extends Component {
                             <Button title='　接　受　' onPress={this._acceptRoute}/>
                         </View>
                     </View>
+                    }
 
                 </View>
             </View>
