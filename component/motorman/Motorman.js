@@ -62,8 +62,8 @@ class Motorman extends Component {
                 // 上传空车位置返回
 
                 // 预分配的单
-                var route = result.payload;
-                this.setState({preAllocateRoute:route, showAccept:route != null});
+                let route = result.payload;
+                this.setState({preAllocateRoute:route, showAccept:(route != null)});
                 if (result.code !== 0) {
                     // 处理异常
                 }
@@ -73,7 +73,7 @@ class Motorman extends Component {
             });
         };
 
-        this._pushFreeLocTimer = setInterval(pushFun, 1000);
+        this._pushFreeLocTimer = setInterval(pushFun.bind(this), 1000);
     }
 
     // 接受预分配的行程
@@ -125,11 +125,13 @@ class Motorman extends Component {
                 // TODO 处理异常
             });
         }
-        _pushRouteLocTimer = setInterval(pushFun, 1000);
+        _pushRouteLocTimer = setInterval(pushFun.bind(this), 1000);
     }
 
 
     render() {
+        var preAllocateRoute = this.state.preAllocateRoute;
+
         return (
             <View style={{flex:1, backgroundColor: 'rgb(240,239,233)'}}>
                 <ToolBar title='Today Taxi 司机'/>
@@ -143,12 +145,12 @@ class Motorman extends Component {
                         <View style={style.container}>
                             <View style={[style.row, style.fromRow]}>
                                 <Icon name='circle' style={style.fromIcon}/>
-                                <Text style={style.text}>天府五街</Text>
+                                <Text style={style.text}>{preAllocateRoute.fromAddress}</Text>
                             </View>
                         
                             <View style={[style.row, style.goRow]}>
                                 <Icon name='circle' style={style.goIcon}/>
-                                <Text style={style.text}>天府广场</Text>
+                                <Text style={style.text}>{preAllocateRoute.toAddress}</Text>
                             </View>
                     
                         </View>
