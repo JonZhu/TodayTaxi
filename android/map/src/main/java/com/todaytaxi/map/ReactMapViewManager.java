@@ -7,16 +7,22 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
+
 
 /**
  * React地图ui组件
@@ -128,6 +134,24 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
      */
     @ReactProp(name = "freeTaxies")
     public void setFreeTaxies(MapView view, ReadableArray taxies) {
+        if (taxies != null && taxies.size() > 0) {
+            for (int i = 0; i < taxies.size(); i++) {
+                ReadableMap map = taxies.getMap(i);
+                //定义Maker坐标点
+                LatLng point = new LatLng(39.963175, 116.400244);
+                //构建Marker图标
+                BitmapDescriptor bitmap = BitmapDescriptorFactory
+                        .fromResource(android.R.drawable.taxi_top_yellow);
+                //构建MarkerOption，用于在地图上添加Marker
+                OverlayOptions option = new MarkerOptions()
+                        .position(point)
+                        .icon(bitmap);
+                //在地图上添加Marker，并显示
+                mBaiduMap.addOverlay(option);
+            }
+        } else {
+            // 清除所有free taxi
+        }
 
     }
 
