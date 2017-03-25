@@ -141,13 +141,13 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
                 LatLng point = new LatLng(39.963175, 116.400244);
                 //构建Marker图标
                 BitmapDescriptor bitmap = BitmapDescriptorFactory
-                        .fromResource(android.R.drawable.taxi_top_yellow);
+                        .fromResource(R.drawable.taxi_top_yellow);
                 //构建MarkerOption，用于在地图上添加Marker
                 OverlayOptions option = new MarkerOptions()
                         .position(point)
                         .icon(bitmap);
                 //在地图上添加Marker，并显示
-                mBaiduMap.addOverlay(option);
+                view.getMap().addOverlay(option);
             }
         } else {
             // 清除所有free taxi
