@@ -203,18 +203,19 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
     /**
      * 地图显示范围
      *
-     * @param point1 坐标 {lng, lat}
-     * @param point2 坐标 {lng, lat}
+     * @param points 坐标列表 [{lng, lat}]
      */
     @ReactProp(name = "mapBound")
-    public void setMapBound(MapView view, ReadableMap point1, ReadableMap point2) {
-        if (point1 == null || point2 == null) {
+    public void setMapBound(MapView view, ReadableArray points) {
+        if (points == null || points.size() == 0) {
             return;
         }
-
-        view.getMap().setMapStatusLimits(new LatLngBounds.Builder()
-                .include(new LatLng(point1.getDouble("lat"), point1.getDouble("lng")))
-                .include(new LatLng(point2.getDouble("lat"), point2.getDouble("lng"))).build());
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (int i = 0; i < points.size(); i++) {
+            ReadableMap point = points.getMap(i);
+            builder.include(new LatLng(point.getDouble("lat"), point.getDouble("lng")));
+        }
+        view.getMap().setMapStatusLimits(builder.build());
     }
 
 }
