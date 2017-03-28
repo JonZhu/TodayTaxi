@@ -1,13 +1,21 @@
 package com.todaytaxi.map;
 
 import com.baidu.trace.LBSTraceClient;
+import com.baidu.trace.OnEntityListener;
 import com.baidu.trace.OnStartTraceListener;
 import com.baidu.trace.OnStopTraceListener;
 import com.baidu.trace.Trace;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -127,4 +135,69 @@ public class ReactTraceModule extends ReactContextBaseJavaModule {
             promise.resolve(1);
         }
     }
+
+    /**
+     * 查询entity最新位置
+     *
+     * @param entityName
+     * @param promise
+     *
+     * @return {lng, lat, direction, speed}
+     */
+    @ReactMethod
+    public void queryLastLoc(String entityName, final Promise promise) {
+        final LBSTraceClient client = new LBSTraceClient(getReactApplicationContext());
+        int serviceId = R.integer.bd_trace_service_id;
+        /**
+         serviceId - 轨迹服务标识
+         entityNames - entity标识列表（多个entityName，以英文逗号"," 分隔）
+         columnKey - 属性名称（格式为 : "key1=value1,key2=value2,....."）
+         returnType - 返回结果的类型
+
+         0 : 返回全部结果
+         1 : 只返回entityName的列表
+
+
+         activeTime - 活跃时间（指定该字段时，返回从该时间点之后仍有位置变动的entity的实时点集合）
+         pageSize - 分页大小
+         pageIndex - 分页索引
+         listener - Entity监听器，对应回调接口为: OnEntityListener.onQueryEntityListCallback(String)
+         */
+        client.queryEntityList(serviceId, entityName, null, 0, 0, 1, 1, new OnEntityListener() {
+            @Override
+            public void onRequestFailedCallback(String s) {
+                client.onDestroy();
+                promise.reject("1", s);
+            }
+
+            @Override
+            public void onQueryEntityListCallback(String s) {
+                // 返回数据结构 http://lbsyun.baidu.com/index.php?title=yingyan/api/entity#list.E2.80.94.E2.80.94.E6.9F.A5.E8.AF.A2entity
+                WritableMap result = null;
+                try {
+                    JSONObject json = new JSONObject(s);
+                    JSONArray entities = json.getJSONArray("entities");
+                    if (entities != null && entities.length() > 0) {
+                        JSONObject point = entities.getJSONObject(0).getJSONObject("realtime_point");
+                        if (point != null) {
+                            result = Arguments.createMap();
+                            JSONArray loc = point.getJSONArray("location"); // 百度加密坐标 [116.1556024,40.0820658]
+                            result.putDouble("lng", loc.getDouble(0));
+                            result.putDouble("lat", loc.getDouble(1));
+                            result.putInt("direction", point.getInt("direction")); // 范围为[0,359]，0度为正北方向，顺时针
+                            result.putDouble("speed", point.getDouble("speed")); // 单位：km/h
+                        }
+                    }
+                } catch (JSONException e) {
+                    promise.reject("2", e);
+                    return;
+                } finally {
+                    client.onDestroy();
+                }
+
+                promise.resolve(result);
+            }
+        });
+    }
+
 }
