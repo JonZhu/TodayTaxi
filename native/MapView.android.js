@@ -30,8 +30,9 @@ class BaiduMapView extends Component {
 
 BaiduMapView.propTypes = {
   ...View.propTypes,
-  freeTaxies: React.PropTypes.array, // 空闲的taxi
-  onStatusChange: React.PropTypes.func // 地图状态改变事件, 如位置改变
+  taxies: React.PropTypes.array, // taxi列表 [{id, lat, lng}]
+  mapBound: React.PropTypes.array, // 地图演示范围, 应该包括所有指定的点 [{lng, lat}]
+  onStatusChange: React.PropTypes.func, // 地图状态改变事件, 如位置改变
 };
 
 

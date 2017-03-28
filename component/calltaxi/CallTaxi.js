@@ -34,6 +34,8 @@ class CallTaxi extends Component {
         this._driveRoute = this._driveRoute.bind(this);
         this._confirmCallTaxi = this._confirmCallTaxi.bind(this);
         this._cancelCallTaxi = this._cancelCallTaxi.bind(this);
+        this._startSearchNearbyFreeTaxi = this._startSearchNearbyFreeTaxi.bind(this);
+        this._stopSearchNearbyFreeTaxi = this._stopSearchNearbyFreeTaxi.bind(this);
     }
 
 
@@ -69,6 +71,8 @@ class CallTaxi extends Component {
     componentDidMount() {
         BackAndroid.addEventListener('hardwareBackPress', this._onHardwareBackPress);
         this._location();
+
+        this._startSearchNearbyFreeTaxi();
     }
 
     componentWillUnmount() {
@@ -180,6 +184,51 @@ class CallTaxi extends Component {
         });
     }
 
+
+    _searchNearbyFreeTaxiTimer;
+
+    // 搜索附近空车
+    _startSearchNearbyFreeTaxi() {
+        this._stopSearchNearbyFreeTaxi();
+
+        var fun = ()=>{
+            // 定位
+            MapModule.location().then((result)=>{
+                // 定位返回
+                // ToastAndroid.show(JSON.stringify(result), ToastAndroid.LONG);
+                // 搜索
+                return rest('/calltaxi/searchNearbyFreeTaxi.do', {lat:result.lat, lng:result.lng});
+            }).then((result)=>{
+                var taxiList = null;
+                if (result.payload && result.payload.length > 0) {
+                    taxiList = [];
+                    for (var i = 0; i < result.payload.length; i++) {
+                        var resultTaxi = result.payload[i];
+                        taxiList.push({
+                            id: resultTaxi.id,
+                            lng: resultTaxi.loc.lng,
+                            lat: resultTaxi.loc.lat
+                        });
+                    }
+                }
+                this.setState({taxiList: taxiList});
+            }).catch((reason)=>{
+                // 出错
+                // 处理异常
+                ToastAndroid.show(reason, ToastAndroid.LONG);
+            });
+        }
+
+        _searchNearbyFreeTaxiTimer = setInterval(fun, 3000);
+    }
+
+    _stopSearchNearbyFreeTaxi() {
+        if (this._searchNearbyFreeTaxiTimer) {
+            clearInterval(this._searchNearbyFreeTaxiTimer);
+            this._searchNearbyFreeTaxiTimer = null;
+        }
+    }
+
     render() {
         var callTaxi = this.props.callTaxi;
 
@@ -188,7 +237,7 @@ class CallTaxi extends Component {
                 <ToolBar iconOnPress={this.props.toggleSideBar}/>
 
                 <View style={{flex: 1}}>
-                    <Map mapStatusChange={this.props.mapStatusChange} />
+                    <Map taxies={this.state.taxiList} mapStatusChange={this.props.mapStatusChange} />
                     <FromGo from={callTaxi.from} go={callTaxi.go} goOnPress={this._gotoChoiceGoAddressPage}/>
 
                     {this.state.showClickToUse &&
