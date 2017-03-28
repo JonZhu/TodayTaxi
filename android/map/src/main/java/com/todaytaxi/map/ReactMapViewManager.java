@@ -18,6 +18,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.uimanager.SimpleViewManager;
@@ -131,13 +132,15 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
     }
 
     /**
-     * 设置当前空闲的Taxi
+     * 设置Taxi
+     *
+     * <p>id相同的taxi marker会被复用，只更新位置信息</p>
      *
      * @param view
      * @param taxies [{id, lat, lng}]
      */
-    @ReactProp(name = "freeTaxies")
-    public void setFreeTaxies(MapView view, ReadableArray taxies) {
+    @ReactProp(name = "taxies")
+    public void setTaxies(MapView view, ReadableArray taxies) {
         Map<String, Marker> oldTaxiMap = (Map)MapViewExtendData.getData(view, "taxiMarkerMap");
         Map<String, Marker> newTaxiMap = new HashMap<>();
 
@@ -159,6 +162,7 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
                     //构建MarkerOption，用于在地图上添加Marker
                     OverlayOptions option = new MarkerOptions()
                             .position(point)
+                            .animateType(MarkerOptions.MarkerAnimateType.grow)
                             .icon(bitmap);
                     //在地图上添加Marker，并显示
                     marker = (Marker)view.getMap().addOverlay(option);
@@ -195,4 +199,22 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
         super.onDropViewInstance(view);
         MapViewExtendData.remove(view); // 清理扩展数据
     }
+
+    /**
+     * 地图显示范围
+     *
+     * @param point1 坐标 {lng, lat}
+     * @param point2 坐标 {lng, lat}
+     */
+    @ReactProp(name = "mapBound")
+    public void setMapBound(MapView view, ReadableMap point1, ReadableMap point2) {
+        if (point1 == null || point2 == null) {
+            return;
+        }
+
+        view.getMap().setMapStatusLimits(new LatLngBounds.Builder()
+                .include(new LatLng(point1.getDouble("lat"), point1.getDouble("lng")))
+                .include(new LatLng(point2.getDouble("lat"), point2.getDouble("lng"))).build());
+    }
+
 }
