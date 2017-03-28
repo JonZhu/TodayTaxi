@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Map</string>
+    <!-- 百度鹰眼轨迹服务id -->
+    <integer name="bd_trace_service_id">137064</integer>
 </resources>
