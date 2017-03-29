@@ -54,6 +54,8 @@ public class WritableMapUtil {
     public static void put(WritableMap map, BDLocation bdLocation) {
         map.putDouble("lat", bdLocation.getLatitude());
         map.putDouble("lng", bdLocation.getLongitude());
+        map.putDouble("direction", bdLocation.getDirection()); // 行进的方向，单位度
+        map.putDouble("speed", bdLocation.getSpeed()); // 仅gps定位结果时有速度信息，单位公里/小时，默认值0.0f
         map.putString("city", bdLocation.getCity());
         map.putString("cityCode", bdLocation.getCityCode());
         map.putString("country", bdLocation.getCountry());
@@ -61,7 +63,6 @@ public class WritableMapUtil {
         map.putString("address", bdLocation.getAddress().address);
         map.putString("district", bdLocation.getDistrict());
         map.putString("describe", bdLocation.getLocationDescribe());
-        map.putString("floor", bdLocation.getFloor());
         List<Poi> poiList = bdLocation.getPoiList();
         if (poiList != null && !poiList.isEmpty()) {
             WritableArray poiArr = Arguments.createArray();
