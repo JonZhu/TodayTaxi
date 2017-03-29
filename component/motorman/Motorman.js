@@ -57,7 +57,8 @@ class Motorman extends Component {
                 // 定位返回
 
                 // 上传位置到服务器
-                return rest('/taxi/pushFreeLoc.do', {lat:result.lat, lng:result.lng, address:result.address});
+                return rest('/taxi/pushFreeLoc.do', {lat:result.lat, lng:result.lng, 
+                    address:result.address, direction:result.direction, speed:result.speed});
             }).then((result)=>{
                 // 上传空车位置返回
 
