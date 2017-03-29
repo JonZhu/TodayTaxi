@@ -19,6 +19,7 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
+import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.uimanager.SimpleViewManager;
@@ -137,7 +138,7 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
      * <p>id相同的taxi marker会被复用，只更新位置信息</p>
      *
      * @param view
-     * @param taxies [{id, lat, lng}]
+     * @param taxies [{id, lat, lng, direction}]
      */
     @ReactProp(name = "taxies")
     public void setTaxies(MapView view, ReadableArray taxies) {
@@ -150,11 +151,14 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
                 String taxiId = map.getString("id");
                 //定义Maker坐标点
                 LatLng point = new LatLng(map.getDouble("lat"), map.getDouble("lng"));
+                Dynamic direction = map.getDynamic("direction");
+                float rotate = (float)(direction.isNull() ? -90 : direction.asDouble() - 180); // icon本来车头向左, 如果无方向信息，默认车头向上
                 Marker marker = null;
                 if (oldTaxiMap != null && oldTaxiMap.containsKey(taxiId)) {
                     // marker已经存在
                     marker = oldTaxiMap.get(taxiId);
                     marker.setPosition(point);
+                    marker.setRotate(rotate);
                     oldTaxiMap.remove(taxiId);
                 } else {
                     //构建Marker图标
@@ -162,6 +166,7 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
                     //构建MarkerOption，用于在地图上添加Marker
                     OverlayOptions option = new MarkerOptions()
                             .position(point)
+                            .rotate(rotate)
                             .animateType(MarkerOptions.MarkerAnimateType.grow)
                             .icon(bitmap);
                     //在地图上添加Marker，并显示
