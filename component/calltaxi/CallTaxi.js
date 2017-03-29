@@ -191,14 +191,13 @@ class CallTaxi extends Component {
     _startSearchNearbyFreeTaxi() {
         this._stopSearchNearbyFreeTaxi();
 
-        var fun = ()=>{
-            // 定位
-            MapModule.location().then((result)=>{
-                // 定位返回
-                // ToastAndroid.show(JSON.stringify(result), ToastAndroid.LONG);
-                // 搜索
-                return rest('/calltaxi/searchNearbyFreeTaxi.do', {lat:result.lat, lng:result.lng});
-            }).then((result)=>{
+        var fun = ()=>{            
+            var currentLoc = this.props.callTaxi.from; // 当前位置为开始位置
+            if (!currentLoc) {
+                return;
+            }
+
+            return rest('/calltaxi/searchNearbyFreeTaxi.do', {lat:currentLoc.lat, lng:currentLoc.lng}).then((result)=>{
                 var taxiList = null;
                 if (result.payload && result.payload.length > 0) {
                     taxiList = [];
@@ -207,7 +206,8 @@ class CallTaxi extends Component {
                         taxiList.push({
                             id: resultTaxi.id,
                             lng: resultTaxi.loc.lng,
-                            lat: resultTaxi.loc.lat
+                            lat: resultTaxi.loc.lat,
+                            direction:resultTaxi.loc.direction
                         });
                     }
                 }
