@@ -52,8 +52,8 @@ public class WritableMapUtil {
     }
 
     public static void put(WritableMap map, BDLocation bdLocation) {
-        map.putDouble("lat", bdLocation.getLatitude());
-        map.putDouble("lng", bdLocation.getLongitude());
+        map.putDouble("lat", bdLocation.getLatitude()); // 纬度
+        map.putDouble("lng", bdLocation.getLongitude()); // 经度
         map.putDouble("direction", bdLocation.getDirection()); // 行进的方向，单位度
         map.putDouble("speed", bdLocation.getSpeed()); // 仅gps定位结果时有速度信息，单位公里/小时，默认值0.0f
         map.putString("city", bdLocation.getCity());
