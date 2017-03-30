@@ -36,6 +36,7 @@ class CallTaxi extends Component {
         this._cancelCallTaxi = this._cancelCallTaxi.bind(this);
         this._startSearchNearbyFreeTaxi = this._startSearchNearbyFreeTaxi.bind(this);
         this._stopSearchNearbyFreeTaxi = this._stopSearchNearbyFreeTaxi.bind(this);
+        this._showAllocatedTaxi = this._showAllocatedTaxi.bind(this);
     }
 
 
@@ -151,24 +152,40 @@ class CallTaxi extends Component {
 
     // 开始轮询上报位置, 直到有司机接单或超时
     _startPushWaitTaxiLoc() {
-        rest('/calltaxi/pushWaitTaxiLoc.do').then((result)=>{
-            if (result.code === 0) {
-                if (result.payload) {
-                    // 分配到司机
-                    ToastAndroid('司机已接单:' + JSON.stringify(result.payload));
+        this._stopPushWaitTaxiLoc();
+        var fun = ()=>{
+            rest('/calltaxi/pushWaitTaxiLoc.do').then((result)=>{
+                if (result.code === 0) {
+                    if (result.payload) {
+                        // 分配到司机
+                        ToastAndroid('司机已接单:' + JSON.stringify(result.payload));
+                        this._stopPushWaitTaxiLoc();
+                        var allocatedTaxi = result.payload;
+                        this._showAllocatedTaxi(allocatedTaxi);
+                        this._startGetAllocatedTaxiLoc();
+                    } else {
+                        // 还未分配到司机, 继续轮询
+                        
+                    }
                 } else {
-                    // 还未分配到司机, 继续轮询
-                    setTimeout(()=>{this._startPushWaitTaxiLoc()}, 1000);
+                    // 出错
+                    ToastAndroid.show(result.message, ToastAndroid.LONG);
+                    this.setState({showConfirm:false, showClickToUse:true, showCalling:false}); // 回到叫车状态
                 }
-            } else {
-                // 出错
-                ToastAndroid.show(result.message, ToastAndroid.LONG);
-                this.setState({showConfirm:false, showClickToUse:true, showCalling:false}); // 回到叫车状态
-            }
-        }).catch((reason)=>{
-            ToastAndroid.show(reason, ToastAndroid.LONG);
-            setTimeout(()=>{this._startPushWaitTaxiLoc()}, 1000); // 未知异常, 继续轮询
-        });
+            }).catch((reason)=>{
+                ToastAndroid.show(reason, ToastAndroid.LONG);
+                // 未知异常, 继续轮询
+            });
+        };
+
+        this._pushWaitTaxiLocTimer = setInterval(fun, 1000);
+    }
+
+    _stopPushWaitTaxiLoc() {
+        if (this._pushWaitTaxiLocTimer) {
+            clearInterval(this._pushWaitTaxiLocTimer);
+            this._pushWaitTaxiLocTimer = null;
+        }
     }
 
     // 取消叫车
@@ -226,6 +243,37 @@ class CallTaxi extends Component {
         if (this._searchNearbyFreeTaxiTimer) {
             clearInterval(this._searchNearbyFreeTaxiTimer);
             this._searchNearbyFreeTaxiTimer = null;
+        }
+    }
+
+
+    // 显示被分配的车
+    _showAllocatedTaxi(allocatedTaxi) {
+        this.setState({allocatedTaxi:allocatedTaxi, showAllocatedTaxi:true});
+    }
+
+    // 开始轮询获取被分配车的位置
+    _startGetAllocatedTaxiLoc() {
+        var taxiId = this.state.allocatedTaxi.taxiId;
+        var fun = ()=>{
+            rest("/calltaxi/getTaxiLoc.do").then((result)=>{
+                if (result.code === 0) {
+                    // TODO 显示轨迹
+                } else {
+                    // 处理异常
+                }
+            }).catch((reason)=>{
+                ToastAndroid.show(reason, ToastAndroid.LONG);
+            });
+        };
+
+        this._getAllocatedTaxiLocTimer = setInterval(fun, 2000);
+    }
+
+    _stopGetAllocatedTaxiLoc() {
+        if (this._getAllocatedTaxiLocTimer) {
+            clearInterval(this._getAllocatedTaxiLocTimer);
+            this._getAllocatedTaxiLocTimer = null;
         }
     }
 

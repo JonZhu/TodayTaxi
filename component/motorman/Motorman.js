@@ -84,6 +84,7 @@ class Motorman extends Component {
             if (result.code === 0) {
                 // 关闭接单窗口
                 this.setState({routeId:result.payload}); // 存储routeId
+                this._startNavi(route); // 开始导航
                 this._startPushRouteLoc(); // 开始上报行程位置
             } else {
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
@@ -115,10 +116,10 @@ class Motorman extends Component {
         this._stopPushRouteLoc();
 
         var routeId = this.state.routeId;
-        function pushFun() {
+        var pushFun = ()=>{
             MapModule.location().then((result)=>{
                 // 定位返回
-                var loc = {lat:result.lat, lng:result.lng, address:result.address};
+                var loc = {lat:result.lat, lng:result.lng, speed:result.speed, direction:result.direction};
                 // 上传位置到服务器
                 return rest('/taxi/pushRouteLoc.do', {routeId:routeId, loc:loc});
             }).then((result)=>{
@@ -126,7 +127,12 @@ class Motorman extends Component {
                 // TODO 处理异常
             });
         }
-        _pushRouteLocTimer = setInterval(pushFun.bind(this), 1000);
+        _pushRouteLocTimer = setInterval(pushFun, 1000);
+    }
+
+    // 开始导航
+    _startNavi(route) {
+
     }
 
 
