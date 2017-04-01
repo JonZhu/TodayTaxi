@@ -22,12 +22,15 @@ import com.baidu.mapapi.model.LatLngBounds;
 import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 
 /**
@@ -187,18 +190,6 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
         MapViewExtendData.setData(view, "taxiMarkerMap", newTaxiMap);
     }
 
-    /**
-     * 业务类型
-     *
-     * @param view
-     * @param bizType
-     */
-    @ReactProp(name = "bizType", defaultInt = 0)
-    public void setBizType(MapView view, int bizType) {
-        MapViewExtendData.setData(view, "bizType", bizType);
-    }
-
-
     @Override
     public void onDropViewInstance(MapView view) {
         super.onDropViewInstance(view);
@@ -210,8 +201,7 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
      *
      * @param points 坐标列表 [{lng, lat}]
      */
-    @ReactProp(name = "mapBound")
-    public void setMapBound(MapView view, ReadableArray points) {
+    private void setMapBound(MapView view, ReadableArray points) {
         if (points == null || points.size() == 0) {
             return;
         }
@@ -223,4 +213,25 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
         view.getMap().setMapStatusLimits(builder.build());
     }
 
+    /**
+     * 命令常量
+     */
+    private static interface Command {
+        int SET_MAP_BOUND = 1;
+    }
+
+    @Nullable
+    @Override
+    public Map<String, Integer> getCommandsMap() {
+        return MapBuilder.of("setMapBound", Command.SET_MAP_BOUND);
+    }
+
+    @Override
+    public void receiveCommand(MapView root, int commandId, @Nullable ReadableArray args) {
+        switch (commandId) {
+            case Command.SET_MAP_BOUND:
+                setMapBound(root, args);
+                break;
+        }
+    }
 }
