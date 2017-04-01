@@ -41,8 +41,13 @@ public class MapViewExtendData {
         return data == null ? null : data.get(key);
     }
 
-    public static void remove(MapView mapView) {
-        EXTEND_DATA.remove(mapView);
+    public static Map remove(MapView mapView) {
+        return EXTEND_DATA.remove(mapView);
+    }
+
+    public static Object remove(MapView mapView, String key) {
+        Map data = getData(mapView);
+        return data == null ? null : data.remove(key);
     }
 
 }

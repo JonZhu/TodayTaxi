@@ -1,6 +1,10 @@
 package com.todaytaxi.map;
 
+import android.os.Environment;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -19,6 +23,10 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
+import com.baidu.navisdk.adapter.BNRouteGuideManager;
+import com.baidu.navisdk.adapter.BNRoutePlanNode;
+import com.baidu.navisdk.adapter.BNaviSettingManager;
+import com.baidu.navisdk.adapter.BaiduNaviManager;
 import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -27,7 +35,10 @@ import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -43,11 +54,15 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
 
     public static final String REACT_CLASS = "RCTBaiduMapView";
 
+    private ThemedReactContext context;
+
     public String getName() {
         return REACT_CLASS;
     }
 
     public MapView createViewInstance(ThemedReactContext context) {
+        this.context = context;
+
         MapView mapView = new MapView(context);
         BaiduMap map = mapView.getMap();
         map.setMapType(BaiduMap.MAP_TYPE_NORMAL);
@@ -194,6 +209,7 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
     public void onDropViewInstance(MapView view) {
         super.onDropViewInstance(view);
         MapViewExtendData.remove(view); // 清理扩展数据
+        this.context = null;
     }
 
     /**
@@ -218,12 +234,16 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
      */
     private static interface Command {
         int SET_MAP_BOUND = 1;
+        int LAUNCH_NAVI = 2;
+        int STOP_NAVI = 3;
     }
 
     @Nullable
     @Override
     public Map<String, Integer> getCommandsMap() {
-        return MapBuilder.of("setMapBound", Command.SET_MAP_BOUND);
+        return MapBuilder.of("setMapBound", Command.SET_MAP_BOUND,
+                "launchNavi", Command.LAUNCH_NAVI,
+                "stopNavi", Command.STOP_NAVI);
     }
 
     @Override
@@ -232,6 +252,198 @@ public class ReactMapViewManager extends SimpleViewManager<MapView> {
             case Command.SET_MAP_BOUND:
                 setMapBound(root, args);
                 break;
+            case Command.LAUNCH_NAVI:
+                launchNavi(root, args);
+                break;
+            case Command.STOP_NAVI:
+                stopNavi(root);
+                break;
         }
     }
+
+    /**
+     * 启动导航
+     * @param view
+     * @param points 经过点 [{lng, lat, name}]
+     */
+    private void launchNavi(MapView view, ReadableArray points) {
+        LaunchNaviRun launchRun = new LaunchNaviRun(points, view);
+
+        if (!BaiduNaviManager.isNaviInited()) {
+            String naviDir = initNaviDirs();
+            if (naviDir == null) {
+                toast("目录初始化失败");
+                return;
+            }
+            initNavi(naviDir, launchRun);
+        }
+
+        launchRun.run();
+    }
+
+
+    private class LaunchNaviRun implements Runnable {
+        private ReadableArray points;
+        private MapView mapView;
+
+        public LaunchNaviRun(ReadableArray points, MapView mapView) {
+            this.points = points;
+            this.mapView = mapView;
+        }
+
+        @Override
+        public void run() {
+            BNRoutePlanNode.CoordinateType coType = BNRoutePlanNode.CoordinateType.BD09LL;
+            List<BNRoutePlanNode> list = new ArrayList<BNRoutePlanNode>();
+            for (int i = 0; i < points.size(); i++) {
+                ReadableMap point = points.getMap(i);
+                // new BNRoutePlanNode(116.30784537597782, 40.057009624099436, "百度大厦", null, coType);
+                list.add(new BNRoutePlanNode(point.getDouble("lng"), point.getDouble("lat"), point.getString("name"), null, coType));
+            }
+
+            BaiduNaviManager.getInstance().launchNavigator(context.getCurrentActivity(), list, 1, true, new BaiduNaviManager.RoutePlanListener() {
+
+                @Override
+                public void onJumpToNavigator() {
+            /*
+             * 设置途径点以及resetEndNode会回调该接口
+             */
+//            Intent intent = new Intent(context.getCurrentActivity(), BNDemoGuideActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable(ROUTE_PLAN_NODE, (BNRoutePlanNode) mBNRoutePlanNode);
+//            intent.putExtras(bundle);
+//            startActivity(intent);
+                    showNaviView(mapView);
+                }
+
+                @Override
+                public void onRoutePlanFailed() {
+                    toast("算路失败");
+                }
+            });
+        }
+    }
+
+
+    /**
+     * 显示导航view
+     */
+    private void showNaviView(final MapView mapView) {
+        View view = BNRouteGuideManager.getInstance().onCreate(context.getCurrentActivity(), new BNRouteGuideManager.OnNavigationListener() {
+
+            @Override
+            public void onNaviGuideEnd() {
+                stopNavi(mapView);
+            }
+
+            @Override
+            public void notifyOtherAction(int actionType, int arg1, int arg2, Object obj) {
+
+                if (actionType == 0) {
+                    //导航到达目的地 自动退出
+                    //Log.i(TAG, "notifyOtherAction actionType = " + actionType + ",导航到达目的地！");
+                    stopNavi(mapView);
+                }
+
+                //Log.i(TAG, "actionType:" + actionType + "arg1:" + arg1 + "arg2:" + arg2 + "obj:" + obj.toString());
+            }
+
+        });
+        MapViewExtendData.setData(mapView, "naviView", view);
+
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        context.getCurrentActivity().addContentView(view, layoutParams);
+
+    }
+
+    private void toast(String message) {
+        Toast.makeText(context.getCurrentActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+
+    /**
+     * 初始化导航
+     * @param dir
+     * @param launchRun 在初始化成功后调用
+     */
+    private void initNavi(String dir, final LaunchNaviRun launchRun) {
+
+        BaiduNaviManager.getInstance().init(context.getCurrentActivity(), dir, "todaytaxi", new BaiduNaviManager.NaviInitListener() {
+            @Override
+            public void onAuthResult(int status, String msg) {
+                if (0 != status) {
+                    toast("key校验失败, " + msg);
+                }
+
+            }
+
+            public void initSuccess() {
+                toast("百度导航引擎初始化成功");
+                initSetting();
+                launchRun.run();
+            }
+
+            public void initStart() {
+                //Toast.makeText(context.getCurrentActivity(), "百度导航引擎初始化开始", Toast.LENGTH_SHORT).show();
+            }
+
+            public void initFailed() {
+                //Toast.makeText(context.getCurrentActivity(), "百度导航引擎初始化失败", Toast.LENGTH_SHORT).show();
+            }
+
+        }, null, null, null);
+    }
+
+    private void initSetting() {
+        // BNaviSettingManager.setDayNightMode(BNaviSettingManager.DayNightMode.DAY_NIGHT_MODE_DAY);
+        BNaviSettingManager
+                .setShowTotalRoadConditionBar(BNaviSettingManager.PreViewRoadCondition.ROAD_CONDITION_BAR_SHOW_ON);
+        BNaviSettingManager.setVoiceMode(BNaviSettingManager.VoiceMode.Veteran);
+        // BNaviSettingManager.setPowerSaveMode(BNaviSettingManager.PowerSaveMode.DISABLE_MODE);
+        BNaviSettingManager.setRealRoadCondition(BNaviSettingManager.RealRoadCondition.NAVI_ITS_ON);
+//        Bundle bundle = new Bundle();
+//        // 必须设置APPID，否则会静音
+//        bundle.putString(BNCommonSettingParam.TTS_APP_ID, "9354030");
+//        BNaviSettingManager.setNaviSdkParam(bundle);
+
+    }
+
+
+    private String initNaviDirs() {
+        String mSDCardPath = getSdcardDir();
+        if (mSDCardPath == null) {
+            return null;
+        }
+        File f = new File(mSDCardPath, "todaytaxi");
+        if (!f.exists()) {
+            try {
+                f.mkdir();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return mSDCardPath;
+    }
+
+    private String getSdcardDir() {
+        if (Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
+            return Environment.getExternalStorageDirectory().toString();
+        }
+        return null;
+    }
+
+    /**
+     * 停止导航
+     */
+    private void stopNavi(MapView mapView) {
+        View naviView = (View)MapViewExtendData.remove(mapView, "naviView");
+        if (naviView != null) {
+            ViewGroup parent = (ViewGroup)naviView.getParent();
+            if (parent != null) {
+                parent.removeView(naviView);
+            }
+            BNRouteGuideManager.getInstance().forceQuitNaviWithoutDialog();
+        }
+    }
+
 }
