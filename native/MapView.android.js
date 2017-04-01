@@ -32,6 +32,16 @@ class BaiduMapView extends Component {
     UIManager.dispatchViewManagerCommand(React.findNodeHandle(this._baiduMapView), "setMapBound", points);
   }
 
+  // 启动导航 [{lng, lat, name}]
+  launchNavi(points) {
+    UIManager.dispatchViewManagerCommand(React.findNodeHandle(this._baiduMapView), "launchNavi", points);
+  }
+
+  // 停止导航 
+  stopNavi() {
+    UIManager.dispatchViewManagerCommand(React.findNodeHandle(this._baiduMapView), "stopNavi", null);
+  }
+
   render() {
     return (
       <RCTBaiduMapView ref={(ref)=>{this._baiduMapView=ref}} {...this.props} onChange={this._onChange} />
