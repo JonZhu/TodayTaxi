@@ -7,7 +7,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { requireNativeComponent, View, UIManager } from 'react-native';
+import { requireNativeComponent, View, UIManager, findNodeHandle } from 'react-native';
 
 class BaiduMapView extends Component {
 
@@ -15,6 +15,9 @@ class BaiduMapView extends Component {
     super();
     this._onChange = this._onChange.bind(this);
     this.setMapBound = this.setMapBound.bind(this);
+    this.launchNavi = this.launchNavi.bind(this);
+    this.stopNavi = this.stopNavi.bind(this);
+    this._dispatchNativeUICmd = this._dispatchNativeUICmd.bind(this);
   }
 
   _onChange(event) {
@@ -27,19 +30,26 @@ class BaiduMapView extends Component {
     }
   }
 
+  // 触发本地ui命令
+  _dispatchNativeUICmd(name, args) {
+    // (int reactTag, int commandId, ReadableArray commandArgs)
+    UIManager.dispatchViewManagerCommand(findNodeHandle(this._baiduMapView), 
+      UIManager.RCTBaiduMapView.Commands[name], args);
+  }
+
   // 设置地图显示范围为包括指定的所有点, [{lng, lat}]
   setMapBound(points) {
-    UIManager.dispatchViewManagerCommand(React.findNodeHandle(this._baiduMapView), "setMapBound", points);
+    this._dispatchNativeUICmd('setMapBound', points);
   }
 
   // 启动导航 [{lng, lat, name}]
   launchNavi(points) {
-    UIManager.dispatchViewManagerCommand(React.findNodeHandle(this._baiduMapView), "launchNavi", points);
+    this._dispatchNativeUICmd('launchNavi', points);
   }
 
   // 停止导航 
   stopNavi() {
-    UIManager.dispatchViewManagerCommand(React.findNodeHandle(this._baiduMapView), "stopNavi", null);
+    this._dispatchNativeUICmd('stopNavi', null);
   }
 
   render() {
