@@ -19,7 +19,7 @@ public class MapReactPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new ReactMapModule(reactContext));
-        modules.add(new ReactTraceModule(reactContext));
+//        modules.add(new ReactTraceModule(reactContext));
         return modules;
     }
 
