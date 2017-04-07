@@ -1,10 +1,13 @@
 package com.todaytaxi.map.util;
 
+import com.amap.api.location.AMapLocation;
 import com.amap.api.navi.model.AMapNaviLocation;
 import com.amap.api.navi.model.NaviLatLng;
-import com.facebook.react.bridge.Arguments;
+import com.amap.api.services.core.PoiItem;
+import com.amap.api.services.geocoder.GeocodeAddress;
+import com.amap.api.services.route.DrivePath;
+import com.amap.api.services.route.DriveStep;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
 import java.util.List;
@@ -17,65 +20,31 @@ import java.util.List;
 
 public class WritableMapUtil {
 
-//    /**
-//     * put 经纬度
-//     * @param map
-//     * @param latLng
-//     */
-//    public static void put(WritableMap map, LatLng latLng) {
-//        map.putDouble("lat", latLng.latitude);
-//        map.putDouble("lng", latLng.longitude);
-//    }
-//
-//    /**
-//     * put 经纬范围
-//     * @param map
-//     * @param bounds
-//     */
-//    public static void put(WritableMap map, LatLngBounds bounds) {
-//        map.putDouble("northEastLat", bounds.northeast.latitude);
-//        map.putDouble("northEastLng", bounds.northeast.longitude);
-//        map.putDouble("southWestLat", bounds.southwest.latitude);
-//        map.putDouble("southWestLng", bounds.southwest.longitude);
-//    }
-//
-//    public static void put(WritableMap map, PoiInfo poiInfo) {
-//        if (poiInfo.location != null) {
-//            put(map, poiInfo.location);
-//        }
-//        map.putString("city", poiInfo.city);
-//        map.putString("address", poiInfo.address);
-//        map.putString("name", poiInfo.name);
-//    }
-//
-//    public static void put(WritableMap map, BDLocation bdLocation) {
-//        map.putDouble("lat", bdLocation.getLatitude()); // 纬度
-//        map.putDouble("lng", bdLocation.getLongitude()); // 经度
-//        map.putDouble("direction", bdLocation.getDirection()); // 行进的方向，单位度
-//        map.putDouble("speed", bdLocation.getSpeed()); // 仅gps定位结果时有速度信息，单位公里/小时，默认值0.0f
-//        map.putString("city", bdLocation.getCity());
-//        map.putString("cityCode", bdLocation.getCityCode());
-//        map.putString("country", bdLocation.getCountry());
-//        map.putString("countryCode", bdLocation.getCountryCode());
-//        map.putString("address", bdLocation.getAddress().address);
-//        map.putString("district", bdLocation.getDistrict());
-//        map.putString("describe", bdLocation.getLocationDescribe());
-//        List<Poi> poiList = bdLocation.getPoiList();
-//        if (poiList != null && !poiList.isEmpty()) {
-//            WritableArray poiArr = Arguments.createArray();
-//            for(Poi poi : poiList) {
-//                poiArr.pushString(poi.getName());
-//            }
-//            map.putArray("poiList", poiArr);
-//        }
-//    }
-//
-//    public static void put(WritableMap map, DrivingRouteLine line) {
-//        map.putString("title", line.getTitle());
-//        map.putInt("distance", line.getDistance());
-//        map.putInt("duration", line.getDuration());
-//        map.putInt("lightNum", line.getLightNum());
-//    }
+    public static void put(WritableMap map, AMapLocation aMapLocation) {
+        map.putDouble("lat", aMapLocation.getLatitude()); // 纬度
+        map.putDouble("lng", aMapLocation.getLongitude()); // 经度
+        map.putDouble("direction", aMapLocation.getBearing()); // 行进的方向，单位度
+        map.putDouble("speed", aMapLocation.getSpeed()); // 单位：米/秒
+        map.putString("city", aMapLocation.getCity());
+        map.putString("cityCode", aMapLocation.getCityCode());
+        map.putString("country", aMapLocation.getCountry());
+        map.putString("address", aMapLocation.getAddress());
+        map.putString("district", aMapLocation.getDistrict());
+        map.putString("describe", aMapLocation.getPoiName());
+    }
+
+    public static void put(WritableMap map, DrivePath drivePath) {
+        map.putString("title", drivePath.getStrategy());
+        map.putInt("distance", (int)drivePath.getTollDistance());
+        map.putInt("lightNum", drivePath.getTotalTrafficlights());
+        int duration = 0;
+        if (drivePath.getSteps() != null && !drivePath.getSteps().isEmpty()) {
+            for (DriveStep step : drivePath.getSteps()) {
+                duration += step.getDuration();
+            }
+        }
+        map.putInt("duration", duration);
+    }
 
     public static NaviLatLng toLatLng(ReadableMap map) {
         return new NaviLatLng(map.getDouble("lat"), map.getDouble("lng"));
@@ -87,5 +56,20 @@ public class WritableMapUtil {
         map.putInt("time", aMapNaviLocation.getTime().intValue());
         map.putDouble("speed", aMapNaviLocation.getSpeed()); // 单位公里每小时。如果此位置不具有速度，则返回0.0
         map.putDouble("direction", aMapNaviLocation.getBearing()); // 定位方向，指的是相对正北方向的角度
+    }
+
+    public static void put(WritableMap map, GeocodeAddress address) {
+        map.putDouble("lng", address.getLatLonPoint().getLongitude());
+        map.putDouble("lat", address.getLatLonPoint().getLatitude());
+    }
+
+    public static void put(WritableMap map, PoiItem poiItem) {
+        if (poiItem.getLatLonPoint() != null) {
+            map.putDouble("lng", poiItem.getLatLonPoint().getLongitude());
+            map.putDouble("lat", poiItem.getLatLonPoint().getLatitude());
+        }
+        map.putString("city", poiItem.getCityName());
+        map.putString("address", poiItem.getSnippet());
+        map.putString("name", poiItem.getTitle());
     }
 }

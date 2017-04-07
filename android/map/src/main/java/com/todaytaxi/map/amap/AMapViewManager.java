@@ -8,12 +8,16 @@ import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
+import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
+import com.todaytaxi.map.util.JSModuleUtil;
 
 import java.io.File;
 import java.util.Map;
@@ -29,18 +33,15 @@ import javax.annotation.Nullable;
 
 public class AMapViewManager extends SimpleViewManager<AMapView> {
 
-    public static final String REACT_CLASS = "RCTBaiduMapView";
-
-    private ThemedReactContext context;
+    public static final String REACT_CLASS = "AMapView";
 
     public String getName() {
         return REACT_CLASS;
     }
 
-    public AMapView createViewInstance(ThemedReactContext context) {
-        this.context = context;
+    public AMapView createViewInstance(final ThemedReactContext context) {
 
-        AMapView mapView = new AMapView(context);
+        final AMapView mapView = new AMapView(context);
         mapView.onCreate(context.getCurrentActivity().getIntent().getExtras());
         AMap map = mapView.getMap();
         map.setMapType(AMap.MAP_TYPE_NORMAL);
@@ -56,12 +57,6 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
         // 设置中心点(成都天府五街)和级别 104.056701,30.537908
         CameraUpdate mCameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(30.537908,104.056701),17);
         map.moveCamera(mCameraUpdate);
-
-        // 增加状态改变事件监听器
-        // map.setOnMapStatusChangeListener(new MapStatusChangeListener(context, mapView));
-
-        // 定位
-        location(context, map);
 
         return mapView;
     }
@@ -186,8 +181,7 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
     @Override
     public void onDropViewInstance(AMapView view) {
         super.onDropViewInstance(view);
-//        MapViewExtendData.remove(view); // 清理扩展数据
-        this.context = null;
+        view.onDestroy();
     }
 
     /**
@@ -334,9 +328,9 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
 
     }
 
-    private void toast(String message) {
-        Toast.makeText(context.getCurrentActivity(), message, Toast.LENGTH_SHORT).show();
-    }
+//    private void toast(String message) {
+//        Toast.makeText(context.getCurrentActivity(), message, Toast.LENGTH_SHORT).show();
+//    }
 
 
     /**
