@@ -5,8 +5,10 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.todaytaxi.map.amap.ReactMapModule;
-import com.todaytaxi.map.amap.ReactMapViewManager;
+import com.todaytaxi.map.amap.AMapNaviModule;
+import com.todaytaxi.map.amap.AMapNaviViewManager;
+//import com.todaytaxi.map.amap.ReactMapModule;
+//import com.todaytaxi.map.amap.ReactMapViewManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,8 +22,8 @@ public class MapReactPackage implements ReactPackage {
 
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ReactMapModule(reactContext));
-//        modules.add(new ReactTraceModule(reactContext));
+//        modules.add(new ReactMapModule(reactContext));
+        modules.add(new AMapNaviModule(reactContext));
         return modules;
     }
 
@@ -31,7 +33,8 @@ public class MapReactPackage implements ReactPackage {
 
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         List<ViewManager> list = new ArrayList<>();
-        list.add(new ReactMapViewManager());
+//        list.add(new ReactMapViewManager());
+        list.add(new AMapNaviViewManager());
         return list;
     }
 

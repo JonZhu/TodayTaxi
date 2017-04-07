@@ -1,6 +1,8 @@
 package com.todaytaxi.map.util;
 
+import com.amap.api.navi.model.NaviLatLng;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
@@ -73,4 +75,8 @@ public class WritableMapUtil {
 //        map.putInt("duration", line.getDuration());
 //        map.putInt("lightNum", line.getLightNum());
 //    }
+
+    public static NaviLatLng toLatLng(ReadableMap map) {
+        return new NaviLatLng(map.getDouble("lat"), map.getDouble("lng"));
+    }
 }
