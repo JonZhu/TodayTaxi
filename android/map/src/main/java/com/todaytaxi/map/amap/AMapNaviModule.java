@@ -146,7 +146,7 @@ public class AMapNaviModule extends ReactContextBaseJavaModule {
              */
             @Override
             public void onArriveDestination() {
-
+                JSModuleUtil.sendEvent(getReactApplicationContext(), "onNaviArriveDest", null);
             }
 
             @Override
@@ -185,7 +185,9 @@ public class AMapNaviModule extends ReactContextBaseJavaModule {
              */
             @Override
             public void onArrivedWayPoint(int wayID) {
-
+                WritableMap data = Arguments.createMap();
+                data.putInt("wayPointId", wayID);
+                JSModuleUtil.sendEvent(getReactApplicationContext(), "onNaviArriveWayPoint", data);
             }
 
             @Override
