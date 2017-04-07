@@ -1,5 +1,6 @@
 package com.todaytaxi.map.util;
 
+import com.amap.api.navi.model.AMapNaviLocation;
 import com.amap.api.navi.model.NaviLatLng;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
@@ -78,5 +79,13 @@ public class WritableMapUtil {
 
     public static NaviLatLng toLatLng(ReadableMap map) {
         return new NaviLatLng(map.getDouble("lat"), map.getDouble("lng"));
+    }
+
+    public static void put(WritableMap map, AMapNaviLocation aMapNaviLocation) {
+        map.putDouble("lng", aMapNaviLocation.getCoord().getLongitude());
+        map.putDouble("lat", aMapNaviLocation.getCoord().getLatitude());
+        map.putInt("time", aMapNaviLocation.getTime().intValue());
+        map.putDouble("speed", aMapNaviLocation.getSpeed()); // 单位公里每小时。如果此位置不具有速度，则返回0.0
+        map.putDouble("direction", aMapNaviLocation.getBearing()); // 定位方向，指的是相对正北方向的角度
     }
 }

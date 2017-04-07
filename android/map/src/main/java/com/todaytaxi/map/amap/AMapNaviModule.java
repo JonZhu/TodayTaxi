@@ -15,11 +15,14 @@ import com.amap.api.navi.model.AimLessModeStat;
 import com.amap.api.navi.model.NaviInfo;
 import com.amap.api.navi.model.NaviLatLng;
 import com.autonavi.tbt.TrafficFacilityInfo;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.WritableMap;
+import com.todaytaxi.map.util.JSModuleUtil;
 import com.todaytaxi.map.util.WritableMapUtil;
 
 import java.util.ArrayList;
@@ -116,9 +119,16 @@ public class AMapNaviModule extends ReactContextBaseJavaModule {
 
             }
 
+            /**
+             * 当GPS位置有更新时的回调函数
+             * @param aMapNaviLocation
+             */
             @Override
             public void onLocationChange(AMapNaviLocation aMapNaviLocation) {
-
+                // 发送导航定位改变事件
+                WritableMap data = Arguments.createMap();
+                WritableMapUtil.put(data, aMapNaviLocation);
+                JSModuleUtil.sendEvent(getReactApplicationContext(), "onNaviLocChange", data);
             }
 
             @Override
@@ -131,6 +141,9 @@ public class AMapNaviModule extends ReactContextBaseJavaModule {
 
             }
 
+            /**
+             * 到达目的地后回调函数
+             */
             @Override
             public void onArriveDestination() {
 
@@ -147,9 +160,13 @@ public class AMapNaviModule extends ReactContextBaseJavaModule {
                 }
             }
 
+            /**
+             *
+             * @param errorCode PathPlanningErrCode
+             */
             @Override
-            public void onCalculateRouteFailure(int i) {
-
+            public void onCalculateRouteFailure(int errorCode) {
+                promise.reject("4", "onCalculateRouteFailure");
             }
 
             @Override
@@ -162,8 +179,12 @@ public class AMapNaviModule extends ReactContextBaseJavaModule {
 
             }
 
+            /**
+             * 驾车路径导航到达某个途经点的回调函数
+             * @param wayID
+             */
             @Override
-            public void onArrivedWayPoint(int i) {
+            public void onArrivedWayPoint(int wayID) {
 
             }
 
