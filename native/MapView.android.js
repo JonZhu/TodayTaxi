@@ -9,7 +9,7 @@
 import React, { Component, PropTypes } from 'react';
 import { requireNativeComponent, View, UIManager, findNodeHandle } from 'react-native';
 
-class BaiduMapView extends Component {
+class MapView extends Component {
 
   constructor() {
     super();
@@ -32,8 +32,8 @@ class BaiduMapView extends Component {
   // 触发本地ui命令
   _dispatchNativeUICmd(name, args) {
     // (int reactTag, int commandId, ReadableArray commandArgs)
-    UIManager.dispatchViewManagerCommand(findNodeHandle(this._baiduMapView), 
-      UIManager.RCTBaiduMapView.Commands[name], args);
+    UIManager.dispatchViewManagerCommand(findNodeHandle(this._nativeMapView), 
+      UIManager.AMapView.Commands[name], args);
   }
 
   // 设置地图显示范围为包括指定的所有点, [{lng, lat}]
@@ -48,18 +48,18 @@ class BaiduMapView extends Component {
 
   render() {
     return (
-      <RCTBaiduMapView ref={(ref)=>{this._baiduMapView=ref}} {...this.props} onChange={this._onChange} />
+      <NativeMapView ref={(ref)=>{this._nativeMapView=ref}} {...this.props} onChange={this._onChange} />
     );
   }
 }
 
-BaiduMapView.propTypes = {
+MapView.propTypes = {
   ...View.propTypes,
   taxies: React.PropTypes.array, // taxi列表 [{id, lat, lng}]
   onStatusChange: React.PropTypes.func, // 地图状态改变事件, 如位置改变
 };
 
 
-const RCTBaiduMapView = requireNativeComponent('RCTBaiduMapView', BaiduMapView, {nativeOnly:{onChange:true}});
+const NativeMapView = requireNativeComponent('AMapView', MapView, {nativeOnly:{onChange:true}});
 
-export default BaiduMapView;
+export default MapView;

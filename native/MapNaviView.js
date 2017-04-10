@@ -9,7 +9,7 @@
 import React, { Component, PropTypes } from 'react';
 import { requireNativeComponent, View, UIManager, findNodeHandle } from 'react-native';
 
-class NativeMapNaviView extends Component {
+class MapNaviView extends Component {
 
   constructor() {
     super();
@@ -24,11 +24,11 @@ class NativeMapNaviView extends Component {
   }
 }
 
-NativeMapNaviView.propTypes = {
+MapNaviView.propTypes = {
   ...View.propTypes
 };
 
 
-const MapNaviView = requireNativeComponent('AMapNaviView', NativeMapNaviView, {nativeOnly:{onChange:true}});
+const NativeMapNaviView = requireNativeComponent('AMapNaviView', MapNaviView, {nativeOnly:{onChange:true}});
 
 export default MapNaviView;
