@@ -15,9 +15,8 @@ class BaiduMapView extends Component {
     super();
     this._onChange = this._onChange.bind(this);
     this.setMapBound = this.setMapBound.bind(this);
-    this.launchNavi = this.launchNavi.bind(this);
-    this.stopNavi = this.stopNavi.bind(this);
     this._dispatchNativeUICmd = this._dispatchNativeUICmd.bind(this);
+    this.move = this.move.bind(this);
   }
 
   _onChange(event) {
@@ -42,14 +41,9 @@ class BaiduMapView extends Component {
     this._dispatchNativeUICmd('setMapBound', points);
   }
 
-  // 启动导航 [{lng, lat, name}]
-  launchNavi(points) {
-    this._dispatchNativeUICmd('launchNavi', points);
-  }
-
-  // 停止导航 
-  stopNavi() {
-    this._dispatchNativeUICmd('stopNavi', null);
+  // 移动地图中心
+  move(lng, lat) {
+    this._dispatchNativeUICmd('move', [{lng:lng, lat:lat}]);
   }
 
   render() {
