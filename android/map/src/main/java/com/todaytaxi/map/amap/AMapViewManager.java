@@ -5,6 +5,7 @@ import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.LatLng;
+import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
@@ -74,8 +75,9 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
                 ReadableMap map = taxies.getMap(i);
                 taxi.setId(map.getString("id"));
                 taxi.setLat(map.getDouble("lat"));
-                taxi.setLat(map.getDouble("lng"));
-                taxi.setDirection(map.getInt("direction"));
+                taxi.setLng(map.getDouble("lng"));
+                Dynamic dynamic = map.getDynamic("direction");
+                taxi.setDirection(dynamic.isNull() ? null : dynamic.asInt());
                 taxiList.add(taxi);
             }
         }
