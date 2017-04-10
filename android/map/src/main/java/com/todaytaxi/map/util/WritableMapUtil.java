@@ -35,15 +35,17 @@ public class WritableMapUtil {
 
     public static void put(WritableMap map, DrivePath drivePath) {
         map.putString("title", drivePath.getStrategy());
-        map.putInt("distance", (int)drivePath.getTollDistance());
         map.putInt("lightNum", drivePath.getTotalTrafficlights());
         int duration = 0;
+        int distance = 0;
         if (drivePath.getSteps() != null && !drivePath.getSteps().isEmpty()) {
             for (DriveStep step : drivePath.getSteps()) {
                 duration += step.getDuration();
+                distance += step.getDistance();
             }
         }
         map.putInt("duration", duration);
+        map.putInt("distance", distance);
     }
 
     public static NaviLatLng toLatLng(ReadableMap map) {
