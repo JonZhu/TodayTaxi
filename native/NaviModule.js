@@ -15,8 +15,40 @@
  * 
  */
 
-import { NativeModules } from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 
 const NaviModule = NativeModules.AmapNaviModule;
 
+/**
+ * 添加导航定位改变事件监听
+ * @param {*} listener (event)=>{}
+ * event: {lng, lat, time:时间毫秒, speed:公里每小时, direction:相对正北方向逆时针的角度}
+ * @return EmitterSubscription
+ */
+function addNaviLocChangeListener(listener) {
+    return NativeEventEmitter.addListener('onNaviLocChange', listener);
+}
+
+/**
+ * 添加导航到达终点事件监听
+ * @param {*} listener (event)=>{}
+ * event: null
+ * @return EmitterSubscription
+ */
+function addNaviArriveDestListener(listener) {
+    return NativeEventEmitter.addListener('onNaviArriveDest', listener);
+}
+
+/**
+ * 添加导航到达途经点事件监听
+ * @param {*} listener (event)=>{}
+ * event: {wayPointId:途经点id}
+ * @return EmitterSubscription
+ */
+function addNaviArriveWayPointListener(listener) {
+    return NativeEventEmitter.addListener('onNaviArriveWayPoint', listener);
+}
+
+
 export default NaviModule;
+export {addNaviLocChangeListener, addNaviArriveDestListener, addNaviArriveWayPointListener};
