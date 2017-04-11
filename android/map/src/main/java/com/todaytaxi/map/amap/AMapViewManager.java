@@ -41,7 +41,7 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
         mapView.onCreate(context.getCurrentActivity().getIntent().getExtras());
         AMap map = mapView.getMap();
         map.setMapType(AMap.MAP_TYPE_NORMAL);
-//        map.setMyLocationEnabled(true);
+        map.setMyLocationEnabled(true); // 打开定位图层
         map.setMaxZoomLevel(21);
         map.setMinZoomLevel(3);
 

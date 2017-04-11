@@ -9,6 +9,7 @@
 import React, { Component, PropTypes } from 'react';
 import { requireNativeComponent, View, UIManager, findNodeHandle } from 'react-native';
 
+
 class MapView extends Component {
 
   constructor() {
@@ -19,12 +20,28 @@ class MapView extends Component {
     this.move = this.move.bind(this);
   }
 
+  /**
+   * 事件
+   * 
+   * onStatusChange: 地图状态改变
+   * 数据：{eventType:'statusChange', target:{lng, lat}, level}
+   * 
+   * onMyLocChange：我的定位改变
+   * 数据：{eventType:'myLocChange', lng, lat, speed, direction, time}
+   * 
+   */
   _onChange(event) {
     if (event && event.nativeEvent) {
       var eventData = event.nativeEvent;
       var eventType = eventData.eventType;
-      if ("statusChange" === eventType && this.props.onStatusChange) {
-        this.props.onStatusChange(eventData);
+      if ("statusChange" === eventType) {
+        if (this.props.onStatusChange) {
+          this.props.onStatusChange(eventData);
+        }
+      } else if ("myLocChange" === eventType) {
+        if (this.props.onMyLocChange) {
+          this.props.onMyLocChange(eventData);
+        }
       }
     }
   }
@@ -56,7 +73,8 @@ class MapView extends Component {
 MapView.propTypes = {
   ...View.propTypes,
   taxies: React.PropTypes.array, // taxi列表 [{id, lat, lng}]
-  onStatusChange: React.PropTypes.func, // 地图状态改变事件, 如位置改变
+  onStatusChange: React.PropTypes.func, // 地图状态改变事件, 如中心点改变
+  onMyLocChange: React.PropTypes.func // 我的定位改变事件
 };
 
 

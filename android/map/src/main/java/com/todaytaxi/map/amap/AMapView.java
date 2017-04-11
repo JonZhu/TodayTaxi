@@ -1,5 +1,7 @@
 package com.todaytaxi.map.amap;
 
+import android.location.Location;
+
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
@@ -35,8 +37,10 @@ public class AMapView extends MapView {
         super(context);
         this.context = context;
 
-        // 注册状态改变事件
-        getMap().setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
+        AMap map = getMap();
+
+        // 注册状态改变事件监听
+        map.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
 
@@ -56,6 +60,25 @@ public class AMapView extends MapView {
 
                 // 级别
                 event.putInt("level", (int)cameraPosition.zoom);
+
+                // 发送事件
+                JSModuleUtil.sendUIEvent(AMapView.this.context, getId(), event);
+            }
+        });
+
+        // 定位改变监听
+        map.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                WritableMap event = Arguments.createMap();
+                event.putString("eventType", "myLocChange");
+
+                // 位置
+                event.putDouble("lng", location.getLongitude());
+                event.putDouble("lat", location.getLatitude());
+                event.putDouble("speed", location.getSpeed());
+                event.putInt("direction", (int)location.getBearing());
+                event.putInt("time", (int)location.getTime());
 
                 // 发送事件
                 JSModuleUtil.sendUIEvent(AMapView.this.context, getId(), event);
