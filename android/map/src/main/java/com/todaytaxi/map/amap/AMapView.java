@@ -1,6 +1,8 @@
 package com.todaytaxi.map.amap;
 
 import android.location.Location;
+import android.util.Log;
+import android.view.ViewGroup;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -12,6 +14,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.MyLocationStyle;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -36,6 +39,10 @@ public class AMapView extends MapView {
     public AMapView(ThemedReactContext context) {
         super(context);
         this.context = context;
+
+        ViewGroup.LayoutParams layout = new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        setLayoutParams(layout);
 
         AMap map = getMap();
 
@@ -84,6 +91,10 @@ public class AMapView extends MapView {
                 JSModuleUtil.sendUIEvent(AMapView.this.context, getId(), event);
             }
         });
+
+        MyLocationStyle locationStyle = new MyLocationStyle();
+        locationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_SHOW);
+        map.setMyLocationStyle(locationStyle);
     }
 
     /**
@@ -149,4 +160,9 @@ public class AMapView extends MapView {
         this.taxiMarkerMap = newTaxiMap;
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        getMap().setPointToCenter(w/2, h/2); // 在大小改变之后设置中心点, 解决中心点不自动居中问题。
+    }
 }
