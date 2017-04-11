@@ -49,6 +49,8 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
         uiSettings.setRotateGesturesEnabled(false); // 关闭旋转手势
         uiSettings.setTiltGesturesEnabled(false); // 关闭倾斜手势
         uiSettings.setCompassEnabled(false); // 设置是否允许指南针
+        uiSettings.setZoomControlsEnabled(false); // 关闭缩放按钮
+        uiSettings.setZoomInByScreenCenter(true); // 在中心点缩放
 
         // 设置中心点(成都天府五街)和级别 104.056701,30.537908
         CameraUpdate mCameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(30.537908,104.056701),17);
