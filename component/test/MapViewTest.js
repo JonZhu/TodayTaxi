@@ -8,6 +8,7 @@
 import React, { Component } from 'react';
 import { View, Button, ToastAndroid } from 'react-native';
 import MapNaviView from '../../native/MapNaviView';
+import MapView from '../../native/MapView';
 import NaviModule from '../../native/NaviModule';
 
 class MapViewTest extends Component {
@@ -48,9 +49,15 @@ class MapViewTest extends Component {
                     <Button title='停止导航' onPress={this._testStopNavi}/>
                 </View>
 
-                {this.state.showNaviView &&
-                <MapNaviView style={{flex:1, width:'100%'}}/>
-                }
+                <View style={{flex:1}}>
+                    {!this.state.showNaviView &&
+                    <MapView style={{flex:1, width:'100%'}}/>
+                    }
+                    {this.state.showNaviView &&
+                    <MapNaviView style={{flex:1, width:'100%'}}/>
+                    }
+                </View>
+                
             </View>
         );
     }
