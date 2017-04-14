@@ -169,6 +169,7 @@ class CallTaxi extends Component {
                     }
                 } else {
                     // 出错
+                    this._stopPushWaitTaxiLoc(); // 停止轮询
                     ToastAndroid.show(result.message, ToastAndroid.LONG);
                     this.setState({showConfirm:false, showClickToUse:true, showCalling:false}); // 回到叫车状态
                 }
