@@ -250,7 +250,7 @@ class CallTaxi extends Component {
 
     // 显示被分配的车
     _showAllocatedTaxi(allocatedTaxi) {
-        this.setState({allocatedTaxi:allocatedTaxi, showAllocatedTaxi:true});
+        this.setState({allocatedTaxi:allocatedTaxi, showAllocatedTaxi:true, showCalling:false});
     }
 
     // 开始轮询获取被分配车的位置
@@ -330,6 +330,13 @@ class CallTaxi extends Component {
                         </View>
                     </TouchableWithoutFeedback>
                     <CallingProgress/>
+                </View>
+                }
+
+                {this.state.showAllocatedTaxi &&
+                <View style={{position:'absolute', bottom:0, left:0, right:0, backgroundColor:'rgb(255,255,255)'}}>
+                    <Text>车牌号：{this.state.showAllocatedTaxi.taxiNumber}</Text>
+                    <Text>电话：{this.state.motormanPhone}</Text>
                 </View>
                 }
             </View>
