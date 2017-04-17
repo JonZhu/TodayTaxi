@@ -19,7 +19,7 @@ class Motorman extends Component {
     constructor() {
         super();
 
-        this.state = {showAccept:false};
+        this.state = {showMap:true, showAccept:false};
 
         this._startPushFreeLoc = this._startPushFreeLoc.bind(this);
         this._stopPushFreeLoc = this._stopPushFreeLoc.bind(this);
@@ -147,7 +147,7 @@ class Motorman extends Component {
             {lng:route.to.lng, lat:route.to.lat}]; // 从当前位置导航，途经点为行程开始位置
         NaviModule.startNavi(pointList).then(()=>{
             // 导航成功
-            this.setState({showNaviView: true});
+            this.setState({showMap:false, showNaviView: true}); // 要关闭地图, 导航view才能正确显示
             this._startPushRouteLoc(); // 开始上报行程位置
             this._naviArriveWayPointListener = addNaviArriveWayPointListener(()=>{
                 // 到达行程起点, 用于自动设置 到达指定位置
@@ -227,7 +227,9 @@ class Motorman extends Component {
                 <ToolBar title='Today Taxi 司机'/>
 
                 <View style={{flex: 1, justifyContent:'center'}}>
+                    {this.state.showMap &&
                     <Map mapStatusChange={this.props.mapStatusChange} />
+                    }
 
                     {this.state.showAccept &&
                     <View style={{backgroundColor:'rgb(224,224,224)', padding:10}}>
