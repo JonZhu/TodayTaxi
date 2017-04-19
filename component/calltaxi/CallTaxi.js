@@ -37,6 +37,7 @@ class CallTaxi extends Component {
         this._startSearchNearbyFreeTaxi = this._startSearchNearbyFreeTaxi.bind(this);
         this._stopSearchNearbyFreeTaxi = this._stopSearchNearbyFreeTaxi.bind(this);
         this._showAllocatedTaxi = this._showAllocatedTaxi.bind(this);
+        this._mapStatusChange = this._mapStatusChange.bind(this);
     }
 
 
@@ -278,6 +279,12 @@ class CallTaxi extends Component {
         }
     }
 
+    // 地图中心点改变事件
+    _mapStatusChange(event) {
+        this.setState({showConfirm: false}); // 隐藏确认叫车
+        this.props.mapStatusChange(event);
+    }
+
     render() {
         var callTaxi = this.props.callTaxi;
 
@@ -286,7 +293,7 @@ class CallTaxi extends Component {
                 <ToolBar iconOnPress={this.props.toggleSideBar}/>
 
                 <View style={{flex: 1}}>
-                    <Map taxies={this.state.taxiList} mapStatusChange={this.props.mapStatusChange} />
+                    <Map taxies={this.state.taxiList} mapStatusChange={this._mapStatusChange} />
                     <FromGo from={callTaxi.from} go={callTaxi.go} goOnPress={this._gotoChoiceGoAddressPage}/>
 
                     {this.state.showClickToUse &&
