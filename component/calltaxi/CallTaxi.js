@@ -344,7 +344,7 @@ class CallTaxi extends Component {
                 }
 
                 {this.state.showAllocatedTaxi && 
-                <TouchableWithoutFeedback onPress={()=>{Linking.openURL('tel:15914725836')}}>
+                <TouchableWithoutFeedback onPress={()=>{Linking.openURL('tel:' + this.state.allocatedTaxi.motormanPhone)}}>
                     <View style={{position:'absolute', bottom:0, left:0, right:0, backgroundColor:'#fff', 
                         padding:5, borderTopWidth:1, borderTopColor:'#E0EEEE', flexDirection:'row', justifyContent:'space-between'}}>
                         <View>
