@@ -23,7 +23,7 @@ class CallTaxi extends Component {
     constructor() {
         super();
 
-        this.state = {showConfirm: false, showClickToUse:true};
+        this.state = {showConfirm: false, showClickToUse:true, showFromGo:true};
         // this.state = {showConfirm:false, showClickToUse:false, showCalling:true}; // test
 
         this._siderBarUserHeadOnPress = this._siderBarUserHeadOnPress.bind(this);
@@ -159,7 +159,7 @@ class CallTaxi extends Component {
                 if (result.code === 0) {
                     if (result.payload) {
                         // 分配到司机
-                        ToastAndroid('司机已接单:' + JSON.stringify(result.payload));
+                        ToastAndroid.show('司机已接单:' + JSON.stringify(result.payload), ToastAndroid.LONG);
                         this._stopPushWaitTaxiLoc();
                         var allocatedTaxi = result.payload;
                         this._showAllocatedTaxi(allocatedTaxi);
@@ -251,7 +251,7 @@ class CallTaxi extends Component {
 
     // 显示被分配的车
     _showAllocatedTaxi(allocatedTaxi) {
-        this.setState({allocatedTaxi:allocatedTaxi, showAllocatedTaxi:true, showCalling:false});
+        this.setState({allocatedTaxi:allocatedTaxi, showAllocatedTaxi:true, showCalling:false, showFromGo:false});
     }
 
     // 开始轮询获取被分配车的位置
@@ -294,7 +294,10 @@ class CallTaxi extends Component {
 
                 <View style={{flex: 1}}>
                     <Map taxies={this.state.taxiList} mapStatusChange={this._mapStatusChange} />
+
+                    {this.state.showFromGo &&
                     <FromGo from={callTaxi.from} go={callTaxi.go} goOnPress={this._gotoChoiceGoAddressPage}/>
+                    }
 
                     {this.state.showClickToUse &&
                     <View style={{position:'absolute', top:0, bottom:0, left:0, right:0}}>
