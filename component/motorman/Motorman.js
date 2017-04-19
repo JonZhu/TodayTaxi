@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback, ToastAndroid, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableWithoutFeedback, ToastAndroid, Button, Linking } from 'react-native';
 import ToolBar from '../calltaxi/ToolBar';
 import Map from '../calltaxi/Map';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -254,12 +254,27 @@ class Motorman extends Component {
                     {this.state.showNaviView &&
                     <View style={{position:'absolute', top:0, bottom:0, left:0, right:0}}>
                         <MapNaviView style={{position:'absolute', top:0, bottom:0, left:0, right:0}}/>
-                        <View style={{position:'absolute', bottom:0, left:0, right:0}}>
-                            <Button title='到达指定位置' onPress={this._arriveRouteFrom}/>
-                            <Button title='乘客上车' onPress={this._passengerGetOn}/>
-                            <Button title='完成' onPress={this._completeRoute}/>
-                            <Button title='取消' onPress={this._cancelRoute}/>
+                        
+                        <View style={{position:'absolute', bottom:0, left:0, right:0, backgroundColor:'#fff', padding:5, 
+                            borderTopWidth:1, borderTopColor:'#E0EEEE', flexDirection:'row', justifyContent:'space-between'}}>
+                            <TouchableWithoutFeedback onPress={()=>{Linking.openURL('tel:15912345678')}}>
+                                <View>
+                                    <Text>乘客：张先生</Text>
+                                    <Text>电话：15912345678</Text>
+                                </View>
+                            </TouchableWithoutFeedback>
+
+                            <Button title='到达上车点' onPress={this._arriveRouteFrom}/>
+
+                            {/*<Button title='乘客上车' onPress={this._passengerGetOn}/>
+
+                            <View style={{flexDirection:'row'}}>
+                                <Button title='完成' onPress={this._completeRoute}/>
+                                <View style={{width:10}}/>
+                                <Button title='取消' onPress={this._cancelRoute}/>
+                            </View>*/}
                         </View>
+
                     </View>
                     }
 
