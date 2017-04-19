@@ -12,11 +12,11 @@
 
 import React, { Component } from 'react';
 import { Navigator, BackAndroid } from 'react-native';
+import BootPage from './BootPage';
 // import BootPage from '../redux/container/CallTaxiContainer'; // test
-// import BootPage from './BootPage';
 // import BootPage from './test/MapViewTest'; // test
 // import BootPage from './test/MotormanTest'; // test
-import BootPage from './calltaxi/CallTaxiTest'; // test
+// import BootPage from './calltaxi/CallTaxiTest'; // test
 
 class AppNavigator extends Component {
     constructor() {
