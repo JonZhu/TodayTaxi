@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, BackAndroid, ToastAndroid, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, BackAndroid, ToastAndroid, Text, TouchableWithoutFeedback, Linking } from 'react-native';
 import ToolBar from './ToolBar';
 import SideBar from './SideBar';
 import FromGo from './FromGo';
@@ -340,11 +340,20 @@ class CallTaxi extends Component {
                 </View>
                 }
 
-                {this.state.showAllocatedTaxi &&
-                <View style={{position:'absolute', bottom:0, left:0, right:0, backgroundColor:'rgb(255,255,255)'}}>
-                    <Text>车牌号：{this.state.showAllocatedTaxi.taxiNumber}</Text>
-                    <Text>电话：{this.state.motormanPhone}</Text>
-                </View>
+                {this.state.showAllocatedTaxi && 
+                <TouchableWithoutFeedback onPress={()=>{Linking.openURL('tel:15914725836')}}>
+                    <View style={{position:'absolute', bottom:0, left:0, right:0, backgroundColor:'#fff', 
+                        padding:5, borderTopWidth:1, borderTopColor:'#E0EEEE', flexDirection:'row', justifyContent:'space-between'}}>
+                        <View>
+                            <Text>车牌号：{this.state.allocatedTaxi.taxiNumber}</Text>
+                            <Text>电　话：{this.state.allocatedTaxi.motormanPhone}</Text>
+                        </View>
+                        <View>
+                            <Text>车型：大众 朗逸</Text>
+                            <Text>颜色：白色</Text>
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
                 }
             </View>
 
