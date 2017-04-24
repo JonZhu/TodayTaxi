@@ -12,11 +12,15 @@ import CallTaxi from '../redux/container/CallTaxiContainer';
 import Motorman from './motorman/Motorman';
 import rest from './api/rest';
 import md5 from 'md5';
+import TTTextInput from './TTTextInput';
 
 class Login extends Component {
 
     constructor() {
         super();
+
+        this.state = {phone:''}
+
         this._toSignIn = this._toSignIn.bind(this);
         this._login = this._login.bind(this);
     }
@@ -26,7 +30,7 @@ class Login extends Component {
     }
 
     _login() {
-        var phone = this._phone;
+        var phone = this.state.phone;
         var pass = this._pass;
 
         var navigator = this.props.navigator;
@@ -74,8 +78,8 @@ class Login extends Component {
                         <View style={{flexDirection:'row', alignItems:'center', borderBottomWidth:1, 
                             borderBottomColor:'rgb(205,205,211)', paddingLeft:10, height:50}}>
                             <Text style={{fontSize:18}}>帐户：</Text>
-                            <TextInput ref='phoneInput' style={{flex:1}} placeholder='请输入帐户' underlineColorAndroid='transparent'
-                                keyboardType='phone-pad' onChangeText={(text)=>{this._phone = text}}/>
+                            <TTTextInput ref='phoneInput' style={{flex:1}} placeholder='请输入帐户' underlineColorAndroid='transparent'
+                                keyboardType='phone-pad' onChangeText={(text)=>{this.setState({phone:text})}} value={this.state.phone} regexp='\d*' maxLength={11}/>
                         </View>
                         <View style={{flexDirection:'row', alignItems:'center', paddingLeft:10, height:50}}>
                             <Text style={{fontSize:18}}>密码：</Text>
