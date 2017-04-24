@@ -29,8 +29,8 @@ class BootPage extends Component {
                    navigator.resetTo({comp:Login});
                 }, minTime - useTime);
             }
-        }).catch(()=>{
-            ToastAndroid.show("无法连接服务器", ToastAndroid.SHORT);
+        }).catch((reason)=>{
+            ToastAndroid.show("无法连接服务器:" + reason, ToastAndroid.LONG);
         });
 
     }
