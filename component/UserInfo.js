@@ -5,26 +5,20 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Header from './Header';
+import { pageBack } from './util/back';
 
 class UserInfo extends Component {
     constructor() {
         super();
-        this._headerIconOnPress = this._headerIconOnPress.bind(this);
     }
 
-    _headerIconOnPress() {
-        var navigator = this.props.navigator;
-        if (navigator) {
-            navigator.pop();
-        }
-    }
 
     render() {
         const user = this.props.user;
 
         return (
             <View style={{flex:1, backgroundColor:'#fff'}}>
-                <Header title='用户信息' icon='back' iconOnPress={this._headerIconOnPress}/>
+                <Header title='用户信息' icon='back' iconOnPress={pageBack.bind(this)}/>
                 <View style={style.row}>
                     <Text style={style.fieldName}>姓名</Text>
                     <Text style={style.fieldValue}>{user.name}</Text>

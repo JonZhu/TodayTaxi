@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import { View, Text, Button, TextInput, TouchableWithoutFeedback, ToastAndroid } from 'react-native';
 import Header from '../Header';
 import rest from '../api/rest';
+import { pageBack } from '../util/back';
 
 class RegistMotorman extends Component {
 
@@ -58,7 +59,7 @@ class RegistMotorman extends Component {
     render() {
         return (
             <View style={{flex:1, backgroundColor:'#fff'}}>
-                <Header title='注册成为车主'/>
+                <Header title='注册成为车主' icon='back' iconOnPress={pageBack.bind(this)}/>
                 <View style={{flex:1, padding:10}}>
                     <View style={{borderWidth:1, borderRadius:3, borderColor:'rgb(205,205,211)', marginBottom:10}}>
                         <View style={{flexDirection:'row', alignItems:'center', borderBottomWidth:1, 
