@@ -9,6 +9,7 @@ import { View, Text, TextInput, Button, StyleSheet, ToastAndroid } from 'react-n
 import Header from './Header';
 import { validatePhone, validatePass } from './util/validator';
 import rest from './api/rest';
+import { pageBack } from './util/back';
 
 class SignIn extends Component {
 
@@ -49,7 +50,7 @@ class SignIn extends Component {
     render() {
         return (
             <View style={{flex:1, backgroundColor:'#fff'}}>
-                <Header title='注册'/>
+                <Header title='注册' icon='back' iconOnPress={pageBack.bind(this)}/>
                 <View style={{flex:1, padding:10}}>
                     <View style={{borderWidth:1, borderRadius:3, borderColor:'rgb(205,205,211)', marginBottom:10}}>
                         <View style={{flexDirection:'row', alignItems:'center', borderBottomWidth:1, 
