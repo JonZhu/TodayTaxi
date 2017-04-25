@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import RegistMotorman from './RegistMotorman';
+import RouteList from './RouteList';
 
 class SideBar extends Component {
 
@@ -20,6 +21,11 @@ class SideBar extends Component {
     _registMotorman() {
         this.props.toggleSideBar(); // 关闭siderBar;
         this.props.navigator.push({comp:RegistMotorman}); // 跳转到注册车主页
+    }
+
+    _toMyRouteList = ()=>{
+        this.props.toggleSideBar(); // 关闭siderBar;
+        this.props.navigator.push({comp:RouteList}); // 我的行程页面
     }
 
     render() {
@@ -42,10 +48,12 @@ class SideBar extends Component {
                         <Icon name='credit-card' style={style.itemIcon}/>
                         <Text style={style.itemText}>付款方式</Text>
                     </View>
-                    <View style={style.barItemContainer}>
-                        <Icon name='history' style={style.itemIcon}/>
-                        <Text style={style.itemText}>我的行程</Text>
-                    </View>
+                    <TouchableWithoutFeedback onPress={this._toMyRouteList}>
+                        <View style={style.barItemContainer}>
+                            <Icon name='history' style={style.itemIcon}/>
+                            <Text style={style.itemText}>我的行程</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
                     <View style={style.barItemContainer}>
                         <Icon name='life-ring' style={style.itemIcon}/>
                         <Text style={style.itemText}>帮助</Text>
