@@ -1,7 +1,5 @@
 package com.todaytaxi;
 
-import android.os.Bundle;
-
 import com.facebook.react.ReactActivity;
 
 public class MainActivity extends ReactActivity {
@@ -13,13 +11,5 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "TodayTaxi";
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // 初始化百度地图
-        // SDKInitializer.initialize(getApplicationContext());
     }
 }
