@@ -352,8 +352,8 @@ class CallTaxi extends Component {
                             <Text>电　话：{this.state.allocatedTaxi.motormanPhone}</Text>
                         </View>
                         <View>
-                            <Text>车型：大众 朗逸</Text>
-                            <Text>颜色：白色</Text>
+                            <Text>车型：{this.state.allocatedTaxi.brand} {this.state.allocatedTaxi.model}</Text>
+                            <Text>颜色：{this.state.allocatedTaxi.color}</Text>
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
