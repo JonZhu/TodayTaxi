@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { View, ToastAndroid, Text, TouchableWithoutFeedback, FlatList } from 'react-native';
 import Header from '../Header';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import rest from '../api/rest';
 
 class RouteList extends Component {
     constructor() {
@@ -19,6 +20,15 @@ class RouteList extends Component {
             routeList.push({key:i, time:1493102919000, from:'天府广场', to:'双流', status:1});
         }
         this.state = {routeList: routeList};
+    }
+
+    componentDidMount() {
+        this._queryNextPageRoute();
+    }
+
+    // 查询下一页行程数据
+    _queryNextPageRoute = ()=>{
+        rest('/route/getPassengerRouteList.do', {}).then();
     }
 
     _toTimeStr = (time)=>{
