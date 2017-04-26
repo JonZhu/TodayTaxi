@@ -136,7 +136,7 @@ class Motorman extends Component {
                 // TODO 处理异常
             });
         }
-        _pushRouteLocTimer = setInterval(pushFun, 1000);
+        this._pushRouteLocTimer = setInterval(pushFun, 1000);
     }
 
     // 开始导航
