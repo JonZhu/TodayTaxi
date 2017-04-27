@@ -20,17 +20,6 @@ class Motorman extends Component {
         super();
 
         this.state = {showMap:true, showAccept:false};
-
-        this._startPushFreeLoc = this._startPushFreeLoc.bind(this);
-        this._stopPushFreeLoc = this._stopPushFreeLoc.bind(this);
-        this._startPushRouteLoc = this._startPushRouteLoc.bind(this);
-        this._stopPushRouteLoc = this._stopPushRouteLoc.bind(this);
-        this._acceptRoute = this._acceptRoute.bind(this);
-        this._rejectRoute = this._rejectRoute.bind(this);
-        this._arriveRouteFrom = this._arriveRouteFrom.bind(this);
-        this._passengerGetOn = this._passengerGetOn.bind(this);
-        this._completeRoute = this._completeRoute.bind(this);
-        this._cancelRoute = this._cancelRoute.bind(this);
     }
 
     componentDidMount() {
@@ -50,7 +39,7 @@ class Motorman extends Component {
     _pushFreeLocTimer;
 
     // 停止上传空车位置
-    _stopPushFreeLoc() {
+    _stopPushFreeLoc = ()=>{
         if (this._pushFreeLocTimer) {
             clearInterval(this._pushFreeLocTimer);
             this._pushFreeLocTimer = null;
@@ -58,7 +47,7 @@ class Motorman extends Component {
     }
 
     // 上传空车位置
-    _startPushFreeLoc() {
+    _startPushFreeLoc = ()=>{
         this._stopPushFreeLoc();
 
         var pushFun = ()=>{
@@ -89,7 +78,7 @@ class Motorman extends Component {
     }
 
     // 接受预分配的行程
-    _acceptRoute() {
+    _acceptRoute = ()=>{
         var route = this.state.preAllocateRoute;
         rest('/taxi/acceptRoute.do', {passengerId: route.passengerId}).then((result)=>{
             if (result.code === 0) {
@@ -104,7 +93,7 @@ class Motorman extends Component {
     }
 
     // 拒绝预分配的行程
-    _rejectRoute() {
+    _rejectRoute = ()=>{
         // TODO
     }
 
@@ -112,7 +101,7 @@ class Motorman extends Component {
     _pushRouteLocTimer;
 
     // 停止上报行程
-    _stopPushRouteLoc() {
+    _stopPushRouteLoc = ()=>{
         if (this._pushRouteLocTimer) {
             clearInterval(this._pushRouteLocTimer);
             this._pushRouteLocTimer = null;
@@ -120,7 +109,7 @@ class Motorman extends Component {
     }
 
     // 开始上报行程位置
-    _startPushRouteLoc() {
+    _startPushRouteLoc = ()=>{
         this._stopPushFreeLoc();
         this._stopPushRouteLoc();
 
@@ -140,7 +129,7 @@ class Motorman extends Component {
     }
 
     // 开始导航
-    _startNavi() {
+    _startNavi = ()=>{
         var route = this.state.preAllocateRoute;
         var cLoc = this._currentLoc;
         var pointList = [{lng:cLoc.lng, lat:cLoc.lat}, {lng:route.from.lng, lat:route.from.lat}, 
@@ -161,7 +150,7 @@ class Motorman extends Component {
     }
 
     // 到达行程开始位置
-    _arriveRouteFrom() {
+    _arriveRouteFrom = ()=>{
         rest('/taxi/arriveRouteFrom.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
             if (result.code === 0) {
                 // 成功
@@ -177,7 +166,7 @@ class Motorman extends Component {
 
     
     // 乘客上车
-    _passengerGetOn() {
+    _passengerGetOn = ()=>{
         rest('/taxi/passengerGetOn.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
             if (result.code === 0) {
                 // 成功
@@ -191,7 +180,7 @@ class Motorman extends Component {
     }
 
     // 完成行程
-    _completeRoute() {
+    _completeRoute = ()=>{
         rest('/taxi/completeRoute.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
             if (result.code === 0) {
                 // 成功
@@ -205,7 +194,7 @@ class Motorman extends Component {
     }
 
     // 取消行程
-    _cancelRoute() {
+    _cancelRoute = ()=>{
         rest('/taxi/cancelRoute.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
             if (result.code === 0) {
                 // 成功
