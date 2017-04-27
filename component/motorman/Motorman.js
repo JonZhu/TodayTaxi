@@ -136,7 +136,7 @@ class Motorman extends Component {
             {lng:route.to.lng, lat:route.to.lat}]; // 从当前位置导航，途经点为行程开始位置
         NaviModule.startNavi(pointList).then(()=>{
             // 导航成功
-            this.setState({showMap:false, showNaviView: true}); // 要关闭地图, 导航view才能正确显示
+            this.setState({showMap:false, showNaviView: true, showArriveFromBtn:true}); // 要关闭地图, 导航view才能正确显示
             this._startPushRouteLoc(); // 开始上报行程位置
             this._naviArriveWayPointListener = addNaviArriveWayPointListener(()=>{
                 // 到达行程起点, 用于自动设置 到达指定位置
@@ -155,6 +155,7 @@ class Motorman extends Component {
             if (result.code === 0) {
                 // 成功
                 ToastAndroid.show('操作成功', ToastAndroid.LONG);
+                this.setState({showArriveFromBtn:false, showGetOnBtn:true}); // 显示乘客上车按钮
             } else {
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
             }
@@ -171,6 +172,7 @@ class Motorman extends Component {
             if (result.code === 0) {
                 // 成功
                 ToastAndroid.show('操作成功', ToastAndroid.LONG);
+                this.setState({showGetOnBtn:false, showCompleteBtn:true}); // 显示完成按钮
             } else {
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
             }
@@ -184,7 +186,13 @@ class Motorman extends Component {
         rest('/taxi/completeRoute.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
             if (result.code === 0) {
                 // 成功
-                ToastAndroid.show('操作成功', ToastAndroid.LONG);
+                NaviModule.stopNavi(); // 停止导航
+                _stopPushRouteLoc(); // 停止上传行程位置
+                _startPushFreeLoc(); // 开始上传空车位置
+                var realPrice = result.payload;
+                ToastAndroid.show('操作成功:' + JSON.stringify(realPrice), ToastAndroid.LONG);
+                this.setState({showCompleteBtn:false, showNaviView:false, showMap:true, 
+                    realPrice:realPrice}); // 显示地图、实际价格
             } else {
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
             }
@@ -255,15 +263,21 @@ class Motorman extends Component {
                                 </View>
                             </TouchableWithoutFeedback>
 
+                            {this.state.showArriveFromBtn &&
                             <Button title='到达上车点' onPress={this._arriveRouteFrom}/>
+                            }
 
-                            {/*<Button title='乘客上车' onPress={this._passengerGetOn}/>
+                            {this.state.showGetOnBtn &&
+                            <Button title='乘客上车' onPress={this._passengerGetOn}/>
+                            }
 
+                            {this.state.showCompleteBtn && // 完成按钮
                             <View style={{flexDirection:'row'}}>
                                 <Button title='完成' onPress={this._completeRoute}/>
                                 <View style={{width:10}}/>
                                 <Button title='取消' onPress={this._cancelRoute}/>
-                            </View>*/}
+                            </View>
+                            }
                         </View>
 
                     </View>
