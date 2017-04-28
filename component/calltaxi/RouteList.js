@@ -10,6 +10,7 @@ import Header from '../Header';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import rest from '../api/rest';
 import { pageBack } from '../util/back';
+import { toTimeStr } from '../util/date';
 
 class RouteList extends Component {
     constructor() {
@@ -69,17 +70,6 @@ class RouteList extends Component {
 
     }
 
-    // 毫秒转时间字符串
-    _toTimeStr = (time)=>{
-        try {
-            var date = new Date(time);
-            return date.getFullYear() + '年' + date.getMonth() + '月' + date.getDate() + '日 ' 
-                + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-        } catch (error) {
-            return '';
-        }
-    }
-
     // 状态映射
     _statusMap = {
         11: '分配司机',
@@ -109,7 +99,7 @@ class RouteList extends Component {
                                 <View style={{padding: 5, margin:10, marginTop:5, marginBottom:5, borderWidth:1, 
                                     borderColor:'rgb(219,219,219)', borderRadius:3}}>
                                     <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                                        <Text style={{fontWeight:'bold'}}>{this._toTimeStr(item.startTime)}</Text>
+                                        <Text style={{fontWeight:'bold'}}>{toTimeStr(item.startTime)}</Text>
                                         <Text>{this._toConvertStatus(item.status)}</Text>
                                     </View>
                                     <View style={{flexDirection:'row', alignItems:'center'}}>
