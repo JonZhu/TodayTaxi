@@ -82,7 +82,9 @@ class Motorman extends Component {
         var route = this.state.preAllocateRoute;
         rest('/taxi/acceptRoute.do', {passengerId: route.passengerId}).then((result)=>{
             if (result.code === 0) {
-                this.setState({routeId:result.payload, showAccept:false}); // 存储routeId, 关闭接单窗口
+                var resp = result.payload;
+                var passenger = {phone: resp.passengerPhone, nickname: resp.passengerNickname};
+                this.setState({routeId:resp.routeId, passenger:passenger, showAccept:false}); // 存储routeId, 关闭接单窗口
                 this._startNavi(); // 开始导航
             } else {
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
@@ -256,10 +258,10 @@ class Motorman extends Component {
                         
                         <View style={{position:'absolute', bottom:0, left:0, right:0, backgroundColor:'#fff', padding:5, 
                             borderTopWidth:1, borderTopColor:'#E0EEEE', flexDirection:'row', justifyContent:'space-between'}}>
-                            <TouchableWithoutFeedback onPress={()=>{Linking.openURL('tel:15912345678')}}>
+                            <TouchableWithoutFeedback onPress={()=>{Linking.openURL('tel:' + this.state.passenger.phone)}}>
                                 <View>
-                                    <Text>乘客：张先生</Text>
-                                    <Text>电话：15912345678</Text>
+                                    <Text>乘客：{this.state.passenger.nickname}</Text>
+                                    <Text>电话：{this.state.passenger.phone}</Text>
                                 </View>
                             </TouchableWithoutFeedback>
 
