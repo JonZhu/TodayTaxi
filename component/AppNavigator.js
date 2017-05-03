@@ -11,7 +11,8 @@
  */
 
 import React, { Component } from 'react';
-import { Navigator, BackAndroid } from 'react-native';
+import { BackAndroid } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
 import BootPage from './BootPage';
 // import BootPage from '../redux/container/CallTaxiContainer'; // test
 // import BootPage from './test/MapViewTest'; // test
