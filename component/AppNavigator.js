@@ -11,7 +11,7 @@
  */
 
 import React, { Component } from 'react';
-import { BackAndroid } from 'react-native';
+import { BackHandler } from 'react-native';
 import { Navigator } from 'react-native-deprecated-custom-components';
 import BootPage from './BootPage';
 // import BootPage from '../redux/container/CallTaxiContainer'; // test
@@ -43,11 +43,11 @@ class AppNavigator extends Component {
     }
 
     componentDidMount() {
-        BackAndroid.addEventListener('hardwareBackPress', this._onHardwareBackPress);
+        BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackPress);
     }
 
     componentWillUnmount() {
-        BackAndroid.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
+        BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
     }
 
     render() {

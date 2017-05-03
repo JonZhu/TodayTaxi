@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, BackAndroid, ToastAndroid, Text, TouchableWithoutFeedback, Linking } from 'react-native';
+import { View, BackHandler, ToastAndroid, Text, TouchableWithoutFeedback, Linking } from 'react-native';
 import ToolBar from './ToolBar';
 import SideBar from './SideBar';
 import FromGo from './FromGo';
@@ -71,14 +71,14 @@ class CallTaxi extends Component {
     }
 
     componentDidMount() {
-        BackAndroid.addEventListener('hardwareBackPress', this._onHardwareBackPress);
+        BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackPress);
         this._location();
 
         this._startSearchNearbyFreeTaxi();
     }
 
     componentWillUnmount() {
-        BackAndroid.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
+        BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
     }
 
     // 定位当前位置

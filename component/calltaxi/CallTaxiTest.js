@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, BackAndroid, ToastAndroid, Text, TouchableWithoutFeedback, Linking } from 'react-native';
+import { View, BackHandler, ToastAndroid, Text, TouchableWithoutFeedback, Linking } from 'react-native';
 import ToolBar from './ToolBar';
 import SideBar from './SideBar';
 import FromGo from './FromGo';
