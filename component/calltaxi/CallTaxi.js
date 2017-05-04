@@ -25,23 +25,10 @@ class CallTaxi extends Component {
 
         this.state = {showConfirm: false, showClickToUse:true, showFromGo:true};
         // this.state = {showConfirm:false, showClickToUse:false, showCalling:true}; // test
-
-        this._siderBarUserHeadOnPress = this._siderBarUserHeadOnPress.bind(this);
-        this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
-        this._gotoChoiceGoAddressPage = this._gotoChoiceGoAddressPage.bind(this);
-        this._location = this._location.bind(this);
-        this._clickToUse = this._clickToUse.bind(this);
-        this._driveRoute = this._driveRoute.bind(this);
-        this._confirmCallTaxi = this._confirmCallTaxi.bind(this);
-        this._cancelCallTaxi = this._cancelCallTaxi.bind(this);
-        this._startSearchNearbyFreeTaxi = this._startSearchNearbyFreeTaxi.bind(this);
-        this._stopSearchNearbyFreeTaxi = this._stopSearchNearbyFreeTaxi.bind(this);
-        this._showAllocatedTaxi = this._showAllocatedTaxi.bind(this);
-        this._mapStatusChange = this._mapStatusChange.bind(this);
     }
 
 
-    _siderBarUserHeadOnPress() {
+    _siderBarUserHeadOnPress = ()=>{
         var navigator = this.props.navigator;
         // 跳转到用户信息页
         navigator.push({
@@ -51,7 +38,7 @@ class CallTaxi extends Component {
         this.props.toggleSideBar(); // 隐藏side bar
     }
 
-    _onHardwareBackPress() {
+    _onHardwareBackPress = ()=>{
         // 处理back键, 关闭sider bar
         if (this.props.sideBar.isShow) {
             this.props.toggleSideBar();
@@ -62,7 +49,7 @@ class CallTaxi extends Component {
     }
 
     // 跳转到选择目标地址页
-    _gotoChoiceGoAddressPage() {
+    _gotoChoiceGoAddressPage = ()=>{
         var navigator = this.props.navigator;
         // 跳转到选择目标地址页
         navigator.push({
@@ -82,20 +69,18 @@ class CallTaxi extends Component {
     }
 
     // 定位当前位置
-    async _location() {
-        try {
-            var loc = await MapModule.location();
+    _location = ()=>{
+        MapModule.location().then((loc)=>{
             console.info('定位结果：');
             console.info(loc);
-
             this.props.initlocationResult(loc);
-        } catch (error) {
+        }).catch((reason)=>{
             console.error(error);
-        }
+        });
     }
 
     // 点击叫车
-    _clickToUse() {
+    _clickToUse = ()=>{
         var {from, go} = this.props.callTaxi;
         if (from.locationed !== true) {
             ToastAndroid.show('开始位置未定位,请稍后', ToastAndroid.SHORT);
@@ -111,29 +96,29 @@ class CallTaxi extends Component {
         this._driveRoute({lat:from.lat, lng:from.lng}, {lat:go.lat, lng:go.lng});
     }
 
-    // 路线规则、价格预算
-    async _driveRoute(from, go) {
-        var routes = await MapModule.drivingRoute(from, go);
-        var result;
-        try {
-            result = await rest('/calltaxi/priceBudget', routes);
-        } catch (error) {
-            ToastAndroid.show('无法连接服务器', ToastAndroid.SHORT);
-        }
-        
-        if (result.code === 0) {
-            // 服务端响应成功
-            this.setState({
-                showConfirm: true,
-                priceBudget: result.payload
-            });
-        } else {
-            ToastAndroid.show('价格预算失败', ToastAndroid.SHORT);
-        }
+    // 路线规划、价格预算
+    _driveRoute = (from, go)=>{
+        MapModule.drivingRoute(from, go).then((routes)=>{
+            // 路线规划返回
+            return rest('/calltaxi/priceBudget', routes); // 价格预算
+        }).then((result)=>{
+            // 价格预算返回
+            if (result.code === 0) {
+                // 服务端响应成功
+                this.setState({
+                    showConfirm: true,
+                    priceBudget: result.payload
+                });
+            } else {
+                ToastAndroid.show('价格预算:' + result.message, ToastAndroid.LONG);
+            }
+        }).catch((reason)=>{
+            ToastAndroid.show('价格预算出错:' + reason, ToastAndroid.LONG);
+        });
     }
 
     // 用户点击确认乘车
-    _confirmCallTaxi() {
+    _confirmCallTaxi = ()=>{
         var callTaxi = this.props.callTaxi;
         var from = {...callTaxi.from};
         var to = {...callTaxi.go};
@@ -152,7 +137,7 @@ class CallTaxi extends Component {
     }
 
     // 开始轮询上报位置, 直到有司机接单或超时
-    _startPushWaitTaxiLoc() {
+    _startPushWaitTaxiLoc = ()=>{
         this._stopPushWaitTaxiLoc();
         var fun = ()=>{
             rest('/calltaxi/pushWaitTaxiLoc.do').then((result)=>{
@@ -183,7 +168,7 @@ class CallTaxi extends Component {
         this._pushWaitTaxiLocTimer = setInterval(fun, 1000);
     }
 
-    _stopPushWaitTaxiLoc() {
+    _stopPushWaitTaxiLoc = ()=>{
         if (this._pushWaitTaxiLocTimer) {
             clearInterval(this._pushWaitTaxiLocTimer);
             this._pushWaitTaxiLocTimer = null;
@@ -191,7 +176,7 @@ class CallTaxi extends Component {
     }
 
     // 取消叫车
-    _cancelCallTaxi() {
+    _cancelCallTaxi = ()=>{
         rest('/calltaxi/cancelRoute.do').then((result)=>{
             if (result.code === 0) {
                 ToastAndroid.show('发送取消请求成功', ToastAndroid.SHORT);
@@ -207,7 +192,7 @@ class CallTaxi extends Component {
     _searchNearbyFreeTaxiTimer;
 
     // 搜索附近空车
-    _startSearchNearbyFreeTaxi() {
+    _startSearchNearbyFreeTaxi = ()=>{
         this._stopSearchNearbyFreeTaxi();
 
         var fun = ()=>{            
@@ -241,7 +226,7 @@ class CallTaxi extends Component {
         _searchNearbyFreeTaxiTimer = setInterval(fun, 3000);
     }
 
-    _stopSearchNearbyFreeTaxi() {
+    _stopSearchNearbyFreeTaxi = ()=>{
         if (this._searchNearbyFreeTaxiTimer) {
             clearInterval(this._searchNearbyFreeTaxiTimer);
             this._searchNearbyFreeTaxiTimer = null;
@@ -250,16 +235,17 @@ class CallTaxi extends Component {
 
 
     // 显示被分配的车
-    _showAllocatedTaxi(allocatedTaxi) {
+    _showAllocatedTaxi = (allocatedTaxi)=>{
         this.setState({allocatedTaxi:allocatedTaxi, showAllocatedTaxi:true, showCalling:false, showFromGo:false});
     }
 
     // 开始轮询获取被分配车的位置
-    _startGetAllocatedTaxiLoc() {
+    _startGetAllocatedTaxiLoc = ()=>{
         var taxiId = this.state.allocatedTaxi.taxiId;
         var fun = ()=>{
             rest("/calltaxi/getTaxiLoc.do").then((result)=>{
                 if (result.code === 0) {
+                    // var {status, loc} = result.payload;
                     // TODO 显示轨迹
                 } else {
                     // 处理异常
@@ -272,7 +258,7 @@ class CallTaxi extends Component {
         this._getAllocatedTaxiLocTimer = setInterval(fun, 2000);
     }
 
-    _stopGetAllocatedTaxiLoc() {
+    _stopGetAllocatedTaxiLoc = ()=>{
         if (this._getAllocatedTaxiLocTimer) {
             clearInterval(this._getAllocatedTaxiLocTimer);
             this._getAllocatedTaxiLocTimer = null;
@@ -280,7 +266,7 @@ class CallTaxi extends Component {
     }
 
     // 地图中心点改变事件
-    _mapStatusChange(event) {
+    _mapStatusChange = (event)=>{
         this.setState({showConfirm: false}); // 隐藏确认叫车
         this.props.mapStatusChange(event);
     }
