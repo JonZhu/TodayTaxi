@@ -192,14 +192,14 @@ class Motorman extends Component {
             if (result.code === 0) {
                 // 成功
                 NaviModule.stopNavi(); // 停止导航
-                _stopPushRouteLoc(); // 停止上传行程位置
-                _startPushFreeLoc(); // 开始上传空车位置
+                this._stopPushRouteLoc(); // 停止上传行程位置
+                this._startPushFreeLoc(); // 开始上传空车位置
                 var realPrice = result.payload;
                 ToastAndroid.show('操作成功:' + JSON.stringify(realPrice), ToastAndroid.LONG);
                 this.setState({showCompleteBtn:false, showNaviView:false, showMap:true, 
                     realPrice:realPrice}); // 显示地图、实际价格
             } else {
-                ToastAndroid.show(result.message, ToastAndroid.LONG);
+                ToastAndroid.show('操作失败:' + result.message, ToastAndroid.LONG);
             }
         }).catch((reason)=>{
             ToastAndroid.show(reason, ToastAndroid.LONG);
