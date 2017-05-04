@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, AsyncStorage } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import RegistMotorman from './RegistMotorman';
 import RouteList from './RouteList';
@@ -14,11 +14,16 @@ class SideBar extends Component {
 
     constructor() {
         super();
-        this._registMotorman = this._registMotorman.bind(this);
+        this.state = {};
     }
 
+    componentDidMount() {
+        AsyncStorage.getItem('currentUserPhone').then((phone)=>{
+            this.setState({userPhone:phone});
+        });
+    }
 
-    _registMotorman() {
+    _registMotorman = ()=>{
         this.props.toggleSideBar(); // 关闭siderBar;
         this.props.navigator.push({comp:RegistMotorman}); // 跳转到注册车主页
     }
@@ -40,7 +45,7 @@ class SideBar extends Component {
                     <TouchableWithoutFeedback onPress={()=>this.props.userHeadOnPress()}>
                         <View style={style.headContainer}>
                             <Icon name='user-circle' style={style.userIcon}/>
-                            <Text style={style.userName}>ZHU JUN</Text>
+                            <Text style={style.userName}>{this.state.userPhone}</Text>
                         </View>
                     </TouchableWithoutFeedback>
 
@@ -123,7 +128,7 @@ const style = StyleSheet.create({
     userName: {
         color: '#fff',
         fontSize: 20,
-        marginLeft: 15
+        marginLeft: 10
     },
 
     // bar item

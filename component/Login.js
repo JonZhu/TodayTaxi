@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAndroid } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAndroid, AsyncStorage } from 'react-native';
 import Header from './Header';
 import SignIn from './SignIn';
 import CallTaxi from '../redux/container/CallTaxiContainer';
@@ -51,6 +51,8 @@ class Login extends Component {
             // 登录返回
             if (result.code === 0) {
                 // 登录成功
+                AsyncStorage.setItem('currentUserPhone', phone); // 储存当前用户手机
+
                 return rest('/user/getStatus.do');
             } else {
                 throw new Error(result.message);
