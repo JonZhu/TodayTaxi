@@ -7,6 +7,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import RouteList from './RouteList';
 
 class SideBar extends Component {
 
