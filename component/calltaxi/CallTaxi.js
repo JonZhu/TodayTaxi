@@ -17,6 +17,7 @@ import ChoiceGoContainer from '../../redux/container/ChoiceGoContainer';
 import MapModule from '../../native/MapModule';
 import rest from '../api/rest';
 import CallingProgress from './CallingProgress';
+import RouteStatus from '../const/RouteStatus';
 
 class CallTaxi extends Component {
 
@@ -245,8 +246,16 @@ class CallTaxi extends Component {
         var fun = ()=>{
             rest("/calltaxi/getTaxiLoc.do").then((result)=>{
                 if (result.code === 0) {
-                    // var {status, loc} = result.payload;
-                    // TODO 显示轨迹
+                    var {status, loc} = result.payload;
+                    if (status === RouteStatus.UN_START || status === RouteStatus.COMPLETE || 
+                        status === RouteStatus.MOTORMAN_CANCEL) {
+                        // 如果状态变为：未开始、完成、司机取消，回到未叫车状态
+                        this._stopGetAllocatedTaxiLoc();
+                        this.setState({showConfirm: false, showClickToUse:true, showFromGo:true, showAllocatedTaxi:false});
+                    } else {
+
+                        // TODO 显示轨迹
+                    }
                 } else {
                     // 处理异常
                 }
