@@ -1,13 +1,12 @@
 /**
- * 侧边栏
+ * 司机侧边栏
  * 
- * @date 2016-11-28
+ * @date 2017-5-4
  */
 
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, AsyncStorage } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import RegistMotorman from './RegistMotorman';
 import RouteList from './RouteList';
 
 class SideBar extends Component {
@@ -21,11 +20,6 @@ class SideBar extends Component {
         AsyncStorage.getItem('currentUserPhone').then((phone)=>{
             this.setState({userPhone:phone});
         });
-    }
-
-    _registMotorman = ()=>{
-        this.props.toggleSideBar(); // 关闭siderBar;
-        this.props.navigator.push({comp:RegistMotorman}); // 跳转到注册车主页
     }
 
     _toMyRouteList = ()=>{
@@ -71,12 +65,6 @@ class SideBar extends Component {
                         <Icon name='certificate' style={style.itemIcon}/>
                         <Text style={style.itemText}>优惠</Text>
                     </View>
-                    <TouchableWithoutFeedback onPress={this._registMotorman}>
-                        <View style={style.barItemContainer}>
-                            <Icon name='tachometer' style={style.itemIcon}/>
-                            <Text style={style.itemText}>成为车主</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
                     <View style={style.barItemContainer}>
                         <Icon name='cog' style={style.itemIcon}/>
                         <Text style={style.itemText}>设置</Text>
