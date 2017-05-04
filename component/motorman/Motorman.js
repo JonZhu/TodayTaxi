@@ -5,9 +5,10 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback, ToastAndroid, Button, Linking } from 'react-native';
+import { View, Text, StyleSheet, TouchableWithoutFeedback, ToastAndroid, Button, Linking, BackHandler } from 'react-native';
 import ToolBar from '../calltaxi/ToolBar';
 import Map from '../calltaxi/Map';
+import SideBar from './SideBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MapModule from '../../native/MapModule';
 import NaviModule, { addNaviArriveWayPointListener } from '../../native/NaviModule';
@@ -24,6 +25,7 @@ class Motorman extends Component {
 
     componentDidMount() {
         this._startPushFreeLoc();
+        BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackPress);
     }
 
     componentWillUnmount() {
@@ -33,6 +35,7 @@ class Motorman extends Component {
             this._naviArriveWayPointListener.stop();
             this._naviArriveWayPointListener = null;
         }
+        BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
     }
 
 
@@ -217,13 +220,27 @@ class Motorman extends Component {
         });
     }
 
+    // 显示或关闭SideBar
+    _toggleSideBar = ()=>{
+        this.setState({showSideBar:this.state.showSideBar ? false : true});
+    }
+
+    _onHardwareBackPress = ()=>{
+        // 处理back键, 关闭sider bar
+        if (this.state.showSideBar) {
+            this._toggleSideBar();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     render() {
         var preAllocateRoute = this.state.preAllocateRoute;
 
         return (
             <View style={{flex:1, backgroundColor: 'rgb(240,239,233)'}}>
-                <ToolBar title='Today Taxi 司机'/>
+                <ToolBar title='Today Taxi 司机' iconOnPress={this._toggleSideBar}/>
 
                 <View style={{flex: 1, justifyContent:'center'}}>
                     {this.state.showMap &&
@@ -286,6 +303,11 @@ class Motorman extends Component {
                     }
 
                 </View>
+
+                {this.state.showSideBar && 
+                <SideBar toggleSideBar={this._toggleSideBar} navigator={this.props.navigator}/>
+                }
+
             </View>
         );
     }
