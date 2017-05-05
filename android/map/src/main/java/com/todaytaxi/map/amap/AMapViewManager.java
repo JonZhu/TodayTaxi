@@ -1,5 +1,7 @@
 package com.todaytaxi.map.amap;
 
+import android.location.Location;
+
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -60,6 +62,28 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
         return mapView;
     }
 
+
+    /**
+     * 设置 我的定位是否显示
+     * @param view
+     * @param enable
+     */
+    @ReactProp(name = "showMyLoc", defaultBoolean = true)
+    public void setMyLocationEnabled(AMapView view, boolean enable) {
+        view.getMap().setMyLocationEnabled(enable);
+    }
+
+    /**
+     * 设置 我的定位按钮是否显示
+     * @param view
+     * @param enable
+     */
+    @ReactProp(name = "showMyLocBtn", defaultBoolean = true)
+    public void setMyLocationButtonEnabled(AMapView view, boolean enable) {
+        view.getMap().getUiSettings().setMyLocationButtonEnabled(enable);
+    }
+
+
     /**
      * 设置Taxi
      *
@@ -117,13 +141,16 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
     private static interface Command {
         int SET_MAP_BOUND = 1;
         int MOVE = 2;
+        int SHOW_ROUTE = 3;
     }
 
     @Nullable
     @Override
     public Map<String, Integer> getCommandsMap() {
-        return MapBuilder.of("setMapBound", Command.SET_MAP_BOUND,
-                "move", Command.MOVE);
+        return MapBuilder.of(
+                "setMapBound", Command.SET_MAP_BOUND,
+                "move", Command.MOVE,
+                "showRoute", Command.SHOW_ROUTE);
     }
 
     @Override
@@ -136,7 +163,32 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
                 ReadableMap point = args.getMap(0);
                 root.moveMap(point.getDouble("lng"), point.getDouble("lat"));
                 break;
+            case Command.SHOW_ROUTE:
+                showRoute(root, args);
+                break;
         }
+    }
+
+    /**
+     * 显示行程
+     *
+     * @param view
+     * @param points 行程点数据, 如果为空, 则清除行程 [{lng, lat}]
+     */
+    private void showRoute(AMapView view, ReadableArray points) {
+        List<Location> locList = null;
+        if (points != null && points.size() > 0) {
+            locList = new ArrayList<>();
+            for (int i = 0; i < points.size(); i++) {
+                ReadableMap point = points.getMap(i);
+                Location loc = new Location("TodayTaxi");
+                loc.setLongitude(point.getDouble("lng"));
+                loc.setLatitude(point.getDouble("lat"));
+                locList.add(loc);
+            }
+        }
+
+        view.showRoute(locList);
     }
 
 }

@@ -22,7 +22,9 @@ import com.todaytaxi.map.R;
 import com.todaytaxi.map.domain.Taxi;
 import com.todaytaxi.map.util.JSModuleUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +37,8 @@ public class AMapView extends MapView {
     private ThemedReactContext context;
 
     private Map<String, Marker> taxiMarkerMap;
+
+    private final List<Marker> routeMarkerList = new ArrayList<>(2);
 
     public AMapView(ThemedReactContext context) {
         super(context);
@@ -124,6 +128,8 @@ public class AMapView extends MapView {
         Map<String, Marker> newTaxiMap = new HashMap<>();
 
         if (taxiList != null && taxiList.size() > 0) {
+            //构建Marker图标
+            BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.taxi_top_yellow);
             for (int i = 0; i < taxiList.size(); i++) {
                 Taxi taxi = taxiList.get(i);
                 String taxiId = taxi.getId();
@@ -138,15 +144,13 @@ public class AMapView extends MapView {
                     marker.setRotateAngle(rotate);
                     oldTaxiMap.remove(taxiId);
                 } else {
-                    //构建Marker图标
-                    BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.taxi_top_yellow);
                     //构建MarkerOption，用于在地图上添加Marker
                     MarkerOptions option = new MarkerOptions()
                             .position(point)
                             .rotateAngle(rotate)
                             .icon(bitmap);
                     //在地图上添加Marker，并显示
-                    marker = (Marker)getMap().addMarker(option);
+                    marker = getMap().addMarker(option);
                 }
 
                 newTaxiMap.put(taxiId, marker);
@@ -168,5 +172,44 @@ public class AMapView extends MapView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         getMap().setPointToCenter(w/2, h/2); // 在大小改变之后设置中心点, 解决中心点不自动居中问题。
+    }
+
+    /**
+     * 显示行程
+     * @param locList 如果为空, 清除行程
+     */
+    public void showRoute(List<Location> locList) {
+        if (!routeMarkerList.isEmpty()) {
+            // 消除route
+            Iterator<Marker> iterator = routeMarkerList.iterator();
+            while (iterator.hasNext()) {
+                Marker marker = iterator.next();
+                marker.remove();
+                marker.destroy();
+                iterator.remove();
+            }
+        }
+
+        if (locList != null && !locList.isEmpty()) {
+            // 目前当显示起始点，不显示路径
+
+            // 起点
+            Location fromLoc = locList.get(0);
+            MarkerOptions option = new MarkerOptions()
+                    .position(new LatLng(fromLoc.getLatitude(), fromLoc.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.from_location));
+            Marker marker = getMap().addMarker(option);
+            routeMarkerList.add(marker);
+
+            if (locList.size() > 1) {
+                // 终点
+                Location toLoc = locList.get(locList.size() - 1);
+                option = new MarkerOptions()
+                        .position(new LatLng(toLoc.getLatitude(), toLoc.getLongitude()))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.to_location));
+                marker = getMap().addMarker(option);
+                routeMarkerList.add(marker);
+            }
+        }
     }
 }
