@@ -63,6 +63,14 @@ class MapView extends Component {
     this._dispatchNativeUICmd('move', [{lng:lng, lat:lat}]);
   }
 
+  /**
+   * 显示行程
+   * @param points 行程点数据, 如果为空, 则清除行程 [{lng, lat}]
+   */
+  showRoute = (points)=>{
+    this._dispatchNativeUICmd('showRoute', points);
+  } 
+
   render() {
     return (
       <NativeMapView ref={(ref)=>{this._nativeMapView=ref}} {...this.props} onChange={this._onChange} />
@@ -74,7 +82,9 @@ MapView.propTypes = {
   ...View.propTypes,
   taxies: React.PropTypes.array, // taxi列表 [{id, lat, lng}]
   onStatusChange: React.PropTypes.func, // 地图状态改变事件, 如中心点改变
-  onMyLocChange: React.PropTypes.func // 我的定位改变事件
+  onMyLocChange: React.PropTypes.func, // 我的定位改变事件
+  showMyLoc: React.PropTypes.bool, // 是否显示我的位置
+  showMyLocBtn: React.PropTypes.bool // 是否显示返回我的位置按钮
 };
 
 
