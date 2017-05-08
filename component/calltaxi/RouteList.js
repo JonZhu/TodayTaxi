@@ -102,7 +102,7 @@ class RouteList extends Component {
                             var item = row.item;
                             // row.index
                             return (
-                                <TouchableWithoutFeedback onPress={()=>{this._toRouteInfo(item.routeId)}}>
+                                <TouchableWithoutFeedback onPress={()=>{this._toRouteInfo(item.id)}}>
                                     <View style={{padding: 5, margin:10, marginTop:5, marginBottom:5, borderWidth:1, 
                                         borderColor:'rgb(219,219,219)', borderRadius:3}}>
                                         <View style={{flexDirection:'row', justifyContent:'space-between'}}>

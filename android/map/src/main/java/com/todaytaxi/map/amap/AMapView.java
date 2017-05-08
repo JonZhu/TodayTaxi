@@ -190,26 +190,27 @@ public class AMapView extends MapView {
             }
         }
 
-        if (locList != null && !locList.isEmpty()) {
-            // 目前当显示起始点，不显示路径
+        if (locList != null && locList.size() > 1) {
+            // 目前只显示起始点，不显示路径
 
             // 起点
             Location fromLoc = locList.get(0);
+            LatLng fromPoint = new LatLng(fromLoc.getLatitude(), fromLoc.getLongitude());
             MarkerOptions option = new MarkerOptions()
-                    .position(new LatLng(fromLoc.getLatitude(), fromLoc.getLongitude()))
+                    .position(fromPoint)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.from_location));
             Marker marker = getMap().addMarker(option);
             routeMarkerList.add(marker);
 
-            if (locList.size() > 1) {
-                // 终点
-                Location toLoc = locList.get(locList.size() - 1);
-                option = new MarkerOptions()
-                        .position(new LatLng(toLoc.getLatitude(), toLoc.getLongitude()))
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.to_location));
-                marker = getMap().addMarker(option);
-                routeMarkerList.add(marker);
-            }
+
+            // 终点
+            Location toLoc = locList.get(locList.size() - 1);
+            LatLng toPoint = new LatLng(toLoc.getLatitude(), toLoc.getLongitude());
+            option = new MarkerOptions()
+                    .position(toPoint)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.to_location));
+            marker = getMap().addMarker(option);
+            routeMarkerList.add(marker);
         }
     }
 }
