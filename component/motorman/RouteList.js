@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { View, ToastAndroid, Text, TouchableWithoutFeedback, FlatList } from 'react-native';
 import Header from '../Header';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import RouteInfo from './RouteInfo';
 import rest from '../api/rest';
 import { pageBack } from '../util/back';
 import { toTimeStr } from '../util/date';
@@ -86,6 +87,11 @@ class RouteList extends Component {
         return s ? s : "--";
     }
 
+    // 跳转到行程详情
+    _toRouteInfo = (routeId)=>{
+        this.props.navigator.push({comp: RouteInfo, props:{routeId: routeId}});
+    }
+
     render() {
         return (
             <View style={{flex:1, backgroundColor:'#fff'}}>
@@ -96,6 +102,7 @@ class RouteList extends Component {
                             var item = row.item;
                             // row.index
                             return (
+                                <TouchableWithoutFeedback onPress={()=>{this._toRouteInfo(item.id)}}>
                                 <View style={{padding: 5, margin:10, marginTop:5, marginBottom:5, borderWidth:1, 
                                     borderColor:'rgb(219,219,219)', borderRadius:3}}>
                                     <View style={{flexDirection:'row', justifyContent:'space-between'}}>
@@ -111,6 +118,7 @@ class RouteList extends Component {
                                         <Text style={{padding:3, paddingLeft:10}}>{item.toAddress}</Text>
                                     </View>
                                 </View>
+                                </TouchableWithoutFeedback>
                             )
                         }}
                     />
