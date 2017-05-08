@@ -33,29 +33,8 @@ class RouteInfo extends Component {
 
     _showRoute = (route)=>{
         this._mapView.showRoute([{lng:route.fromLng, lat:route.fromLat}, {lng:route.toLng, lat:route.toLat}]); // 显示行程
-
         // 扩大显示范围
-        var minLng, maxLng, minLat, maxLat;
-        if (route.fromLng < route.toLng) {
-            minLng = route.fromLng;
-            maxLng = route.toLng;
-        } else {
-            minLng = route.toLng;
-            maxLng = route.fromLng;
-        }
-
-        if (route.fromLat < route.toLat) {
-            minLat = route.fromLat;
-            maxLat = route.toLat;
-        } else {
-            minLat = route.toLat;
-            maxLat = route.fromLat;
-        }
-        var hEnlarge = 0.01; // 范围水平扩大约1000米
-        var vEnlarge = 0.015; // 范围垂直扩大约1500米
-        this._mapView.setMapBound([{lng:minLng - hEnlarge, lat:Math.max(minLat - vEnlarge, -90)}, 
-            {lng:maxLng + hEnlarge, lat:Math.min(maxLat + vEnlarge, 90)}]);
-
+        this._mapView.setMapBoundEnlarge([{lng:route.fromLng, lat:route.fromLat}, {lng:route.toLng, lat:route.toLat}]);
     }
 
 

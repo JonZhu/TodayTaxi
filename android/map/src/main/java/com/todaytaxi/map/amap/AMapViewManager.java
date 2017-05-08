@@ -124,15 +124,16 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
      * @param points 坐标列表 [{lng, lat}]
      */
     private void setMapBound(AMapView view, ReadableArray points) {
-        if (points == null || points.size() <2 ) {
+        if (points == null || points.size() ==0 ) {
             return;
         }
 
-        ReadableMap p1Map = points.getMap(0);
-        ReadableMap p2Map = points.getMap(1);
-        LatLng point1 = new LatLng(p1Map.getDouble("lat"), p1Map.getDouble("lng"));
-        LatLng point2 = new LatLng(p2Map.getDouble("lat"), p2Map.getDouble("lng"));
-        view.setMapBound(point1, point2);
+        List<LatLng> list = new ArrayList<>(2);
+        for (int i = 0; i < points.size(); i++) {
+            ReadableMap pMap = points.getMap(i);
+            list.add(new LatLng(pMap.getDouble("lat"), pMap.getDouble("lng")));
+        }
+        view.setMapBound(list);
     }
 
     /**

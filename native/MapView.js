@@ -58,6 +58,34 @@ class MapView extends Component {
     this._dispatchNativeUICmd('setMapBound', points);
   }
 
+  // 设置范围并适当扩大
+  setMapBoundEnlarge = (points)=>{
+    if (!points || points.length == 0) {
+      return;
+    }
+
+    // 扩大显示范围
+    var minLng, maxLng, minLat, maxLat;
+    for (var i = 0; i < points.length; i++) {
+      var point = points[i];
+      if (i == 0) {
+        minLng = maxLng = point.lng;
+        minLat = maxLat = point.lat;
+      } else {
+        minLng = Math.min(minLng, point.lng);
+        maxLng = Math.max(maxLng, point.lng);
+        minLat = Math.min(minLat, point.lat);
+        maxLat = Math.max(maxLat, point.lat);
+      }
+    }
+
+    var hEnlarge = 0.01; // 范围水平扩大约1000米
+    var vEnlarge = 0.015; // 范围垂直扩大约1500米
+    this.setMapBound([{lng:minLng - hEnlarge, lat:Math.max(minLat - vEnlarge, -90)}, 
+        {lng:maxLng + hEnlarge, lat:Math.min(maxLat + vEnlarge, 90)}]);
+
+}
+
   // 移动地图中心
   move(lng, lat) {
     this._dispatchNativeUICmd('move', [{lng:lng, lat:lat}]);

@@ -114,8 +114,12 @@ public class AMapView extends MapView {
         getMap().moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lat, lng)));
     }
 
-    public void setMapBound(LatLng p1, LatLng p2) {
-        LatLngBounds bounds = LatLngBounds.builder().include(p1).include(p2).build();
+    public void setMapBound(List<LatLng> pointList) {
+        LatLngBounds.Builder builder = LatLngBounds.builder();
+        for (LatLng point : pointList) {
+            builder.include(point);
+        }
+        LatLngBounds bounds = builder.build();
         getMap().moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
     }
 
