@@ -14,10 +14,6 @@ class MapView extends Component {
 
   constructor() {
     super();
-    this._onChange = this._onChange.bind(this);
-    this.setMapBound = this.setMapBound.bind(this);
-    this._dispatchNativeUICmd = this._dispatchNativeUICmd.bind(this);
-    this.move = this.move.bind(this);
   }
 
   /**
@@ -30,7 +26,7 @@ class MapView extends Component {
    * 数据：{eventType:'myLocChange', lng, lat, speed, direction, time}
    * 
    */
-  _onChange(event) {
+  _onChange = (event)=>{
     if (event && event.nativeEvent) {
       var eventData = event.nativeEvent;
       var eventType = eventData.eventType;
@@ -47,14 +43,14 @@ class MapView extends Component {
   }
 
   // 触发本地ui命令
-  _dispatchNativeUICmd(name, args) {
+  _dispatchNativeUICmd = (name, args)=>{
     // (int reactTag, int commandId, ReadableArray commandArgs)
     UIManager.dispatchViewManagerCommand(findNodeHandle(this._nativeMapView), 
       UIManager.AMapView.Commands[name], args);
   }
 
   // 设置地图显示范围为包括指定的所有点, [{lng, lat}]
-  setMapBound(points) {
+  setMapBound = (points)=>{
     this._dispatchNativeUICmd('setMapBound', points);
   }
 
@@ -87,7 +83,7 @@ class MapView extends Component {
 }
 
   // 移动地图中心
-  move(lng, lat) {
+  move = (lng, lat)=>{
     this._dispatchNativeUICmd('move', [{lng:lng, lat:lat}]);
   }
 
