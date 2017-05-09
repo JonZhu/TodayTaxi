@@ -65,3 +65,6 @@ typings/
 .watchmanconfig
 npm-debug.log
 tsconfig.json
+/.gitattributes
+/app.json
+/yarn.lock
