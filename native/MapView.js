@@ -104,7 +104,7 @@ class MapView extends Component {
 
 MapView.propTypes = {
   ...View.propTypes,
-  taxies: React.PropTypes.array, // taxi列表 [{id, lat, lng}]
+  taxies: React.PropTypes.array, // taxi列表 [{id, lat, lng, direction}]
   onStatusChange: React.PropTypes.func, // 地图状态改变事件, 如中心点改变
   onMyLocChange: React.PropTypes.func, // 我的定位改变事件
   showMyLoc: React.PropTypes.bool, // 是否显示我的位置
