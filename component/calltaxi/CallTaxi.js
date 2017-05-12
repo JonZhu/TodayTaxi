@@ -265,6 +265,8 @@ class CallTaxi extends Component {
                         this.setState({showConfirm: false, showClickToUse:true, showFromGo:true, showAllocatedTaxi:false});
                     } else {
                         // 显示轨迹
+                        this.setState({taxiList:[{id:taxiId, lng:loc.lng, lat:loc.lat, direction:loc.direction}]}); // 显示taxi
+                        this._mapView.move({lng:loc.lng, lat:loc.lat}); // 地图中心移动到taxi位置
                     }
                 } else {
                     // 处理异常
@@ -298,7 +300,7 @@ class CallTaxi extends Component {
                 <ToolBar iconOnPress={this.props.toggleSideBar}/>
 
                 <View style={{flex: 1}}>
-                    <MapView style={{position: 'absolute',top: 0,left: 0,right: 0,bottom: 0}} 
+                    <MapView ref={(mapView)=>{this._mapView = mapView}} style={{position: 'absolute',top: 0,left: 0,right: 0,bottom: 0}} 
                         taxies={this.state.taxiList} onStatusChange={this._mapStatusChange} />
 
                     {this.state.showFromGo &&
