@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback, ToastAndroid, Button, Linking, BackHandler } from 'react-native';
 import ToolBar from '../calltaxi/ToolBar';
-import Map from '../calltaxi/Map';
+import MapView from '../../native/MapView';
 import SideBar from './SideBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MapModule from '../../native/MapModule';
@@ -244,7 +244,7 @@ class Motorman extends Component {
 
                 <View style={{flex: 1, justifyContent:'center'}}>
                     {this.state.showMap &&
-                    <Map mapStatusChange={this.props.mapStatusChange} />
+                    <MapView style={{position: 'absolute',top: 0,left: 0,right: 0,bottom: 0}} />
                     }
 
                     {this.state.showAccept &&

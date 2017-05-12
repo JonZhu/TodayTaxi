@@ -9,7 +9,7 @@ import { View, BackHandler, ToastAndroid, Text, TouchableWithoutFeedback, Linkin
 import ToolBar from './ToolBar';
 import SideBar from './SideBar';
 import FromGo from './FromGo';
-import Map from './Map';
+import MapView from '../../native/MapView';
 import ClickToUse from './ClickToUse';
 
 import UserInfoContainer from '../../redux/container/UserInfoContainer';
@@ -25,12 +25,27 @@ class CallTaxi extends Component {
         super();
 
         this.state = {showConfirm: false, showClickToUse:true, showFromGo:true, 
-            waitTaxiMinites:1, // 等车预计时间
-            clickToUseText:'点击用车' // 点击用车text
+            waitTaxiMinites:8, // 等车预计时间
+            clickToUseText:'点击用车', // 点击用车text
+            clickToUseEnable: true // 点击用车是否可点击
         };
         // this.state = {showConfirm:false, showClickToUse:false, showCalling:true}; // test
     }
 
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackPress);
+        this._location();
+
+        this._startSearchNearbyFreeTaxi();
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
+
+        this._stopSearchNearbyFreeTaxi();
+        this._stopPushWaitTaxiLoc();
+        this._stopGetAllocatedTaxiLoc();
+    }
 
     _siderBarUserHeadOnPress = ()=>{
         var navigator = this.props.navigator;
@@ -59,21 +74,6 @@ class CallTaxi extends Component {
         navigator.push({
             comp: ChoiceGoContainer
         });
-    }
-
-    componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackPress);
-        this._location();
-
-        this._startSearchNearbyFreeTaxi();
-    }
-
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
-
-        this._stopSearchNearbyFreeTaxi();
-        this._stopPushWaitTaxiLoc();
-        this._stopGetAllocatedTaxiLoc();
     }
 
     // 定位当前位置
@@ -211,19 +211,23 @@ class CallTaxi extends Component {
 
             return rest('/calltaxi/searchNearbyFreeTaxi.do', {lat:currentLoc.lat, lng:currentLoc.lng}).then((result)=>{
                 var taxiList = null;
+                var waitMinites = this.state.waitTaxiMinites; // 预计等待时长
                 if (result.payload && result.payload.length > 0) {
                     taxiList = [];
                     for (var i = 0; i < result.payload.length; i++) {
                         var resultTaxi = result.payload[i];
+                        if (i == 0 && resultTaxi.distance) {
+                            waitMinites = Math.ceil(resultTaxi.distance / 500); //distance单位为米，按 30km/小时即500m/分钟算
+                        }
                         taxiList.push({
                             id: resultTaxi.id,
                             lng: resultTaxi.loc.lng,
                             lat: resultTaxi.loc.lat,
-                            direction:resultTaxi.loc.direction
+                            direction: resultTaxi.loc.direction
                         });
                     }
                 }
-                this.setState({taxiList: taxiList});
+                this.setState({taxiList:taxiList, waitTaxiMinites:waitMinites});
             }).catch((reason)=>{
                 // 出错
                 // 处理异常
@@ -260,8 +264,7 @@ class CallTaxi extends Component {
                         this._stopGetAllocatedTaxiLoc();
                         this.setState({showConfirm: false, showClickToUse:true, showFromGo:true, showAllocatedTaxi:false});
                     } else {
-
-                        // TODO 显示轨迹
+                        // 显示轨迹
                     }
                 } else {
                     // 处理异常
@@ -295,7 +298,8 @@ class CallTaxi extends Component {
                 <ToolBar iconOnPress={this.props.toggleSideBar}/>
 
                 <View style={{flex: 1}}>
-                    <Map taxies={this.state.taxiList} mapStatusChange={this._mapStatusChange} />
+                    <MapView style={{position: 'absolute',top: 0,left: 0,right: 0,bottom: 0}} 
+                        taxies={this.state.taxiList} onStatusChange={this._mapStatusChange} />
 
                     {this.state.showFromGo &&
                     <FromGo from={callTaxi.from} go={callTaxi.go} goOnPress={this._gotoChoiceGoAddressPage}/>
@@ -304,7 +308,8 @@ class CallTaxi extends Component {
                     {this.state.showClickToUse &&
                     <View style={{position:'absolute', top:0, bottom:0, left:0, right:0}}>
                         <View style={{flex:1, alignItems:'center', justifyContent:'flex-end'}}>
-                            <ClickToUse onClick={this._clickToUse} minites={this.state.waitTaxiMinites} text={this.state.clickToUseText}/>
+                            <ClickToUse onClick={this._clickToUse} minites={this.state.waitTaxiMinites} 
+                                text={this.state.clickToUseText} clickEnable={this.state.clickToUseEnable}/>
                         </View>
                         <View style={{flex:1}}/>
                     </View>

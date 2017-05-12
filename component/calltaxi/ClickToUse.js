@@ -44,10 +44,13 @@ class ClickToUse extends Component {
         var text = this.props.text;
         text = text ? text : '点击用车';
 
+        var clickEnable = this.props.clickEnable;
+        clickEnable = clickEnable == null ? true : clickEnable;
+        
         return (
             <View style={{alignItems:'center', top:5}}>
                 
-                <TouchableHighlight onPress={this.props.onClick}>
+                <TouchableHighlight onPress={this.props.onClick} disabled={!clickEnable}>
                     <View style={{backgroundColor:'#000', flexDirection:'row', 
                         height:40, borderRadius:20, alignItems:'center', position:'relative',
                         padding: 5}}>
@@ -102,7 +105,8 @@ const style = StyleSheet.create({
 
 ClickToUse.propTypes = {
     minites: PropTypes.number,
-    text: PropTypes.string
+    text: PropTypes.string,
+    clickEnable: PropTypes.bool
 }
 
 
