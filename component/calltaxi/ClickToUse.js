@@ -6,7 +6,7 @@
  * 
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { View, Text, Animated, StyleSheet, TouchableHighlight } from 'react-native';
 
 class ClickToUse extends Component {
@@ -38,6 +38,12 @@ class ClickToUse extends Component {
     }
 
     render() {
+        var minites = this.props.minites;
+        minites = minites ? minites : 1;
+
+        var text = this.props.text;
+        text = text ? text : '点击用车';
+
         return (
             <View style={{alignItems:'center', top:5}}>
                 
@@ -54,11 +60,11 @@ class ClickToUse extends Component {
                                     <View style={{width:2, height:2, backgroundColor:'#fff', borderRadius:1}}/>
                                 </View>
                             </Animated.View>
-                            <Text style={{color:'#fff', fontSize:10}}>8</Text>
+                            <Text style={{color:'#fff', fontSize:10}}>{minites}</Text>
                             <Text style={{color:'#fff', fontSize:10, position:'relative', top:-3}}>分钟</Text>
                         </View>
 
-                        <Text style={{color:'#fff', fontSize:18, fontWeight:'bold', margin: 7}}>点击用车</Text>
+                        <Text style={{color:'#fff', fontSize:18, fontWeight:'bold', margin: 7}}>{text}</Text>
 
                         <View style={style.circle}>
                             <View style={{width:12, height:12, borderBottomWidth:2, borderBottomColor:'#fff', 
@@ -91,11 +97,13 @@ const style = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center'
     }
-
-
-
-    
 });
+
+
+ClickToUse.propTypes = {
+    minites: PropTypes.number,
+    text: PropTypes.string
+}
 
 
 export default ClickToUse;

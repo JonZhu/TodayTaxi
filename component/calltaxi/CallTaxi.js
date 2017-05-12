@@ -24,7 +24,10 @@ class CallTaxi extends Component {
     constructor() {
         super();
 
-        this.state = {showConfirm: false, showClickToUse:true, showFromGo:true};
+        this.state = {showConfirm: false, showClickToUse:true, showFromGo:true, 
+            waitTaxiMinites:1, // 等车预计时间
+            clickToUseText:'点击用车' // 点击用车text
+        };
         // this.state = {showConfirm:false, showClickToUse:false, showCalling:true}; // test
     }
 
@@ -301,7 +304,7 @@ class CallTaxi extends Component {
                     {this.state.showClickToUse &&
                     <View style={{position:'absolute', top:0, bottom:0, left:0, right:0}}>
                         <View style={{flex:1, alignItems:'center', justifyContent:'flex-end'}}>
-                            <ClickToUse onClick={this._clickToUse}/>
+                            <ClickToUse onClick={this._clickToUse} minites={this.state.waitTaxiMinites} text={this.state.clickToUseText}/>
                         </View>
                         <View style={{flex:1}}/>
                     </View>
