@@ -67,6 +67,10 @@ class CallTaxi extends Component {
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
+
+        this._stopSearchNearbyFreeTaxi();
+        this._stopPushWaitTaxiLoc();
+        this._stopGetAllocatedTaxiLoc();
     }
 
     // 定位当前位置
