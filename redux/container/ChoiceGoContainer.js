@@ -5,7 +5,7 @@
  */
 
 import { connect } from 'react-redux';
-import ChoiceGo from '../../component/calltaxi/ChoiceGo';
+import ChoiceGo from '../../component/passenger/ChoiceGo';
 import MapModule from '../../native/MapModule';
 
 function mapStateToProps(state) {

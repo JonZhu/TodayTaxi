@@ -6,7 +6,7 @@
 
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback, ToastAndroid, Button, Linking, BackHandler } from 'react-native';
-import ToolBar from '../calltaxi/ToolBar';
+import ToolBar from '../passenger/ToolBar';
 import MapView from '../../native/MapView';
 import SideBar from './SideBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -61,7 +61,7 @@ class Motorman extends Component {
                     address:result.address, direction:result.direction, speed:result.speed}; // 存储当前位置
 
                 // 上传位置到服务器
-                return rest('/taxi/pushFreeLoc.do', this._currentLoc);
+                return rest('/motorman/pushFreeLoc.do', this._currentLoc);
             }).then((result)=>{
                 // 上传空车位置返回
 
@@ -83,7 +83,7 @@ class Motorman extends Component {
     // 接受预分配的行程
     _acceptRoute = ()=>{
         var route = this.state.preAllocateRoute;
-        rest('/taxi/acceptRoute.do', {passengerId: route.passengerId}).then((result)=>{
+        rest('/motorman/acceptRoute.do', {passengerId: route.passengerId}).then((result)=>{
             if (result.code === 0) {
                 var resp = result.payload;
                 var passenger = {phone: resp.passengerPhone, nickname: resp.passengerNickname};
@@ -124,7 +124,7 @@ class Motorman extends Component {
                 // 定位返回
                 var loc = {lat:result.lat, lng:result.lng, speed:result.speed, direction:result.direction};
                 // 上传位置到服务器
-                return rest('/taxi/pushRouteLoc.do', {routeId:routeId, loc:loc});
+                return rest('/motorman/pushRouteLoc.do', {routeId:routeId, loc:loc});
             }).then((result)=>{
                 // 上报位置返回
                 // TODO 处理异常
@@ -156,7 +156,7 @@ class Motorman extends Component {
 
     // 到达行程开始位置
     _arriveRouteFrom = ()=>{
-        rest('/taxi/arriveRouteFrom.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
+        rest('/motorman/arriveRouteFrom.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
             if (result.code === 0) {
                 // 成功
                 ToastAndroid.show('操作成功', ToastAndroid.LONG);
@@ -173,7 +173,7 @@ class Motorman extends Component {
     
     // 乘客上车
     _passengerGetOn = ()=>{
-        rest('/taxi/passengerGetOn.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
+        rest('/motorman/passengerGetOn.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
             if (result.code === 0) {
                 // 成功
                 ToastAndroid.show('操作成功', ToastAndroid.LONG);
@@ -188,7 +188,7 @@ class Motorman extends Component {
 
     // 完成行程
     _completeRoute = ()=>{
-        rest('/taxi/completeRoute.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
+        rest('/motorman/completeRoute.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
             if (result.code === 0) {
                 // 成功
                 NaviModule.stopNavi(); // 停止导航
@@ -208,7 +208,7 @@ class Motorman extends Component {
 
     // 取消行程
     _cancelRoute = ()=>{
-        rest('/taxi/cancelRoute.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
+        rest('/motorman/cancelRoute.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
             if (result.code === 0) {
                 // 成功
                 ToastAndroid.show('操作成功', ToastAndroid.LONG);

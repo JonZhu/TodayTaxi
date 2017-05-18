@@ -47,7 +47,7 @@ class RegistMotorman extends Component {
             return;
         }
 
-        rest('/taxi/regist.do', param).then((result)=>{
+        rest('/motorman/regist.do', param).then((result)=>{
             if (result.code === 0) {
                 ToastAndroid.show('注册成功,请重新登录', ToastAndroid.LONG);
                 this.props.navigator.pop(); // 返回之前页面

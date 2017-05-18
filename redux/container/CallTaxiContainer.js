@@ -4,7 +4,7 @@
  */
 
 import { connect } from 'react-redux';
-import CallTaxi from '../../component/calltaxi/CallTaxi';
+import CallTaxi from '../../component/passenger/CallTaxi';
 import MapModule from '../../native/MapModule';
 
 function mapStateToProps(state) {

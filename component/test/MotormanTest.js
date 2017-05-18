@@ -6,8 +6,8 @@
 
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback, ToastAndroid, Button, Linking } from 'react-native';
-import ToolBar from '../calltaxi/ToolBar';
-import Map from '../calltaxi/Map';
+import ToolBar from '../passenger/ToolBar';
+import Map from '../passenger/Map';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MapModule from '../../native/MapModule';
 import NaviModule, { addNaviArriveWayPointListener } from '../../native/NaviModule';

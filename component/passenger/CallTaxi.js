@@ -108,7 +108,7 @@ class CallTaxi extends Component {
     _driveRoute = (from, go)=>{
         MapModule.drivingRoute(from, go).then((routes)=>{
             // 路线规划返回
-            return rest('/calltaxi/priceBudget', routes); // 价格预算
+            return rest('/passenger/priceBudget', routes); // 价格预算
         }).then((result)=>{
             // 价格预算返回
             if (result.code === 0) {
@@ -130,7 +130,7 @@ class CallTaxi extends Component {
         var callTaxi = this.props.callTaxi;
         var from = {...callTaxi.from};
         var to = {...callTaxi.go};
-        rest('/calltaxi/callTaxi.do', {from:from, to:to}).then((result)=>{
+        rest('/passenger/callTaxi.do', {from:from, to:to}).then((result)=>{
 
             if (result.code === 0) {
                 // 成功叫车
@@ -148,7 +148,7 @@ class CallTaxi extends Component {
     _startPushWaitTaxiLoc = ()=>{
         this._stopPushWaitTaxiLoc();
         var fun = ()=>{
-            rest('/calltaxi/pushWaitTaxiLoc.do').then((result)=>{
+            rest('/passenger/pushWaitTaxiLoc.do').then((result)=>{
                 if (result.code === 0) {
                     if (result.payload) {
                         // 分配到司机
@@ -185,7 +185,7 @@ class CallTaxi extends Component {
 
     // 取消叫车
     _cancelCallTaxi = ()=>{
-        rest('/calltaxi/cancelRoute.do').then((result)=>{
+        rest('/passenger/cancelRoute.do').then((result)=>{
             if (result.code === 0) {
                 ToastAndroid.show('发送取消请求成功', ToastAndroid.SHORT);
             } else {
@@ -209,7 +209,7 @@ class CallTaxi extends Component {
                 return;
             }
 
-            return rest('/calltaxi/searchNearbyFreeTaxi.do', {lat:currentLoc.lat, lng:currentLoc.lng}).then((result)=>{
+            return rest('/passenger/searchNearbyFreeTaxi.do', {lat:currentLoc.lat, lng:currentLoc.lng}).then((result)=>{
                 var taxiList = null;
                 var waitMinites = this.state.waitTaxiMinites; // 预计等待时长
                 if (result.payload && result.payload.length > 0) {
@@ -255,7 +255,7 @@ class CallTaxi extends Component {
     _startGetAllocatedTaxiLoc = ()=>{
         var taxiId = this.state.allocatedTaxi.taxiId;
         var fun = ()=>{
-            rest("/calltaxi/getTaxiLoc.do").then((result)=>{
+            rest("/passenger/getTaxiLoc.do").then((result)=>{
                 if (result.code === 0) {
                     var {status, loc} = result.payload;
                     if (status === RouteStatus.UN_START || status === RouteStatus.COMPLETE || 
