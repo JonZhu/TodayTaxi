@@ -7,6 +7,7 @@
  * <p>
  * 反向地理编码
  * void reverseGeoCode(double lng, double lat, final Promise promise) <br/>
+ * 返回:{city, cityCode, district, address}
  * 
  * 地理编码
  * void geoCode(String city, String address, final Promise promise) <br/>
