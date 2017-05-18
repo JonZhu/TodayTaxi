@@ -5,6 +5,7 @@ import com.amap.api.navi.model.AMapNaviLocation;
 import com.amap.api.navi.model.NaviLatLng;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.geocoder.GeocodeAddress;
+import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.route.DriveStep;
 import com.facebook.react.bridge.ReadableMap;
@@ -73,5 +74,13 @@ public class WritableMapUtil {
         map.putString("city", poiItem.getCityName());
         map.putString("address", poiItem.getSnippet());
         map.putString("name", poiItem.getTitle());
+    }
+
+
+    public static void put(WritableMap map, RegeocodeAddress geoAddress) {
+        map.putString("city", geoAddress.getCity());
+        map.putString("cityCode", geoAddress.getCityCode());
+        map.putString("district", geoAddress.getDistrict());
+        map.putString("address", geoAddress.getFormatAddress());
     }
 }

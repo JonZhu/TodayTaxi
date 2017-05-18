@@ -12,6 +12,7 @@ import com.amap.api.services.geocoder.GeocodeAddress;
 import com.amap.api.services.geocoder.GeocodeQuery;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.poisearch.PoiResult;
@@ -81,9 +82,11 @@ public class AMapModule extends ReactContextBaseJavaModule {
             public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int code) {
                 if (code == 1000) {
                     // 成功
-                    String address = regeocodeResult.getRegeocodeAddress().getFormatAddress();
-                    Log.d(LOG_TAG, "reverse geo code result: " + address);
-                    promise.resolve(address);
+                    RegeocodeAddress geoAddress = regeocodeResult.getRegeocodeAddress();
+                    WritableMap map = Arguments.createMap();
+                    WritableMapUtil.put(map, geoAddress);
+                    Log.d(LOG_TAG, "reverse geo code result: " + geoAddress.getFormatAddress());
+                    promise.resolve(map);
                 } else {
                     Log.e(LOG_TAG, "Can't reverse geo code");
                     promise.reject("2", "Can't reverse geo code");
