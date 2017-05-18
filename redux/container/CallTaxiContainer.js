@@ -36,7 +36,7 @@ async function reverseGeoCode(dispatch, lng, lat) {
     try {
         var address = await MapModule.reverseGeoCode(lng, lat);
         console.info(address);
-        dispatch({type:'reverseGeoCodeResult', address:address, lng, lat});
+        dispatch({type:'reverseGeoCodeResult', ...address, lng, lat});
     } catch (e) {
         // 出错
         console.error(e);

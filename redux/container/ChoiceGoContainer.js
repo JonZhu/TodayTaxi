@@ -9,13 +9,18 @@ import ChoiceGo from '../../component/passenger/ChoiceGo';
 import MapModule from '../../native/MapModule';
 
 function mapStateToProps(state) {
-    return {searchResult: state.callTaxi.goAddrSearchResult};
+    var callTaxi = state.callTaxi;
+    var city  = callTaxi.from ? callTaxi.from.city : null;
+    return {
+        searchResult: callTaxi.goAddrSearchResult,
+        city: city
+    };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        keywordOnChange: function(keyword) {
-            searchKeywordInCity(dispatch, keyword);
+        searchKeywordInCity: function(city, keyword) {
+            searchKeywordInCity(dispatch, city, keyword);
         },
         searchAddrOnPress: function(goAddr) {
             dispatch({type:'goAddrChanged', goAddr});
@@ -23,8 +28,8 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-async function searchKeywordInCity(dispatch, keyword) {
-    var resultArray = await MapModule.searchInCity('成都', keyword, 20);
+async function searchKeywordInCity(dispatch, city, keyword) {
+    var resultArray = await MapModule.searchInCity(city, keyword, 20);
     dispatch({type:'goAddrSearchChanged', searchResult: resultArray});
 }
 

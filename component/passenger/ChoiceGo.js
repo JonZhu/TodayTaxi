@@ -31,8 +31,11 @@ class ChoiceGo extends Component {
                 <View style={{backgroundColor:'rgb(249,249,249)', height:50, 
                     borderBottomWidth:1, borderBottomColor:'rgb(229,229,229)',
                     flexDirection:'row', alignItems:'center', paddingLeft:10, paddingRight:10}}>
+                    {this.props.city &&
+                    <Text>{this.props.city}：</Text>
+                    }
                     <TextInput style={{flex:1, marginRight:10, fontSize:16}} underlineColorAndroid='transparent' 
-                        placeholder='请输入目的地' onChangeText={this.props.keywordOnChange}/>
+                        placeholder='请输入目的地' onChangeText={(keyword)=>{this.props.searchKeywordInCity(this.props.city, keyword)}}/>
                     <TouchableHighlight onPress={()=>this.props.navigator.pop()}>
                         <Text style={{color:'rgb(31,186,214)'}}>取消</Text>
                     </TouchableHighlight>
