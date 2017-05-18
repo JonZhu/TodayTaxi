@@ -23,6 +23,7 @@ import com.amap.api.services.route.RideRouteResult;
 import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.WalkRouteResult;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -30,6 +31,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.todaytaxi.map.util.JSModuleUtil;
 import com.todaytaxi.map.util.WritableMapUtil;
 
 import java.util.List;
@@ -43,6 +45,11 @@ import java.util.List;
 public class AMapModule extends ReactContextBaseJavaModule {
 
     private final static String LOG_TAG = AMapModule.class.getSimpleName();
+
+    /**
+     * 连续定位客户端
+     */
+    private static AMapLocationClient LOCATION_CLIENT;
 
     public AMapModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -186,7 +193,7 @@ public class AMapModule extends ReactContextBaseJavaModule {
 
 
     /**
-     * 定位当前位置
+     * 定位当前位置, 只定位一次
      */
     @ReactMethod
     public void location(final Promise promise) {
@@ -222,6 +229,81 @@ public class AMapModule extends ReactContextBaseJavaModule {
         });
 
         locationClient.startLocation();
+    }
+
+    /**
+     * 开始定位, 适用于连续定位
+     *
+     * @param params {
+     *               interval:发起定位请求的时间间隔，单位毫秒, 默认2000,
+     *               needAddress:是否需要详细地址, 默认true
+     *               }
+     */
+    @ReactMethod
+    public void startLocation(ReadableMap params) {
+        synchronized (AMapModule.class) {
+            if (LOCATION_CLIENT != null) {
+                return;
+            }
+
+            LOCATION_CLIENT = new AMapLocationClient(getReactApplicationContext());
+        }
+
+        AMapLocationClientOption option = new AMapLocationClientOption();
+        option.setOnceLocation(false);
+        option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+        option.setMockEnable(false);
+        option.setHttpTimeOut(10000);
+        if (params != null) {
+            Dynamic dynamic = params.getDynamic("needAddress");
+            if (!dynamic.isNull()) {
+                option.setNeedAddress(dynamic.asBoolean());
+            }
+            dynamic = params.getDynamic("interval");
+            if (!dynamic.isNull()) {
+                option.setInterval(dynamic.asInt());
+            }
+        }
+        LOCATION_CLIENT.setLocationOption(option);
+
+        LOCATION_CLIENT.setLocationListener(new AMapLocationListener() {
+            @Override
+            public void onLocationChanged(AMapLocation aMapLocation) {
+                //可以判断AMapLocation对象不为空，当定位错误码类型为0时定位成功
+                WritableMap map = Arguments.createMap();
+                map.putInt("errorCode", aMapLocation.getErrorCode());
+                if (aMapLocation.getErrorCode() == 0) {
+                    // 定位成功
+                    Log.d(LOG_TAG, "location success, Latitude:"+ aMapLocation.getLatitude()
+                            +", Longitude:" + aMapLocation.getLongitude() + ", AddrStr:" + aMapLocation.getAddress());
+
+
+                    WritableMapUtil.put(map, aMapLocation);
+                } else {
+                    Log.d(LOG_TAG, "location fail:" + aMapLocation.getErrorInfo());
+                    map.putString("errorInfo", aMapLocation.getErrorInfo());
+                }
+
+                // 触发onLocChanged到js端
+                JSModuleUtil.sendEvent(getReactApplicationContext(), "onLocChanged", map);
+            }
+        });
+
+        LOCATION_CLIENT.startLocation();
+    }
+
+    /**
+     * 停止连续定位
+     */
+    @ReactMethod
+    public void stopLocation() {
+        synchronized (AMapModule.class) {
+            if (LOCATION_CLIENT != null) {
+                LOCATION_CLIENT.stopLocation();
+                LOCATION_CLIENT.onDestroy();
+                LOCATION_CLIENT = null;
+            }
+        }
     }
 
     /**
