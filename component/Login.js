@@ -45,7 +45,7 @@ class Login extends Component {
                 // 登录
                 return rest('/user/login.do', {phone: phone, password:encryptedPass});
             } else {
-                throw new Error('获取盐值失败');
+                return Promise.reject('获取盐值失败');
             }
         }).then((result)=>{
             // 登录返回
@@ -55,7 +55,7 @@ class Login extends Component {
 
                 return rest('/user/getStatus.do');
             } else {
-                throw new Error(result.message);
+                return Promise.reject(result.message);
             }
         }).then((result)=>{
             // 获取状态返回
