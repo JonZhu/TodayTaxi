@@ -266,19 +266,26 @@ class CallTaxi extends Component {
                     } else {
                         var oldStatus = this.state.callTaxiStatus;
 
+                        var statusStr;
+                        if (staus == RouteStatus.MOTORMAN_CANCEL) {
+                            statusStr = '司机将行程取消';
+                        } else if (status == RouteStatus.TAXI_ARRIVED) {
+                            statusStr = '司机已到达';
+                        } else if (status == RouteStatus.PASSENGER_GETON) {
+                            statusStr = '乘客已上车';
+                        }
+
                         // 显示轨迹
-                        this.setState({taxiList:[{id:taxiId, lng:loc.lng, lat:loc.lat, direction:loc.direction}], callTaxiStatus:status}); // 显示taxi
+                        this.setState({
+                            taxiList:[{id:taxiId, lng:loc.lng, lat:loc.lat, direction:loc.direction}], // 显示taxi
+                            callTaxiStatus:status, // 状态
+                            callTaxiStatusStr:statusStr // 状态转换
+                        }); 
                         this._mapView.move({lng:loc.lng, lat:loc.lat}); // 地图中心移动到taxi位置
 
                         // 状态改变提醒
-                        if (status != oldStatus) {
-                            if (staus == RouteStatus.MOTORMAN_CANCEL) {
-                                ToastAndroid.show('司机将行程取消', ToastAndroid.LONG);
-                            } else if (status == RouteStatus.TAXI_ARRIVED) {
-                                ToastAndroid.show('司机已到达', ToastAndroid.LONG);
-                            } else if (status == RouteStatus.PASSENGER_GETON) {
-                                ToastAndroid.show('乘客已上车', ToastAndroid.LONG);
-                            }
+                        if (status != oldStatus && statusStr) {
+                            ToastAndroid.show(statusStr, ToastAndroid.LONG);
                         }
                     }
                 } else {
@@ -368,14 +375,19 @@ class CallTaxi extends Component {
                 {this.state.showAllocatedTaxi && 
                 <TouchableWithoutFeedback onPress={()=>{Linking.openURL('tel:' + this.state.allocatedTaxi.motormanPhone)}}>
                     <View style={{position:'absolute', bottom:0, left:0, right:0, backgroundColor:'#fff', 
-                        padding:5, borderTopWidth:1, borderTopColor:'#E0EEEE', flexDirection:'row', justifyContent:'space-between'}}>
-                        <View>
-                            <Text>车牌号：{this.state.allocatedTaxi.taxiNumber}</Text>
-                            <Text>电　话：{this.state.allocatedTaxi.motormanPhone}</Text>
-                        </View>
-                        <View>
-                            <Text>车型：{this.state.allocatedTaxi.brand} {this.state.allocatedTaxi.model}</Text>
-                            <Text>颜色：{this.state.allocatedTaxi.color}</Text>
+                        padding:5, borderTopWidth:1, borderTopColor:'#E0EEEE'}}>
+                        {this.state.callTaxiStatusStr && 
+                        <Text>状态：{this.state.callTaxiStatusStr}</Text>
+                        }
+                        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                            <View>
+                                <Text>车牌号：{this.state.allocatedTaxi.taxiNumber}</Text>
+                                <Text>电　话：{this.state.allocatedTaxi.motormanPhone}</Text>
+                            </View>
+                            <View>
+                                <Text>车型：{this.state.allocatedTaxi.brand} {this.state.allocatedTaxi.model}</Text>
+                                <Text>颜色：{this.state.allocatedTaxi.color}</Text>
+                            </View>
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
