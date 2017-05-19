@@ -264,9 +264,22 @@ class CallTaxi extends Component {
                         this._stopGetAllocatedTaxiLoc();
                         this.setState({showConfirm: false, showClickToUse:true, showFromGo:true, showAllocatedTaxi:false});
                     } else {
+                        var oldStatus = this.state.callTaxiStatus;
+
                         // 显示轨迹
-                        this.setState({taxiList:[{id:taxiId, lng:loc.lng, lat:loc.lat, direction:loc.direction}]}); // 显示taxi
+                        this.setState({taxiList:[{id:taxiId, lng:loc.lng, lat:loc.lat, direction:loc.direction}], callTaxiStatus:status}); // 显示taxi
                         this._mapView.move({lng:loc.lng, lat:loc.lat}); // 地图中心移动到taxi位置
+
+                        // 状态改变提醒
+                        if (status != oldStatus) {
+                            if (staus == RouteStatus.MOTORMAN_CANCEL) {
+                                ToastAndroid.show('司机将行程取消', ToastAndroid.LONG);
+                            } else if (status == RouteStatus.TAXI_ARRIVED) {
+                                ToastAndroid.show('司机已到达', ToastAndroid.LONG);
+                            } else if (status == RouteStatus.PASSENGER_GETON) {
+                                ToastAndroid.show('乘客已上车', ToastAndroid.LONG);
+                            }
+                        }
                     }
                 } else {
                     // 处理异常
