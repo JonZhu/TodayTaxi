@@ -53,18 +53,15 @@ class Login extends Component {
                 // 登录成功
                 AsyncStorage.setItem('currentUserPhone', phone); // 储存当前用户手机
 
-                return rest('/user/getStatus.do');
+                var loginResp = result.payload;
+                if (loginResp.motorman) {
+                    // 司机
+                    navigator.resetTo({comp:Motorman});
+                } else {
+                    navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
+                }
             } else {
                 return Promise.reject(result.message);
-            }
-        }).then((result)=>{
-            // 获取状态返回
-            var status = result.payload;
-            if (status.motorman) {
-                // 司机
-                navigator.resetTo({comp:Motorman});
-            } else {
-                navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
             }
         }).catch((reason)=>{
             ToastAndroid.show('登录失败:' + reason, ToastAndroid.SHORT);
