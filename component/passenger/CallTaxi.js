@@ -29,14 +29,26 @@ class CallTaxi extends Component {
             clickToUseText:'点击用车', // 点击用车text
             clickToUseEnable: true // 点击用车是否可点击
         };
-        // this.state = {showConfirm:false, showClickToUse:false, showCalling:true}; // test
     }
 
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackPress);
         this._location();
 
-        this._startSearchNearbyFreeTaxi();
+        // 获取当前叫车状态，转到适合的叫车中间流程
+        rest('/passenger/getCurrentCallTaxiStatus.do').then((status)=>{
+            if (status == null || status == RouteStatus.UN_START || status == RouteStatus.MOTORMAN_CANCEL || 
+                status == RouteStatus.PASSENGER_CANCEL || status == RouteStatus.CALL_TIMEOUT || status == RouteStatus.COMPLETE) {
+                // 未叫车或已结束
+                this._startSearchNearbyFreeTaxi();
+            } else {
+                // 已叫车、但还没结束
+                this._startPushWaitTaxiLoc();
+            }
+        }).catch((reason)=>{
+            ToastAndroid.show(reason, ToastAndroid.LONG);
+        });
+        
     }
 
     componentWillUnmount() {
@@ -131,11 +143,9 @@ class CallTaxi extends Component {
         var from = {...callTaxi.from};
         var to = {...callTaxi.go};
         rest('/passenger/callTaxi.do', {from:from, to:to}).then((result)=>{
-
             if (result.code === 0) {
                 // 成功叫车
                 ToastAndroid.show('正在叫车:' + JSON.stringify(result), ToastAndroid.LONG);
-                this.setState({showConfirm:false, showClickToUse:false, showCalling:true});
                 this._startPushWaitTaxiLoc();
             } else {
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
@@ -147,6 +157,8 @@ class CallTaxi extends Component {
     // 开始轮询上报位置, 直到有司机接单或超时
     _startPushWaitTaxiLoc = ()=>{
         this._stopPushWaitTaxiLoc();
+        this.setState({showConfirm:false, showClickToUse:false, showCalling:true});
+
         var fun = ()=>{
             rest('/passenger/pushWaitTaxiLoc.do').then((result)=>{
                 if (result.code === 0) {
