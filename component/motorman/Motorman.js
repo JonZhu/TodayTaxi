@@ -14,6 +14,7 @@ import MapModule from '../../native/MapModule';
 import NaviModule, { addNaviArriveWayPointListener } from '../../native/NaviModule';
 import MapNaviView from '../../native/MapNaviView';
 import rest from '../api/rest';
+import RouteStatus from '../const/RouteStatus';
 
 class Motorman extends Component {
 
@@ -24,8 +25,24 @@ class Motorman extends Component {
     }
 
     componentDidMount() {
-        this._startPushFreeLoc();
         BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackPress);
+
+        rest('/motorman/getCurrentRouteStatus.do').then((result)=>{
+            var status = result.payload;
+            if (status) {
+                if (status.routeStatus == RouteStatus.ALLOCATED) {
+                    // 已接受叫车, 显示乘客信息, 导航
+                } else if (status.routeStatus == RouteStatus.TAXI_ARRIVED) {
+                    // 乘客已上车, 显示乘客信息, 导航
+                } else if (status.routeStatus == RouteStatus.PASSENGER_GETON) {
+                    // 乘客已上车, 显示乘客信息, 导航
+                } else {
+                    this._startPushFreeLoc();
+                }
+            } else {
+                this._startPushFreeLoc();
+            }
+        })
     }
 
     componentWillUnmount() {
