@@ -27,22 +27,7 @@ class Motorman extends Component {
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackPress);
 
-        rest('/motorman/getCurrentRouteStatus.do').then((result)=>{
-            var status = result.payload;
-            if (status) {
-                if (status.routeStatus == RouteStatus.ALLOCATED) {
-                    // 已接受叫车, 显示乘客信息, 导航
-                } else if (status.routeStatus == RouteStatus.TAXI_ARRIVED) {
-                    // 乘客已上车, 显示乘客信息, 导航
-                } else if (status.routeStatus == RouteStatus.PASSENGER_GETON) {
-                    // 乘客已上车, 显示乘客信息, 导航
-                } else {
-                    this._startPushFreeLoc();
-                }
-            } else {
-                this._startPushFreeLoc();
-            }
-        })
+        this._getRouteStatus();
     }
 
     componentWillUnmount() {
@@ -55,6 +40,43 @@ class Motorman extends Component {
         BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackPress);
     }
 
+    /**
+     * 从服务器获取行程状态且转到对应操作，用于程序重新进入时返回上次未完成操作
+     */
+    _getRouteStatus = ()=>{
+        rest('/motorman/getCurrentRouteStatus.do').then((result)=>{
+            var status = result.payload;
+            if (status) {
+                this.setState({routeId: status.routeId}); // 设置行程id
+                if (status.routeStatus == RouteStatus.ALLOCATED) {
+                    // 已接受叫车, 显示乘客信息, 导航
+                    MapModule.location().then((loc)=>{ // 定位当前位置
+                        var pointList = [{lng:loc.lng, lat:loc.lat}, {lng:status.routeFrom.lng, lat:status.routeFrom.lat}, 
+                            {lng:status.routeTo.lng, lat:status.routeTo.lat}];
+                        this._startNavi(pointList, ()=>{
+                            this.setState({showArriveFromBtn:true, showGetOnBtn:false, showCompleteBtn:false});
+                        });
+                    })
+                } else if (status.routeStatus == RouteStatus.TAXI_ARRIVED) {
+                    // 乘客已上车, 显示乘客信息, 导航
+                    var pointList = [{lng:status.routeFrom.lng, lat:status.routeFrom.lat}, {lng:status.routeTo.lng, lat:status.routeTo.lat}];
+                    this._startNavi(pointList, ()=>{
+                        this.setState({showArriveFromBtn:false, showGetOnBtn:true, showCompleteBtn:false});
+                    });
+                } else if (status.routeStatus == RouteStatus.PASSENGER_GETON) {
+                    // 乘客已上车, 显示乘客信息, 导航
+                    var pointList = [{lng:status.routeFrom.lng, lat:status.routeFrom.lat}, {lng:status.routeTo.lng, lat:status.routeTo.lat}];
+                    this._startNavi(pointList, ()=>{
+                        this.setState({showArriveFromBtn:false, showGetOnBtn:false, showCompleteBtn:true});
+                    });
+                } else {
+                    this._startPushFreeLoc();
+                }
+            } else {
+                this._startPushFreeLoc();
+            }
+        });
+    }
 
     _pushFreeLocTimer;
 
@@ -105,7 +127,13 @@ class Motorman extends Component {
                 var resp = result.payload;
                 var passenger = {phone: resp.passengerPhone, nickname: resp.passengerNickname};
                 this.setState({routeId:resp.routeId, passenger:passenger, showAccept:false}); // 存储routeId, 关闭接单窗口
-                this._startNavi(); // 开始导航
+
+                // 计算导航点列表
+                var route = this.state.preAllocateRoute;
+                var cLoc = this._currentLoc;
+                var pointList = [{lng:cLoc.lng, lat:cLoc.lat}, {lng:route.from.lng, lat:route.from.lat}, 
+                    {lng:route.to.lng, lat:route.to.lat}]; // 从当前位置导航，途经点为行程开始位置
+                this._startNavi(pointList); // 开始导航
             } else {
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
             }
@@ -150,20 +178,23 @@ class Motorman extends Component {
         this._pushRouteLocTimer = setInterval(pushFun, 1000);
     }
 
-    // 开始导航
-    _startNavi = ()=>{
-        var route = this.state.preAllocateRoute;
-        var cLoc = this._currentLoc;
-        var pointList = [{lng:cLoc.lng, lat:cLoc.lat}, {lng:route.from.lng, lat:route.from.lat}, 
-            {lng:route.to.lng, lat:route.to.lat}]; // 从当前位置导航，途经点为行程开始位置
+    /**
+     * 开始导航
+     * @param pointList 点列表, [{lng, lat}]
+     * @param successCallback 成功导航后的回调
+     */
+    _startNavi = (pointList, successCallback)=>{
         NaviModule.startNavi(pointList).then(()=>{
             // 导航成功
             this.setState({showMap:false, showNaviView: true, showArriveFromBtn:true}); // 要关闭地图, 导航view才能正确显示
             this._startPushRouteLoc(); // 开始上报行程位置
-            this._naviArriveWayPointListener = addNaviArriveWayPointListener(()=>{
-                // 到达行程起点, 用于自动设置 到达指定位置
-                // TODO
-            });
+            // this._naviArriveWayPointListener = addNaviArriveWayPointListener(()=>{
+            //     // 到达行程起点, 用于自动设置 到达指定位置
+            //     // TODO
+            // });
+            if (successCallback) {
+                successCallback();
+            }
         }).catch((reason)=>{
             // 失败
             ToastAndroid.show('导航失败:' + reason, ToastAndroid.LONG);
