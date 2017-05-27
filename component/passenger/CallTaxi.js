@@ -36,7 +36,8 @@ class CallTaxi extends Component {
         this._location();
 
         // 获取当前叫车状态，转到适合的叫车中间流程
-        rest('/passenger/getCurrentCallTaxiStatus.do').then((status)=>{
+        rest('/passenger/getCurrentCallTaxiStatus.do').then((result)=>{
+            var status = result.payload;
             if (status == null || status == RouteStatus.UN_START || status == RouteStatus.MOTORMAN_CANCEL || 
                 status == RouteStatus.PASSENGER_CANCEL || status == RouteStatus.CALL_TIMEOUT || status == RouteStatus.COMPLETE) {
                 // 未叫车或已结束
