@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, AsyncStorage } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import RouteList from './RouteList';
+import Help from '../Help';
 
 class SideBar extends Component {
 
@@ -25,6 +26,11 @@ class SideBar extends Component {
     _toMyRouteList = ()=>{
         this.props.toggleSideBar(); // 关闭siderBar;
         this.props.navigator.push({comp:RouteList}); // 我的行程页面
+    }
+
+    _toHelp = ()=>{
+        this.props.toggleSideBar(); // 关闭siderBar;
+        this.props.navigator.push({comp:Help}); // 帮助页
     }
 
     render() {
@@ -53,10 +59,12 @@ class SideBar extends Component {
                             <Text style={style.itemText}>我的行程</Text>
                         </View>
                     </TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback onPress={this._toHelp}>
                     <View style={style.barItemContainer}>
                         <Icon name='life-ring' style={style.itemIcon}/>
                         <Text style={style.itemText}>帮助</Text>
                     </View>
+                    </TouchableWithoutFeedback>
                     <View style={style.barItemContainer}>
                         <Icon name='heart' style={style.itemIcon}/>
                         <Text style={style.itemText}>邀请奖励</Text>
