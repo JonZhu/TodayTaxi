@@ -55,10 +55,10 @@ class SideBar extends Component {
                         </View>
                     </TouchableWithoutFeedback>
 
-                    <View style={style.barItemContainer}>
+                    {/*<View style={style.barItemContainer}>
                         <Icon name='credit-card' style={style.itemIcon}/>
                         <Text style={style.itemText}>付款方式</Text>
-                    </View>
+                    </View>*/}
                     <TouchableWithoutFeedback onPress={this._toMyRouteList}>
                         <View style={style.barItemContainer}>
                             <Icon name='history' style={style.itemIcon}/>
@@ -71,24 +71,24 @@ class SideBar extends Component {
                         <Text style={style.itemText}>帮助</Text>
                     </View>
                     </TouchableWithoutFeedback>
-                    <View style={style.barItemContainer}>
+                    {/*<View style={style.barItemContainer}>
                         <Icon name='heart' style={style.itemIcon}/>
                         <Text style={style.itemText}>邀请奖励</Text>
                     </View>
                     <View style={style.barItemContainer}>
                         <Icon name='certificate' style={style.itemIcon}/>
                         <Text style={style.itemText}>优惠</Text>
-                    </View>
+                    </View>*/}
                     <TouchableWithoutFeedback onPress={this._registMotorman}>
                         <View style={style.barItemContainer}>
                             <Icon name='tachometer' style={style.itemIcon}/>
                             <Text style={style.itemText}>成为车主</Text>
                         </View>
                     </TouchableWithoutFeedback>
-                    <View style={style.barItemContainer}>
+                    {/*<View style={style.barItemContainer}>
                         <Icon name='cog' style={style.itemIcon}/>
                         <Text style={style.itemText}>设置</Text>
-                    </View>
+                    </View>*/}
                 </View>
             </View>
         );
