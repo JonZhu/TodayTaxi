@@ -20,6 +20,16 @@ public class MobModule extends ReactContextBaseJavaModule {
      */
     private static final AtomicBoolean INIT = new AtomicBoolean(false);
 
+    /**
+     * APP Key
+     */
+    private static final String AK = "1e6e4d8f63b70";
+
+    /**
+     * Secrit Key
+     */
+    private static final String SK = "fb774c9c77285a7ca5e7151f98241e4e";
+
     public MobModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
@@ -32,23 +42,26 @@ public class MobModule extends ReactContextBaseJavaModule {
     private void initSDK() {
         synchronized (INIT) {
             if (!INIT.get()) {
-                SMSSDK.initSDK(getReactApplicationContext(), "1e6e4d8f63b70",
-                        "fb774c9c77285a7ca5e7151f98241e4e", SMSSDK.InitFlag.DISABLE_CONTACT);
+                SMSSDK.initSDK(getReactApplicationContext(), AK, SK, SMSSDK.InitFlag.DISABLE_CONTACT);
                 INIT.set(true);
             }
         }
     }
 
     /**
-     * 获取验证码
+     * 下发验证码
      * @param phone
      * @param promise
      */
     @ReactMethod
-    public void getVerificationCode(String phone, Promise promise) {
-        initSDK();
-        SMSSDK.getVerificationCode("86", phone);
-        promise.resolve(0);
+    public void sendVerificationCode(String phone, Promise promise) {
+        try {
+            initSDK();
+            SMSSDK.getVerificationCode("86", phone);
+            promise.resolve(0);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
     }
 
 }
