@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ToastAndroid } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ToastAndroid, Platform } from 'react-native';
 import Header from './Header';
 import { validatePhone, validatePass } from './util/validator';
 import rest from './api/rest';
@@ -21,9 +21,15 @@ class SignIn extends Component {
     _signIn = ()=>{
         var phone = this._phone;
         var pass = this._pass;
+        var verifyCode = this._verifyCode;
 
         if (!validatePhone(phone)) {
             ToastAndroid.show('电话输入不正确', ToastAndroid.SHORT);
+            return;
+        }
+
+        if (verifyCode == null || ! /\d+/.test(verifyCode)) {
+            ToastAndroid.show('验证码不正确，应为数字', ToastAndroid.SHORT);
             return;
         }
 
@@ -33,7 +39,7 @@ class SignIn extends Component {
         }
 
         var navigator = this.props.navigator;
-        rest("/user/regist.do", {phone:phone, password:pass}).then((result)=>{
+        rest("/user/regist.do", {phone:phone, password:pass, verifyCode:verifyCode, os:Platform.OS}).then((result)=>{
             if (result.code === 0) {
                 // 注册成功
                 ToastAndroid.show('注册成功', ToastAndroid.LONG);
@@ -86,7 +92,7 @@ class SignIn extends Component {
                             borderBottomColor:'rgb(205,205,211)', paddingLeft:10, height:50}}>
                             <Text style={{fontSize:18}}>验证码：</Text>
                             <TextInput style={{flex:1}} placeholder='请输入验证码' underlineColorAndroid='transparent' 
-                                maxLength={20} onChangeText={(text)=>{this._verifyCode = text}}/>
+                                keyboardType='numeric' maxLength={6} onChangeText={(text)=>{this._verifyCode = text}}/>
                             <Button title='获取验证码' onPress={this._getVerifyCode}></Button>
                         </View>
                         <View style={{flexDirection:'row', alignItems:'center', paddingLeft:10, height:50}}>

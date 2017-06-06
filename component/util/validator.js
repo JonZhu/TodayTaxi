@@ -12,7 +12,7 @@ export function validatePhone(value) {
         return false;
     }
     var phoneReg = /^1[345678]\d{9}$/;
-    return value.match(phoneReg);
+    return phoneReg.test(value);
 }
 
 /**
@@ -24,5 +24,5 @@ export function validatePass(value) {
     }
 
     var passReg = /^[\d_\w]{6,20}$/; // 6到20位数字、下划线、字母
-    return value.match(passReg);
+    return passReg.test(value);
 }
