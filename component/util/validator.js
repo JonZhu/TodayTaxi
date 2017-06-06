@@ -8,7 +8,7 @@
  * 验证手机号
  */
 export function validatePhone(value) {
-    if (!value instanceof String) {
+    if (typeof(value) != 'string') {
         return false;
     }
     var phoneReg = /^1[345678]\d{9}$/;
@@ -19,7 +19,7 @@ export function validatePhone(value) {
  * 验证密码
  */
 export function validatePass(value) {
-    if (!value instanceof String) {
+    if (typeof(value) != 'string') {
         return false;
     }
 

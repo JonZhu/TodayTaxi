@@ -10,16 +10,15 @@ import Header from './Header';
 import { validatePhone, validatePass } from './util/validator';
 import rest from './api/rest';
 import { pageBack } from './util/back';
+import MobModule from '../native/MobModule';
 
 class SignIn extends Component {
 
     constructor() {
         super();
-
-        this._signIn = this._signIn.bind(this);
     }
 
-    _signIn() {
+    _signIn = ()=>{
         var phone = this._phone;
         var pass = this._pass;
 
@@ -47,6 +46,30 @@ class SignIn extends Component {
         });
     }
 
+    /**
+     * 获取验证码
+     */
+    _getVerifyCode = ()=>{
+        if (!validatePhone(this._phone)) {
+            ToastAndroid.show('电话输入不正确', ToastAndroid.SHORT);
+            return;
+        }
+
+        var now = new Date().getTime();
+        if (this._sendVerificationCodeTime != null && now - this._sendVerificationCodeTime < 60000) {
+            ToastAndroid.show('还需要秒'+ (now - this._sendVerificationCodeTime)/1000 +'才能再次发送', ToastAndroid.SHORT);
+            return;
+        }
+
+        MobModule.sendVerificationCode(this._phone).then(()=>{
+            ToastAndroid.show('发送验证码成功', ToastAndroid.SHORT);
+        }).catch((reason)=>{
+            ToastAndroid.show('发送验证码失败', ToastAndroid.SHORT);
+        });
+
+        this._sendVerificationCodeTime = new Date().getTime(); // 保存发送时间
+    }
+
     render() {
         return (
             <View style={{flex:1, backgroundColor:'#fff'}}>
@@ -56,8 +79,15 @@ class SignIn extends Component {
                         <View style={{flexDirection:'row', alignItems:'center', borderBottomWidth:1, 
                             borderBottomColor:'rgb(205,205,211)', paddingLeft:10, height:50}}>
                             <Text style={{fontSize:18}}>帐户：</Text>
-                            <TextInput style={{flex:1}} placeholder='请输入帐户' underlineColorAndroid='transparent'
+                            <TextInput style={{flex:1}} placeholder='请输入手机号' underlineColorAndroid='transparent'
                                 keyboardType='phone-pad' maxLength={11} onChangeText={(text)=>{this._phone = text}}/>
+                        </View>
+                        <View style={{flexDirection:'row', alignItems:'center', borderBottomWidth:1, 
+                            borderBottomColor:'rgb(205,205,211)', paddingLeft:10, height:50}}>
+                            <Text style={{fontSize:18}}>验证码：</Text>
+                            <TextInput style={{flex:1}} placeholder='请输入验证码' underlineColorAndroid='transparent' 
+                                maxLength={20} onChangeText={(text)=>{this._verifyCode = text}}/>
+                            <Button title='获取验证码' onPress={this._getVerifyCode}></Button>
                         </View>
                         <View style={{flexDirection:'row', alignItems:'center', paddingLeft:10, height:50}}>
                             <Text style={{fontSize:18}}>密码：</Text>
