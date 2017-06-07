@@ -21,6 +21,7 @@ class SignIn extends Component {
     _signIn = ()=>{
         var phone = this._phone;
         var pass = this._pass;
+        var pass2 = this._pass2;
         var verifyCode = this._verifyCode;
 
         if (!validatePhone(phone)) {
@@ -30,6 +31,11 @@ class SignIn extends Component {
 
         if (verifyCode == null || ! /\d+/.test(verifyCode)) {
             ToastAndroid.show('验证码不正确，应为数字', ToastAndroid.SHORT);
+            return;
+        }
+
+        if (pass != pass2) {
+            ToastAndroid.show('两次输入密码不匹配', ToastAndroid.SHORT);
             return;
         }
 
@@ -95,10 +101,16 @@ class SignIn extends Component {
                                 keyboardType='numeric' maxLength={6} onChangeText={(text)=>{this._verifyCode = text}}/>
                             <Button title='获取验证码' onPress={this._getVerifyCode}></Button>
                         </View>
-                        <View style={{flexDirection:'row', alignItems:'center', paddingLeft:10, height:50}}>
+                        <View style={{flexDirection:'row', alignItems:'center', borderBottomWidth:1, 
+                            borderBottomColor:'rgb(205,205,211)', paddingLeft:10, height:50}}>
                             <Text style={{fontSize:18}}>密码：</Text>
                             <TextInput style={{flex:1}} placeholder='请输入密码' underlineColorAndroid='transparent' 
                                 maxLength={20} onChangeText={(text)=>{this._pass = text}}/>
+                        </View>
+                        <View style={{flexDirection:'row', alignItems:'center', paddingLeft:10, height:50}}>
+                            <Text style={{fontSize:18}}>确认密码：</Text>
+                            <TextInput style={{flex:1}} placeholder='请输入密码' underlineColorAndroid='transparent' 
+                                maxLength={20} onChangeText={(text)=>{this._pass2 = text}}/>
                         </View>
                     </View>
 
