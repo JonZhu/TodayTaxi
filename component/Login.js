@@ -11,6 +11,7 @@ import SignIn from './SignIn';
 import CallTaxi from '../redux/container/CallTaxiContainer';
 import Motorman from './motorman/Motorman';
 import rest from './api/rest';
+import UserExceptionCode from './api/UserExceptionCode';
 import md5 from 'md5';
 import TTTextInput from './TTTextInput';
 
@@ -44,6 +45,8 @@ class Login extends Component {
                 var encryptedPass = md5(md5(pass + staticSalt) + dynamicSalt);
                 // 登录
                 return rest('/user/login.do', {phone: phone, password:encryptedPass});
+            } else if (result.code === UserExceptionCode.USER_NOT_EXIST) {
+                return Promise.reject('用户不存在');
             } else {
                 return Promise.reject('获取盐值失败');
             }
