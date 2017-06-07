@@ -105,12 +105,12 @@ class SignIn extends Component {
                             borderBottomColor:'rgb(205,205,211)', paddingLeft:10, height:50}}>
                             <Text style={{fontSize:18}}>密码：</Text>
                             <TextInput style={{flex:1}} placeholder='请输入密码' underlineColorAndroid='transparent' 
-                                maxLength={20} onChangeText={(text)=>{this._pass = text}}/>
+                                maxLength={20} secureTextEntry={true} onChangeText={(text)=>{this._pass = text}}/>
                         </View>
                         <View style={{flexDirection:'row', alignItems:'center', paddingLeft:10, height:50}}>
                             <Text style={{fontSize:18}}>确认密码：</Text>
                             <TextInput style={{flex:1}} placeholder='请输入密码' underlineColorAndroid='transparent' 
-                                maxLength={20} onChangeText={(text)=>{this._pass2 = text}}/>
+                                maxLength={20} secureTextEntry={true} onChangeText={(text)=>{this._pass2 = text}}/>
                         </View>
                     </View>
 
