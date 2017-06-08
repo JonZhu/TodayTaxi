@@ -15,6 +15,7 @@ import rest from './api/rest';
 import UserExceptionCode from './api/UserExceptionCode';
 import md5 from 'md5';
 import TTTextInput from './TTTextInput';
+import TencentModule from '../native/TencentModule';
 
 class Login extends Component {
 
@@ -22,16 +23,13 @@ class Login extends Component {
         super();
 
         this.state = {phone:''}
-
-        this._toSignIn = this._toSignIn.bind(this);
-        this._login = this._login.bind(this);
     }
 
-    _toSignIn() {
+    _toSignIn = ()=>{
         this.props.navigator.push({comp:SignIn});
     }
 
-    _login() {
+    _login = ()=>{
         var phone = this.state.phone;
         var pass = this._pass;
 
@@ -79,6 +77,22 @@ class Login extends Component {
         this.props.navigator.push({comp:RecoverPassword});
     }
 
+    /**
+     * QQ登录
+     */
+    _toQQLogin = ()=>{
+        TencentModule.login().then((result)=>{
+            if (result.status == 'success') {
+                // 登录成功
+                var openID = result.openID;
+                ToastAndroid.show('QQ登录成功', ToastAndroid.LONG);
+                this.setState({qqLoginSuccess:true});
+            }
+        }).catch((reason)=>{
+            ToastAndroid.show('QQ登录失败', ToastAndroid.LONG);
+        });
+    }
+
     render() {
         return (
             <View style={{flex:1, backgroundColor:'#fff'}}>
@@ -107,6 +121,13 @@ class Login extends Component {
                         <TouchableHighlight style={{marginTop:20}} onPress={this._toRecoverPassword}>
                             <Text style={{textDecorationLine:'underline'}}>忘记密码？</Text>
                         </TouchableHighlight>
+                        <TouchableHighlight style={{marginTop:20}} onPress={this._toQQLogin}>
+                            <Text style={{textDecorationLine:'underline'}}>QQ帐号登录 >></Text>
+                        </TouchableHighlight>
+
+                        {this.state.qqLoginSuccess && 
+                        <Text>QQ帐号登录功能</Text>
+                        }
                     </View>
                 </View>
             </View>

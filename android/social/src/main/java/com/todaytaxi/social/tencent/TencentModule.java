@@ -12,7 +12,6 @@ import com.tencent.connect.UserInfo;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
-import com.todaytaxi.social.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +23,11 @@ import org.json.JSONObject;
 public class TencentModule extends ReactContextBaseJavaModule {
 
     private static Tencent TENCENT;
+
+    /**
+     * 登录回调
+     */
+    public static IUiListener LOGIN_LISTENER;
 
     public TencentModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -39,12 +43,11 @@ public class TencentModule extends ReactContextBaseJavaModule {
         synchronized (TencentModule.class) {
             if (TENCENT == null) {
                 ReactApplicationContext context = getReactApplicationContext();
-                Resources res = context.getResources();
-                TENCENT = Tencent.createInstance(res.getString(R.string.tencent_appid), context);
+                TENCENT = Tencent.createInstance("1106135749", context);
             }
-        }
 
-        return TENCENT;
+            return TENCENT;
+        }
     }
 
     /**
@@ -59,9 +62,11 @@ public class TencentModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void login(final Promise promise) {
         final Tencent tencent = getTencent();
-        tencent.login(getCurrentActivity(), "all", new IUiListener() {
+        LOGIN_LISTENER = new IUiListener() {
             @Override
             public void onComplete(Object o) {
+                LOGIN_LISTENER = null; // 清理数据
+
                 JSONObject json = (JSONObject)o;
                 if (json != null) {
                     try {
@@ -92,16 +97,22 @@ public class TencentModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onError(UiError uiError) {
+                LOGIN_LISTENER = null;
+
                 promise.reject("1", uiError.errorDetail);
             }
 
             @Override
             public void onCancel() {
+                LOGIN_LISTENER = null;
+
                 WritableMap map = Arguments.createMap();
                 map.putString("status", "cancel");
                 promise.resolve(map);
             }
-        });
+        };
+
+        tencent.login(getCurrentActivity(), "all", LOGIN_LISTENER);
     }
 
     /**
