@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAndroid, AsyncStorage } from 'react-native';
 import Header from './Header';
 import SignIn from './SignIn';
+import RecoverPassword from './RecoverPassword';
 import CallTaxi from '../redux/container/CallTaxiContainer';
 import Motorman from './motorman/Motorman';
 import rest from './api/rest';
@@ -71,6 +72,13 @@ class Login extends Component {
         });
     }
 
+    /**
+     * 转到忘记密码页
+     */
+    _toRecoverPassword = ()=>{
+        this.props.navigator.push({comp:RecoverPassword});
+    }
+
     render() {
         return (
             <View style={{flex:1, backgroundColor:'#fff'}}>
@@ -92,9 +100,14 @@ class Login extends Component {
 
                     <Button title='登录' onPress={this._login}></Button>
                     
-                    <TouchableHighlight style={{marginTop:20}} onPress={this._toSignIn}>
-                        <Text style={{textDecorationLine:'underline'}}>还没有帐号，请注册</Text>
-                    </TouchableHighlight>
+                    <View style={{alignItems:'center'}}>
+                        <TouchableHighlight style={{marginTop:20}} onPress={this._toSignIn}>
+                            <Text style={{textDecorationLine:'underline'}}>还没有帐号，请注册 >></Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight style={{marginTop:20}} onPress={this._toRecoverPassword}>
+                            <Text style={{textDecorationLine:'underline'}}>忘记密码？</Text>
+                        </TouchableHighlight>
+                    </View>
                 </View>
             </View>
         );
