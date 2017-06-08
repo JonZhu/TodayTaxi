@@ -25,7 +25,7 @@ class SignIn extends Component {
         var verifyCode = this._verifyCode;
 
         if (!validatePhone(phone)) {
-            ToastAndroid.show('电话输入不正确', ToastAndroid.SHORT);
+            ToastAndroid.show('手机号输入不正确', ToastAndroid.SHORT);
             return;
         }
 
@@ -63,7 +63,7 @@ class SignIn extends Component {
      */
     _getVerifyCode = ()=>{
         if (!validatePhone(this._phone)) {
-            ToastAndroid.show('电话输入不正确', ToastAndroid.SHORT);
+            ToastAndroid.show('手机号输入不正确', ToastAndroid.SHORT);
             return;
         }
 
