@@ -33,8 +33,6 @@ class Login extends Component {
         var phone = this.state.phone;
         var pass = this._pass;
 
-        var navigator = this.props.navigator;
-
         // 先获取加密用的盐值
         rest("/user/getSalts.do", {phone: phone}).then((result)=>{
             if (result.code === 0) {
@@ -56,18 +54,26 @@ class Login extends Component {
                 AsyncStorage.setItem('currentUserPhone', phone); // 储存当前用户手机
 
                 var loginResp = result.payload;
-                if (loginResp.motorman) {
-                    // 司机
-                    navigator.resetTo({comp:Motorman});
-                } else {
-                    navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
-                }
+                this._loginSuccessResp(loginResp);
             } else {
                 return Promise.reject(result.message);
             }
         }).catch((reason)=>{
-            ToastAndroid.show('登录失败:' + reason, ToastAndroid.SHORT);
+            ToastAndroid.show('登录失败:' + reason, ToastAndroid.LONG);
         });
+    }
+
+    /**
+     * 处理登录成功响应
+     */
+    _loginSuccessResp = (loginResp)=>{
+        var navigator = this.props.navigator;
+        if (loginResp.motorman) {
+            // 司机
+            navigator.resetTo({comp:Motorman});
+        } else {
+            navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
+        }
     }
 
     /**
@@ -78,18 +84,55 @@ class Login extends Component {
     }
 
     /**
-     * QQ登录
+     * 转到QQ登录页面
      */
     _toQQLogin = ()=>{
         TencentModule.login().then((result)=>{
             if (result.status == 'success') {
                 // 登录成功
                 var openID = result.openID;
-                ToastAndroid.show('QQ登录成功', ToastAndroid.LONG);
-                this.setState({qqLoginSuccess:true});
+                this._qqLogin(openID);
             }
         }).catch((reason)=>{
             ToastAndroid.show('QQ登录失败', ToastAndroid.LONG);
+        });
+    }
+
+    /**
+     * 执行qq登录
+     */
+    _qqLogin = (openID)=>{
+        rest('/user/thirdLogin.do', {thirdId: openID, type:1}).then((result)=>{
+            if (result.code === 0) {
+                // 登录成功
+                var loginResp = result.payload;
+                this._loginSuccessResp(loginResp);
+            } else if (result.code == UserExceptionCode.USER_NOT_EXIST) {
+                // 第三方qq帐号不存在
+                this._createQQAccount(openID);
+            }
+        });
+    }
+
+    /**
+     * 创建qq第三方帐号
+     */
+    _createQQAccount = (openID)=>{
+        TencentModule.getInfo().then((qqInfo)=>{
+            var gender = qqInfo.gender == '男' ? 0 : (qqInfo.gender == '女' ? 1 : null);
+            rest('/user/createThirdAccount.do', {type:1, thirdId:openID, nickname:qqInfo.nickname, 
+                figureUrl:qqInfo.figureurl, gender:gender})
+            .then((result)=>{
+                var code = result.code;
+                if (code === 0 || code == UserExceptionCode.THIRD_ACCOUNT_EXIST) {
+                    // 创建成功，或帐号已存在
+                    this._qqLogin(openID); // 重新登录
+                } else {
+                    ToastAndroid.show('创建qq第三方帐号失败:' + result.message, ToastAndroid.LONG);
+                }
+            });
+        }).catch((reason)=>{
+            ToastAndroid.show('获取qq用户信息失败', ToastAndroid.LONG);
         });
     }
 
@@ -124,10 +167,7 @@ class Login extends Component {
                         <TouchableHighlight style={{marginTop:20}} onPress={this._toQQLogin}>
                             <Text style={{textDecorationLine:'underline'}}>QQ帐号登录 >></Text>
                         </TouchableHighlight>
-
-                        {this.state.qqLoginSuccess && 
-                        <Text>QQ帐号登录功能</Text>
-                        }
+                       
                     </View>
                 </View>
             </View>

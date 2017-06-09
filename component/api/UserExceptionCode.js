@@ -26,5 +26,15 @@ export default UserExceptionCode = {
 	 * 验证码错误
 	 */
 	VERIFY_CODE_ERROR: 1003,
+
+		/**
+	 * 第三方帐号已存在
+	 */
+	THIRD_ACCOUNT_EXIST: 1004,
+
+	/**
+	 * 不支持的第三方类型
+	 */
+	THIRD_TYPE_ERROR: 1005,
 	
 }
