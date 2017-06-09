@@ -148,7 +148,7 @@ public class TencentModule extends ReactContextBaseJavaModule {
                     map.putString("nickname", nickname);
                     map.putString("figureurl", figureurl);
                     map.putString("gender", gender);
-
+                    promise.resolve(map);
                 } catch (Exception e) {
                     promise.reject(e);
                 }
