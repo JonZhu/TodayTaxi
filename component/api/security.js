@@ -23,7 +23,7 @@ export async function applySession() {
                 }
             }).catch((reason)=>{
                 if (count > 5) {
-                    reject("timeout");
+                    reject("timeout:" + reason);
                 } else {
                     setTimeout(applyFun, 3000) // 3秒再重试
                 }
