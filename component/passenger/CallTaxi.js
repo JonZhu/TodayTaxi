@@ -121,7 +121,7 @@ class CallTaxi extends Component {
     _driveRoute = (from, go)=>{
         MapModule.drivingRoute(from, go).then((routes)=>{
             // 路线规划返回
-            return rest('/passenger/priceBudget', routes); // 价格预算
+            return rest('/passenger/priceBudget.do', routes); // 价格预算
         }).then((result)=>{
             // 价格预算返回
             if (result.code === 0) {
