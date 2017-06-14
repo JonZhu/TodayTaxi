@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAndroid, AsyncStorage } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAndroid } from 'react-native';
 import Header from './Header';
 import SignIn from './SignIn';
 import RecoverPassword from './RecoverPassword';
@@ -16,6 +16,7 @@ import UserExceptionCode from './api/UserExceptionCode';
 import md5 from 'md5';
 import TTTextInput from './TTTextInput';
 import TencentModule from '../native/TencentModule';
+import store from '../redux/storeConfig';
 
 class Login extends Component {
 
@@ -51,9 +52,8 @@ class Login extends Component {
             // 登录返回
             if (result.code === 0) {
                 // 登录成功
-                AsyncStorage.setItem('currentUserPhone', phone); // 储存当前用户手机
-
                 var loginResp = result.payload;
+                loginResp.phone = phone; // 当前用户手机
                 this._loginSuccessResp(loginResp);
             } else {
                 return Promise.reject(result.message);
@@ -67,6 +67,7 @@ class Login extends Component {
      * 处理登录成功响应
      */
     _loginSuccessResp = (loginResp)=>{
+        store.dispatch({type:'userLogin', loginResp}); // 触发userLogin事件
         var navigator = this.props.navigator;
         if (loginResp.motorman) {
             // 司机

@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import RouteList from './RouteList';
 import Help from '../Help';
@@ -17,10 +17,9 @@ class SideBar extends Component {
         this.state = {};
     }
 
-    componentDidMount() {
-        AsyncStorage.getItem('currentUserPhone').then((phone)=>{
-            this.setState({userPhone:phone});
-        });
+    componentWillMount() {
+        var userinfo = store.getState().userinfo;
+        this.setState({userinfo:userinfo});
     }
 
     _toMyRouteList = ()=>{
@@ -34,8 +33,8 @@ class SideBar extends Component {
     }
 
     render() {
+        var userinfo = this.state.userinfo;
         return (
-            
             <View style={style.container}>
                 <TouchableWithoutFeedback onPress={()=>this.props.toggleSideBar()}>
                     <View style={style.background}></View>
@@ -45,7 +44,7 @@ class SideBar extends Component {
                     <TouchableWithoutFeedback onPress={()=>this.props.userHeadOnPress()}>
                         <View style={style.headContainer}>
                             <Icon name='user-circle' style={style.userIcon}/>
-                            <Text style={style.userName}>{this.state.userPhone}</Text>
+                            <Text style={style.userName}>{userinfo.phone ? userinfo.phone : userinfo.nickname}</Text>
                         </View>
                     </TouchableWithoutFeedback>
 
