@@ -13,4 +13,5 @@ function storeConfig() {
     }));
 }
 
-export default storeConfig;
+const store = storeConfig();
+export default store;

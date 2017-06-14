@@ -9,18 +9,13 @@ import {
   AppRegistry
 } from 'react-native';
 import { Provider } from 'react-redux';
-import storeConfig from './redux/storeConfig';
+import store from './redux/storeConfig';
 import AppNavigator from './component/AppNavigator';
 
 export default class TodayTaxi extends Component {
-  constructor(){
-    super();
-    this.store = storeConfig();
-  }
-
   render() {
     return (
-      <Provider store={this.store}>
+      <Provider store={store}>
         <AppNavigator/>
       </Provider>
     );
