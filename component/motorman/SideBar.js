@@ -9,6 +9,7 @@ import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback } from 're
 import Icon from 'react-native-vector-icons/FontAwesome';
 import RouteList from './RouteList';
 import Help from '../Help';
+import store from '../../redux/storeConfig';
 
 class SideBar extends Component {
 
