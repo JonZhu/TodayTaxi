@@ -5,6 +5,7 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
+import com.facebook.react.modules.network.OkHttpClientProvider;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.todaytaxi.map.MapReactPackage;
@@ -39,6 +40,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+//    OkHttpClientProvider.replaceOkHttpClient(SslHttpClientBuilder.build());
     SoLoader.init(this, /* native exopackage */ false);
   }
 }
