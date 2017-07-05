@@ -12,7 +12,7 @@ import md5 from 'md5';
 import { getSessionId } from './session';
 
 // const serverPrefix = 'http://10.10.10.90:8080';
-const serverPrefix = 'http://www.todaytaxi.com:8080';
+const serverPrefix = 'http://www.todaytaxi.com:11986';
 
 // 发送rest请求
 async function rest(url, param) {
