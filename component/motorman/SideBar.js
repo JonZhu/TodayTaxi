@@ -7,7 +7,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import RouteList from './RouteList';
 import Help from '../Help';
 import store from '../../redux/storeConfig';
 
@@ -25,12 +24,12 @@ class SideBar extends Component {
 
     _toMyRouteList = ()=>{
         this.props.toggleSideBar(); // 关闭siderBar;
-        this.props.navigator.push({comp:RouteList}); // 我的行程页面
+        this.props.navigation.navigate('RouteList'); // 我的行程页面
     }
 
     _toHelp = ()=>{
         this.props.toggleSideBar(); // 关闭siderBar;
-        this.props.navigator.push({comp:Help}); // 帮助页
+        this.props.navigation.navigate('Help'); // 帮助页
     }
 
     render() {

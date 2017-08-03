@@ -353,7 +353,7 @@ class Motorman extends Component {
                 </View>
 
                 {this.state.showSideBar && 
-                <SideBar toggleSideBar={this._toggleSideBar} navigator={this.props.navigator}/>
+                <SideBar toggleSideBar={this._toggleSideBar} navigation={this.props.navigation}/>
                 }
 
             </View>

@@ -9,12 +9,12 @@ import React, { Component } from 'react';
 import { View, Text, ToastAndroid, StyleSheet } from 'react-native';
 import { applySession } from './api/security';
 import Login from './Login';
+import { NavigationActions } from 'react-navigation';
 
 class BootPage extends Component {
 
     componentDidMount() {
         var startTime = new Date().getTime();
-        var navigator = this.props.navigator;
         // var minTime = 3000; // Boot页面最少显示时间
         var minTime = 0; // 测试时不用等待
         // 初始化session
@@ -22,11 +22,11 @@ class BootPage extends Component {
             // 已经成功申请到session, 跳转到登录页面
             var useTime = new Date().getTime() - startTime;
             if (useTime >= minTime) {
-                navigator.resetTo({comp:Login}); // 并清除所有page stack
+                this.gotoLogin();
             } else {
                 // 时间不足, 等待时间足够才跳出boot页面
                 setTimeout(function() {
-                   navigator.resetTo({comp:Login});
+                   this.gotoLogin();
                 }, minTime - useTime);
             }
         }).catch((reason)=>{
@@ -34,6 +34,17 @@ class BootPage extends Component {
         });
 
     }
+
+    gotoLogin = ()=>{
+        const resetAction = NavigationActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: 'Login'})
+            ]
+        })
+        this.props.navigation.dispatch(resetAction);
+        // this.props.navigation.navigate('Login');
+    };
 
     render() {
         return (

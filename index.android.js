@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './redux/storeConfig';
-import AppNavigator from './component/AppNavigator';
+import AppNavigator from './component/Navigator';
 
 export default class TodayTaxi extends Component {
   render() {

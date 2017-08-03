@@ -89,7 +89,7 @@ class RouteList extends Component {
 
     // 跳转到行程详情
     _toRouteInfo = (routeId)=>{
-        this.props.navigator.push({comp: RouteInfo, props:{routeId: routeId}});
+        this.props.navigation.navigate('RouteInfo', {routeId: routeId});
     }
 
     render() {

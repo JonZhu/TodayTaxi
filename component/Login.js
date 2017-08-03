@@ -7,16 +7,13 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAndroid } from 'react-native';
 import Header from './Header';
-import SignIn from './SignIn';
-import RecoverPassword from './RecoverPassword';
-import CallTaxi from '../redux/container/CallTaxiContainer';
-import Motorman from './motorman/Motorman';
 import rest from './api/rest';
 import UserExceptionCode from './api/UserExceptionCode';
 import md5 from 'md5';
 import TTTextInput from './TTTextInput';
 import TencentModule from '../native/TencentModule';
 import store from '../redux/storeConfig';
+import { NavigationActions } from 'react-navigation';
 
 class Login extends Component {
 
@@ -27,7 +24,7 @@ class Login extends Component {
     }
 
     _toSignIn = ()=>{
-        this.props.navigator.push({comp:SignIn});
+        this.props.navigation.navigate('SignIn');
     }
 
     _login = ()=>{
@@ -68,20 +65,22 @@ class Login extends Component {
      */
     _loginSuccessResp = (loginResp)=>{
         store.dispatch({type:'userLogin', loginResp}); // 触发userLogin事件
-        var navigator = this.props.navigator;
-        if (loginResp.motorman) {
-            // 司机
-            navigator.resetTo({comp:Motorman});
-        } else {
-            navigator.resetTo({comp:CallTaxi}); // 跳转到叫车页，并清除所有page stack
-        }
+
+        var clientType = loginResp.motorman ? 'Motorman' : 'Passenger';
+        const resetAction = NavigationActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: clientType})
+            ]
+        })
+        this.props.navigation.dispatch(resetAction);
     }
 
     /**
      * 转到忘记密码页
      */
     _toRecoverPassword = ()=>{
-        this.props.navigator.push({comp:RecoverPassword});
+        this.props.navigation.navigate('RecoverPassword');
     }
 
     /**

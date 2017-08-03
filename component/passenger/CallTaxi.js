@@ -61,11 +61,8 @@ class CallTaxi extends Component {
     }
 
     _siderBarUserHeadOnPress = ()=>{
-        var navigator = this.props.navigator;
         // 跳转到用户信息页
-        navigator.push({
-            comp: UserInfoContainer
-        });
+        this.props.navigation.navigate('UserInfoContainer');
 
         this.props.toggleSideBar(); // 隐藏side bar
     }
@@ -82,11 +79,8 @@ class CallTaxi extends Component {
 
     // 跳转到选择目标地址页
     _gotoChoiceGoAddressPage = ()=>{
-        var navigator = this.props.navigator;
         // 跳转到选择目标地址页
-        navigator.push({
-            comp: ChoiceGoContainer
-        });
+        this.props.navigation.navigate('ChoiceGoContainer');
     }
 
     // 定位当前位置
@@ -369,7 +363,7 @@ class CallTaxi extends Component {
 
                 {this.props.sideBar.isShow && 
                 <SideBar toggleSideBar={this.props.toggleSideBar} userHeadOnPress={this._siderBarUserHeadOnPress}
-                    navigator={this.props.navigator}/>
+                    navigation={this.props.navigation}/>
                 }
 
                 {this.state.showCalling && 
