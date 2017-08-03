@@ -50,7 +50,7 @@ class RegistMotorman extends Component {
         rest('/motorman/regist.do', param).then((result)=>{
             if (result.code === 0) {
                 ToastAndroid.show('注册成功,请重新登录', ToastAndroid.LONG);
-                this.props.navigator.pop(); // 返回之前页面
+                this.props.navigation.goBack(); // 返回之前页面
             } else {
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
             }

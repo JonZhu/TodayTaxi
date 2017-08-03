@@ -17,7 +17,7 @@ class RouteInfo extends Component {
     state = {};
 
     componentDidMount() {
-        var routeId = this.props.routeId;
+        var routeId = this.props.navigation.state.params.routeId;
         rest('/route/getMotormanRouteInfo.do', {routeId: routeId}).then((result)=>{
             var route = result.payload;
             if (route) {

@@ -44,12 +44,11 @@ class SignIn extends Component {
             return;
         }
 
-        var navigator = this.props.navigator;
         rest("/user/regist.do", {phone:phone, password:pass, verifyCode:verifyCode, os:Platform.OS}).then((result)=>{
             if (result.code === 0) {
                 // 注册成功
                 ToastAndroid.show('注册成功', ToastAndroid.LONG);
-                navigator.pop(); // 返回页面
+                this.props.navigation.goBack(); // 返回页面
             } else {
                 ToastAndroid.show('注册失败:' + result.message, ToastAndroid.SHORT);
             }

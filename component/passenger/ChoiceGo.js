@@ -17,7 +17,7 @@ class ChoiceGo extends Component {
     }
 
     _addressOnPress(goAddr) {
-        this.props.navigator.pop(); // 关闭当前页
+        this.props.navigation.goBack(); // 关闭当前页
         this.props.searchAddrOnPress(goAddr);
     }
 
@@ -36,7 +36,7 @@ class ChoiceGo extends Component {
                     }
                     <TextInput style={{flex:1, marginRight:10, fontSize:16}} underlineColorAndroid='transparent' 
                         placeholder='请输入目的地' onChangeText={(keyword)=>{this.props.searchKeywordInCity(this.props.city, keyword)}}/>
-                    <TouchableHighlight onPress={()=>this.props.navigator.pop()}>
+                    <TouchableHighlight onPress={()=>this.props.navigation.goBack()}>
                         <Text style={{color:'rgb(31,186,214)'}}>取消</Text>
                     </TouchableHighlight>
                 </View>

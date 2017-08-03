@@ -11,7 +11,6 @@ import RouteList from './RouteList';
 import RouteInfo from './RouteInfo';
 import RegistMotorman from './RegistMotorman';
 import ChoiceGo from '../../redux/container/ChoiceGoContainer';
-import UserInfo from '../../redux/container/UserInfoContainer';
 
 const Navigator = new StackNavigator({
     CallTaxi: {screen: CallTaxi},
@@ -19,7 +18,6 @@ const Navigator = new StackNavigator({
     RouteInfo: {screen: RouteInfo},
     RegistMotorman: {screen: RegistMotorman},
     ChoiceGo: {screen: ChoiceGo},
-    UserInfo: {screen: UserInfo},
 }, {
     initialRouteName: 'CallTaxi',
     headerMode: 'none'

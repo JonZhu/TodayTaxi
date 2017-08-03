@@ -66,7 +66,7 @@ class Login extends Component {
     _loginSuccessResp = (loginResp)=>{
         store.dispatch({type:'userLogin', loginResp}); // 触发userLogin事件
 
-        var clientType = loginResp.motorman ? 'Motorman' : 'Passenger';
+        var clientType = loginResp.motorman ? 'MotormanNavigator' : 'PassengerNavigator';
         const resetAction = NavigationActions.reset({
             index: 0,
             actions: [

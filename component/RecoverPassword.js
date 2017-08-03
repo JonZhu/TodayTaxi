@@ -62,12 +62,11 @@ class RecoverPassword extends Component {
 
         var newPassword = md5(pass + this._salt); // 加密
 
-        var navigator = this.props.navigator;
         rest("/user/recoverPass.do", {phone:phone, newPass:newPassword, verifyCode:verifyCode, os:Platform.OS}).then((result)=>{
             if (result.code === 0) {
                 // 找回密码成功
                 ToastAndroid.show('找回密码成功', ToastAndroid.LONG);
-                navigator.pop(); // 返回页面
+                this.props.navigation.goBack(); // 返回页面
             } else {
                 ToastAndroid.show('找回密码失败:' + result.message, ToastAndroid.SHORT);
             }
@@ -122,10 +121,10 @@ class RecoverPassword extends Component {
     _onBack = ()=>{
         if (this.state.step > 1) {
             this.setState({step:this.state.step - 1});
-            return true; // 兼容BackHandler, 不跳出当前页
         } else {
             pageBack.bind(this)();
         }
+        return true; // 兼容BackHandler, 不跳出当前页
     }
 
     render() {

@@ -6,20 +6,24 @@
  */
 
 import { StackNavigator } from 'react-navigation';
-import MotomanNavigator from './motorman/Navigator';
+import MotormanNavigator from './motorman/Navigator';
 import PassengerNavigator from './passenger/Navigator';
 import BootPage from './BootPage';
 import Login from './Login';
 import SignIn from './SignIn';
 import Help from './Help';
+import UserInfo from '../redux/container/UserInfoContainer';
+import RecoverPassword from './RecoverPassword';
 
 const Navigator = new StackNavigator({
     BootPage: {screen: BootPage},
-    Motoman: {screen: MotomanNavigator},
-    Passenger: {screen: PassengerNavigator},
+    MotormanNavigator: {screen: MotormanNavigator},
+    PassengerNavigator: {screen: PassengerNavigator},
     Login: {screen: Login},
     SignIn: {screen: SignIn},
-    Help: {screen: Help}
+    Help: {screen: Help},
+    UserInfo: {screen: UserInfo},
+    RecoverPassword: {screen: RecoverPassword},
 }, {
     initialRouteName: 'BootPage',
     headerMode: 'none'

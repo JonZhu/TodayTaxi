@@ -12,8 +12,6 @@ import FromGo from './FromGo';
 import MapView from '../../native/MapView';
 import ClickToUse from './ClickToUse';
 
-import UserInfoContainer from '../../redux/container/UserInfoContainer';
-import ChoiceGoContainer from '../../redux/container/ChoiceGoContainer';
 import MapModule from '../../native/MapModule';
 import rest from '../api/rest';
 import CallingProgress from './CallingProgress';
@@ -62,7 +60,7 @@ class CallTaxi extends Component {
 
     _siderBarUserHeadOnPress = ()=>{
         // 跳转到用户信息页
-        this.props.navigation.navigate('UserInfoContainer');
+        this.props.navigation.navigate('UserInfo');
 
         this.props.toggleSideBar(); // 隐藏side bar
     }
@@ -80,7 +78,7 @@ class CallTaxi extends Component {
     // 跳转到选择目标地址页
     _gotoChoiceGoAddressPage = ()=>{
         // 跳转到选择目标地址页
-        this.props.navigation.navigate('ChoiceGoContainer');
+        this.props.navigation.navigate('ChoiceGo');
     }
 
     // 定位当前位置
