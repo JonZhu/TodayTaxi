@@ -53,7 +53,7 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
         uiSettings.setCompassEnabled(false); // 设置是否允许指南针
         uiSettings.setZoomControlsEnabled(false); // 关闭缩放按钮
         uiSettings.setZoomInByScreenCenter(true); // 在中心点缩放
-        uiSettings.setMyLocationButtonEnabled(true); // 显示定位按钮
+        uiSettings.setMyLocationButtonEnabled(false); // 显示定位按钮
 
         // 设置中心点(成都天府五街)和级别 104.056701,30.537908
         CameraUpdate mCameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(30.537908,104.056701),17);
@@ -68,7 +68,7 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
      * @param view
      * @param enable
      */
-    @ReactProp(name = "showMyLoc", defaultBoolean = true)
+    @ReactProp(name = "showMyLoc", defaultBoolean = false)
     public void setMyLocationEnabled(AMapView view, boolean enable) {
         view.getMap().setMyLocationEnabled(enable);
     }
@@ -78,7 +78,7 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
      * @param view
      * @param enable
      */
-    @ReactProp(name = "showMyLocBtn", defaultBoolean = true)
+    @ReactProp(name = "showMyLocBtn", defaultBoolean = false)
     public void setMyLocationButtonEnabled(AMapView view, boolean enable) {
         view.getMap().getUiSettings().setMyLocationButtonEnabled(enable);
     }
