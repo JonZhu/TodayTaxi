@@ -149,17 +149,6 @@ public class AMapNaviModule extends ReactContextBaseJavaModule {
                 JSModuleUtil.sendEvent(getReactApplicationContext(), "onNaviArriveDest", null);
             }
 
-            @Override
-            public void onCalculateRouteSuccess() {
-                // 路径规则成功, 开启GPS实时导航
-                boolean success = mapNavi.startNavi(NaviType.GPS);
-                if (success) {
-                    promise.resolve(null);
-                } else {
-                    promise.reject("2", "startNaviFail");
-                }
-            }
-
             /**
              *
              * @param errorCode PathPlanningErrCode
@@ -236,8 +225,14 @@ public class AMapNaviModule extends ReactContextBaseJavaModule {
             }
 
             @Override
-            public void onCalculateMultipleRoutesSuccess(int[] ints) {
-
+            public void onCalculateRouteSuccess(int[] ints) {
+                // 路径规则成功, 开启GPS实时导航
+                boolean success = mapNavi.startNavi(NaviType.GPS);
+                if (success) {
+                    promise.resolve(null);
+                } else {
+                    promise.reject("2", "startNaviFail");
+                }
             }
 
             @Override
