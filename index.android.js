@@ -13,10 +13,18 @@ import store from './redux/storeConfig';
 import AppNavigator from './component/Navigator';
 
 export default class TodayTaxi extends Component {
+
+  _onNavigationStateChange = (prevState, newState, action)=>{
+    var router = AppNavigator.router;
+    var preComp = router.getComponentForState(prevState);
+    var newComp = router.getComponentForState(newState);
+    console.info([preComp, newComp]);
+  };
+
   render() {
     return (
       <Provider store={store}>
-        <AppNavigator/>
+        <AppNavigator ref={(navigator)=>{this._navigator=navigator}} onNavigationStateChange={this._onNavigationStateChange}/>
       </Provider>
     );
   }
