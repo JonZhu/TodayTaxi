@@ -40,7 +40,6 @@ public class AMapViewManager extends SimpleViewManager<AMapView> {
     public AMapView createViewInstance(final ThemedReactContext context) {
 
         final AMapView mapView = new AMapView(context);
-        mapView.onCreate(context.getCurrentActivity().getIntent().getExtras());
         AMap map = mapView.getMap();
         map.setMapType(AMap.MAP_TYPE_NORMAL);
         map.setMyLocationEnabled(true); // 打开定位图层

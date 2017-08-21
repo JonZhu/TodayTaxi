@@ -1,7 +1,9 @@
 package com.todaytaxi.map.amap;
 
+import android.graphics.Rect;
 import android.location.Location;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.amap.api.maps.AMap;
@@ -217,4 +219,39 @@ public class AMapView extends MapView {
             routeMarkerList.add(marker);
         }
     }
+
+
+    @Override
+    protected void onAttachedToWindow() {
+        this.onCreate(context.getCurrentActivity().getIntent().getExtras());
+        super.onAttachedToWindow();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        this.onDestroy();
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        if (visibility == View.VISIBLE) {
+            this.onResume();
+        } else {
+            this.onPause();
+        }
+        super.onWindowVisibilityChanged(visibility);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        if (hasWindowFocus) {
+            this.onResume();
+        } else {
+            this.onPause();
+        }
+        super.onWindowFocusChanged(hasWindowFocus);
+    }
+
+
 }

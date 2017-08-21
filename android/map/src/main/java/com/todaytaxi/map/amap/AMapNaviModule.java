@@ -137,6 +137,11 @@ public class AMapNaviModule extends ReactContextBaseJavaModule {
             }
 
             @Override
+            public void onGetNavigationText(String s) {
+
+            }
+
+            @Override
             public void onEndEmulatorNavi() {
 
             }
