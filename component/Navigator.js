@@ -8,7 +8,7 @@
 import { StackNavigator } from 'react-navigation';
 import MotormanNavigator from './motorman/Navigator';
 import PassengerNavigator from './passenger/Navigator';
-import BootPage from './Test';
+import BootPage from './BootPage';
 import Login from './Login';
 import SignIn from './SignIn';
 import Help from './Help';
