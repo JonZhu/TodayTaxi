@@ -14,17 +14,17 @@ import AppNavigator from './component/Navigator';
 
 export default class TodayTaxi extends Component {
 
-  _onNavigationStateChange = (prevState, newState, action)=>{
-    var router = AppNavigator.router;
-    var preComp = router.getComponentForState(prevState);
-    var newComp = router.getComponentForState(newState);
-    console.info([preComp, newComp]);
-  };
+  // _onNavigationStateChange = (prevState, newState, action)=>{
+  //   var router = AppNavigator.router;
+  //   var preComp = router.getComponentForState(prevState);
+  //   var newComp = router.getComponentForState(newState);
+  //   console.info([preComp, newComp]);
+  // };
 
   render() {
     return (
       <Provider store={store}>
-        <AppNavigator ref={(navigator)=>{this._navigator=navigator}} onNavigationStateChange={this._onNavigationStateChange}/>
+        <AppNavigator ref={(navigator)=>{this._navigator=navigator}} />
       </Provider>
     );
   }
