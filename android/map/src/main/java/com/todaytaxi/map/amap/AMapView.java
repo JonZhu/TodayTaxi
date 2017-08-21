@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.MapView;
+import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
@@ -34,7 +34,7 @@ import java.util.Map;
  * Created by zhujun on 2017/4/6 0006.
  */
 
-public class AMapView extends MapView {
+public class AMapView extends TextureMapView {
 
     private ThemedReactContext context;
 
