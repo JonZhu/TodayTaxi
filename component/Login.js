@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAndroid } from 'react-native';
+import { View, ScrollView, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAndroid, Image, Dimensions } from 'react-native';
 import Header from './Header';
 import rest from './api/rest';
 import UserExceptionCode from './api/UserExceptionCode';
@@ -14,6 +14,7 @@ import TTTextInput from './TTTextInput';
 import TencentModule from '../native/TencentModule';
 import store from '../redux/storeConfig';
 import { NavigationActions } from 'react-navigation';
+import { validatePhone, validatePass } from './util/validator';
 
 class Login extends Component {
 
@@ -30,6 +31,16 @@ class Login extends Component {
     _login = ()=>{
         var phone = this.state.phone;
         var pass = this._pass;
+
+        if (!validatePhone(phone)) {
+            ToastAndroid.show('手机号输入不正确', ToastAndroid.SHORT);
+            return;
+        }
+
+        if (!validatePass(pass)) {
+            ToastAndroid.show('密码输入不正确，应为6到20位数字、下划线、字母', ToastAndroid.SHORT);
+            return;
+        }
 
         // 先获取加密用的盐值
         rest("/user/getSalts.do", {phone: phone}).then((result)=>{
@@ -138,39 +149,41 @@ class Login extends Component {
 
     render() {
         return (
-            <View style={{flex:1, backgroundColor:'#fff'}}>
-                <Header title='登录'/>
-                <View style={{flex:1, padding:10}}>
-                    <View style={{borderWidth:1, borderRadius:3, borderColor:'rgb(205,205,211)', marginBottom:10}}>
-                        <View style={{flexDirection:'row', alignItems:'center', borderBottomWidth:1, 
-                            borderBottomColor:'rgb(205,205,211)', paddingLeft:10, height:50}}>
-                            <Text style={{fontSize:18}}>帐户：</Text>
-                            <TTTextInput ref='phoneInput' style={{flex:1}} placeholder='请输入帐户' underlineColorAndroid='transparent'
-                                keyboardType='phone-pad' onChangeText={(text)=>{this.setState({phone:text})}} value={this.state.phone} regexp='\d*' maxLength={11}/>
-                        </View>
-                        <View style={{flexDirection:'row', alignItems:'center', paddingLeft:10, height:50}}>
-                            <Text style={{fontSize:18}}>密码：</Text>
-                            <TextInput ref='passInput' style={{flex:1}} placeholder='请输入密码' underlineColorAndroid='transparent' 
-                                secureTextEntry={true} onChangeText={(text)=>{this._pass = text}}/>
-                        </View>
-                    </View>
+            <ScrollView style={{flex:1, backgroundColor:'rgb(204,204,204)'}}>
+            <View style={{height:Dimensions.get('window').height-32, padding:16, paddingLeft:35, paddingRight:35, alignItems:'center'}}>
+                <TouchableHighlight style={{position:'absolute', top:16, right:35}} onPress={this._toSignIn}>
+                    <Text style={{fontSize:14}}>注册</Text>
+                </TouchableHighlight>
 
-                    <Button title='登录' onPress={this._login}></Button>
-                    
-                    <View style={{alignItems:'center'}}>
-                        <TouchableHighlight style={{marginTop:20}} onPress={this._toSignIn}>
-                            <Text style={{textDecorationLine:'underline'}}>还没有帐号，请注册 >></Text>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={{marginTop:20}} onPress={this._toRecoverPassword}>
-                            <Text style={{textDecorationLine:'underline'}}>忘记密码？</Text>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={{marginTop:20}} onPress={this._toQQLogin}>
-                            <Text style={{textDecorationLine:'underline'}}>QQ帐号登录 >></Text>
-                        </TouchableHighlight>
-                       
-                    </View>
+                <Image source={require('./img/login_logo.png')} style={{marginTop:88, width:119, resizeMode:'contain'}}/>
+
+                <Text style={{marginTop:25, fontSize:40, color:'rgb(153,153,51)', fontWeight:'bold'}}>TodayTaxi</Text>
+
+                <View style={{width:'100%', height:40, borderWidth:1, borderColor:'rgb(153,153,153)', marginTop:52}}>
+                    <TTTextInput ref='phoneInput' style={{flex:1}} placeholder='手机号' underlineColorAndroid='transparent'
+                        keyboardType='phone-pad' onChangeText={(text)=>{this.setState({phone:text})}} value={this.state.phone} regexp='\d*' maxLength={11}/>
                 </View>
+
+                <View style={{width:'100%', height:40, borderWidth:1, borderColor:'rgb(153,153,153)', marginTop:18}}>
+                    <TextInput ref='passInput' style={{flex:1}} placeholder='密码' underlineColorAndroid='transparent' 
+                        secureTextEntry={true} onChangeText={(text)=>{this._pass = text}}/>
+                </View>
+
+                <TouchableHighlight onPress={this._login} style={{width:'100%', marginTop:18}}>
+                <View style={{width:'100%', height:40, borderWidth:1, borderColor:'rgb(153,153,102)', backgroundColor:'#b3d465', alignItems:'center', justifyContent:'center'}}>
+                    <Text style={{fontSize:27, color:'#999933'}}>登录</Text>
+                </View>
+                </TouchableHighlight>
+
+                <TouchableHighlight style={{position:'absolute', bottom:16, left:35}} onPress={this._toRecoverPassword}>
+                    <Text style={{fontSize:14}}>忘记密码</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={{position:'absolute', bottom:16, right:35}} onPress={this._toQQLogin}>
+                    <Text style={{fontSize:14}}>QQ登录</Text>
+                </TouchableHighlight>
+
             </View>
+            </ScrollView>
         );
     }
 
