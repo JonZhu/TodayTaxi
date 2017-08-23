@@ -48,7 +48,7 @@ class BootPage extends Component {
 
     render() {
         return (
-            <View style={{flex:1, backgroundColor:'#rgb(125,204,247)', justifyContent:'center', alignItems:'center'}}>
+            <View style={{flex:1, backgroundColor:'rgb(204,204,204)', justifyContent:'center', alignItems:'center'}}>
                 <Text style={{fontSize:50}}>Today</Text>
                 <Text style={{fontSize:14}}>Taxi</Text>
             </View>

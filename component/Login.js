@@ -155,7 +155,7 @@ class Login extends Component {
                     <Text style={{fontSize:14}}>注册</Text>
                 </TouchableHighlight>
 
-                <Image source={require('./img/login_logo.png')} style={{marginTop:88, width:119, resizeMode:'contain'}}/>
+                <Image source={require('./img/login_logo.png')} style={{marginTop:44, width:119, resizeMode:'contain'}}/>
 
                 <Text style={{marginTop:25, fontSize:40, color:'rgb(153,153,51)', fontWeight:'bold'}}>TodayTaxi</Text>
 
