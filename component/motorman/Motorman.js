@@ -217,8 +217,6 @@ class Motorman extends Component {
         });
     }
 
-
-    
     // 乘客上车
     _passengerGetOn = ()=>{
         rest('/motorman/passengerGetOn.do', {routeId: this.state.preAllocateRoute.routeId}).then((result)=>{
@@ -226,6 +224,12 @@ class Motorman extends Component {
                 // 成功
                 ToastAndroid.show('操作成功', ToastAndroid.LONG);
                 this.setState({showGetOnBtn:false, showCompleteBtn:true}); // 显示完成按钮
+
+                // 重新从当前位置导航到目的地
+                var route = this.state.preAllocateRoute;
+                var cLoc = this._currentLoc;
+                var pointList = [{lng:cLoc.lng, lat:cLoc.lat}, {lng:route.to.lng, lat:route.to.lat}];
+                this._startNavi(pointList); // 重新导航
             } else {
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
             }
