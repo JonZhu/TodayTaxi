@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, ScrollView, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAndroid, Image, Dimensions } from 'react-native';
+import { View, ScrollView, Text, TextInput, Button, StyleSheet, TouchableHighlight, ToastAndroid, Image, Dimensions, ActivityIndicator } from 'react-native';
 import Header from './Header';
 import rest from './api/rest';
 import UserExceptionCode from './api/UserExceptionCode';
@@ -21,7 +21,7 @@ class Login extends Component {
     constructor() {
         super();
 
-        this.state = {phone:''}
+        this.state = {phone:'', showLoading:false}
     }
 
     _toSignIn = ()=>{
@@ -42,6 +42,7 @@ class Login extends Component {
             return;
         }
 
+        this.setState({showLoading:true});
         // 先获取加密用的盐值
         rest("/user/getSalts.do", {phone: phone}).then((result)=>{
             if (result.code === 0) {
@@ -57,6 +58,7 @@ class Login extends Component {
                 return Promise.reject('获取盐值失败');
             }
         }).then((result)=>{
+            this.setState({showLoading:false});
             // 登录返回
             if (result.code === 0) {
                 // 登录成功
@@ -67,6 +69,7 @@ class Login extends Component {
                 return Promise.reject(result.message);
             }
         }).catch((reason)=>{
+            this.setState({showLoading:false});
             ToastAndroid.show('登录失败:' + reason, ToastAndroid.LONG);
         });
     }
@@ -181,6 +184,10 @@ class Login extends Component {
                 <TouchableHighlight style={{position:'absolute', bottom:16, right:35}} onPress={this._toQQLogin}>
                     <Text style={{fontSize:14}}>QQ登录</Text>
                 </TouchableHighlight>
+
+                {this.state.showLoading &&
+                <ActivityIndicator size='small'/>
+                }
 
             </View>
             </ScrollView>

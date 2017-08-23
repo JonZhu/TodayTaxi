@@ -6,7 +6,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, ToastAndroid, StyleSheet } from 'react-native';
+import { View, Text, ToastAndroid, StyleSheet, ActivityIndicator } from 'react-native';
 import { applySession } from './api/security';
 import Login from './Login';
 import { NavigationActions } from 'react-navigation';
@@ -51,6 +51,7 @@ class BootPage extends Component {
             <View style={{flex:1, backgroundColor:'rgb(204,204,204)', justifyContent:'center', alignItems:'center'}}>
                 <Text style={{fontSize:50}}>Today</Text>
                 <Text style={{fontSize:14}}>Taxi</Text>
+                <ActivityIndicator animating={true}/>
             </View>
         );
     }
