@@ -1,0 +1,37 @@
+// redux 全局state
+// date 2017-08-29, author zhujun
+{
+    userinfo: {
+        userId: "用户ID",
+        motorman: 1, // 性别
+        nickname: "昵称",
+        phone: "电话"
+    },
+
+    callTaxi: {
+        from: {
+            locationed: false,
+            address: '正在定位...',
+            lng: 0,
+            lat: 0
+        },
+        go: {
+            locationed: false,
+            address: '点击选择',
+            lng: 0,
+            lat: 0
+        },
+        locationWho: 'from',
+        goAddrSearchResult: [{
+            name: '名称',
+            address: '地址',
+            city: '城市',
+            lng: 103, // 经度
+            lat: 39 // 纬度
+        }]
+    },
+
+    sideBar: {
+        isShow: false // 是否显示sideBar
+    }
+}
