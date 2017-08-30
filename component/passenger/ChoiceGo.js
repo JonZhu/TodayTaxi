@@ -6,7 +6,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, TextInput, Text, TouchableHighlight, ListView } from 'react-native';
+import { View, TextInput, Text, TouchableHighlight, FlatList } from 'react-native';
 
 class ChoiceGo extends Component {
 
@@ -22,10 +22,6 @@ class ChoiceGo extends Component {
     }
 
     render() {
-        var searchResult = this.props.searchResult;
-        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        ds = ds.cloneWithRows(searchResult);
-
         return (
             <View style={{flex:1, backgroundColor:'#fff'}}>
                 <View style={{backgroundColor:'rgb(249,249,249)', height:50, 
@@ -41,13 +37,16 @@ class ChoiceGo extends Component {
                     </TouchableHighlight>
                 </View>
 
-                <ListView style={{flex:1}} dataSource={ds} enableEmptySections={true} renderRow={(rowData)=>
-                    <TouchableHighlight onPress={()=>this._addressOnPress(rowData)}>
-                        <View style={{padding:10, borderBottomWidth:1, borderBottomColor:'rgb(229,229,229)', marginLeft:10, marginRight:10}}>
-                            <Text style={{fontSize:18}}>{rowData.name}</Text>
-                            <Text style={{color:'rgb(175,175,175)'}}>{rowData.address}</Text>
-                        </View>
-                    </TouchableHighlight>
+                <FlatList style={{flex:1}} data={this.props.searchResult} keyExtractor={(item, index)=>{return index+''}} renderItem={(row)=>{
+                    var item = row.item;
+                    return (
+                        <TouchableHighlight onPress={()=>this._addressOnPress(item)}>
+                            <View style={{padding:10, borderBottomWidth:1, borderBottomColor:'rgb(229,229,229)', marginLeft:10, marginRight:10}}>
+                                <Text style={{fontSize:18}}>{row.index+1}. {item.name}</Text>
+                                <Text style={{color:'rgb(175,175,175)'}}>{item.address}</Text>
+                            </View>
+                        </TouchableHighlight>
+                    )}
                 }/>
 
             </View>
