@@ -152,7 +152,7 @@ class Login extends Component {
 
     render() {
         return (
-            <ScrollView style={{flex:1, backgroundColor:'rgb(204,204,204)'}}>
+            <ScrollView style={{flex:1, backgroundColor:'#fff'}}>
             <View style={{height:Dimensions.get('window').height-32, padding:16, paddingLeft:35, paddingRight:35, alignItems:'center'}}>
                 <TouchableHighlight style={{position:'absolute', top:16, right:35}} onPress={this._toSignIn}>
                     <Text style={{fontSize:14}}>注册</Text>
