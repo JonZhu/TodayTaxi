@@ -58,13 +58,6 @@ class CallTaxi extends Component {
         this._stopGetAllocatedTaxiLoc();
     }
 
-    _siderBarUserHeadOnPress = ()=>{
-        // 跳转到用户信息页
-        this.props.navigation.navigate('UserInfo');
-
-        this.props.toggleSideBar(); // 隐藏side bar
-    }
-
     _onHardwareBackPress = ()=>{
         // 处理back键, 关闭sider bar
         if (this.props.sideBar.isShow) {
@@ -360,8 +353,7 @@ class CallTaxi extends Component {
                 }
 
                 {this.props.sideBar.isShow && 
-                <SideBar toggleSideBar={this.props.toggleSideBar} userHeadOnPress={this._siderBarUserHeadOnPress}
-                    navigation={this.props.navigation}/>
+                <SideBar toggleSideBar={this.props.toggleSideBar} navigation={this.props.navigation}/>
                 }
 
                 {this.state.showCalling && 

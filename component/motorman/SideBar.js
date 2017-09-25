@@ -32,6 +32,12 @@ class SideBar extends Component {
         this.props.navigation.navigate('Help'); // 帮助页
     }
 
+    _toUserInfo = ()=>{
+        // 跳转到用户信息页
+        this.props.toggleSideBar(); // 隐藏side bar
+        this.props.navigation.navigate('UserInfo');
+    }
+
     render() {
         var userinfo = this.state.userinfo;
         return (
@@ -41,7 +47,7 @@ class SideBar extends Component {
                 </TouchableWithoutFeedback>
 
                 <View style={style.barContainer}>
-                    <TouchableWithoutFeedback onPress={()=>this.props.userHeadOnPress()}>
+                    <TouchableWithoutFeedback onPress={this._toUserInfo}>
                         <View style={style.headContainer}>
                             <Icon name='user-circle' style={style.userIcon}/>
                             <Text style={style.userName}>{userinfo.phone ? userinfo.phone : userinfo.nickname}</Text>

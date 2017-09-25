@@ -20,12 +20,16 @@ class UserInfo extends Component {
             <View style={{flex:1, backgroundColor:'#fff'}}>
                 <Header title='用户信息' icon='back' iconOnPress={pageBack.bind(this)}/>
                 <View style={style.row}>
-                    <Text style={style.fieldName}>姓名</Text>
-                    <Text style={style.fieldValue}>{user.name}</Text>
+                    <Text style={style.fieldName}>ID</Text>
+                    <Text style={style.fieldValue}>{user.userId}</Text>
                 </View>
                 <View style={style.row}>
-                    <Text style={style.fieldName}>ID</Text>
-                    <Text style={style.fieldValue}>{user.id}</Text>
+                    <Text style={style.fieldName}>昵称</Text>
+                    <Text style={style.fieldValue}>{user.nickname}</Text>
+                </View>
+                <View style={style.row}>
+                    <Text style={style.fieldName}>电话</Text>
+                    <Text style={style.fieldValue}>{user.phone}</Text>
                 </View>
                 <View style={style.row}>
                     <Text style={style.fieldName}>姓别</Text>
@@ -54,7 +58,7 @@ const style = StyleSheet.create({
 
     fieldValue: {
         position: 'absolute',
-        left: 80
+        left: 50
     }
 
 });
