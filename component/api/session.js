@@ -13,16 +13,27 @@ var sessionId;
  */
 export async function getSessionId() {
     if (!sessionId) {
-        sessionId = await AsyncStorage.getItem("sessionId");
+        var sessionJsonStr = await AsyncStorage.getItem("sessionId");
+        if (sessionJsonStr) {
+            var session = JSON.parse(sessionJsonStr);
+            sessionId = session.id;
+        }
     }
     return sessionId;
 }
 
 /**
  * 保存session
- * @param {*} value 
+ * @param {id, expire} value 
  */
-export function setSessionId(value) {
-    sessionId = value;
-    AsyncStorage.setItem("sessionId", value);
+export function saveSession(session) {
+    if (session) {
+        sessionId = session.id;
+        session.localTime = new Date().getMilliseconds(); // 记录app当前本地时间
+        AsyncStorage.setItem("sessionId", JSON.stringify(session));
+    } else {
+        sessionId = null;
+        AsyncStorage.removeItem('sessionId');
+    }
+    
 }

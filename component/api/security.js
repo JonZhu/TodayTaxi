@@ -6,7 +6,7 @@
  */
 
 import rest from './rest';
-import { setSessionId } from './session';
+import { saveSession } from './session';
 
 /**
  * 申请session
@@ -18,7 +18,7 @@ export async function applySession() {
             count++;
             rest("/security/applySession.do").then((result)=>{
                 if (result.code === 0) {
-                    setSessionId(result.payload); // 保存session
+                    saveSession(result.payload); // 保存session
                     resolve();
                 }
             }).catch((reason)=>{
