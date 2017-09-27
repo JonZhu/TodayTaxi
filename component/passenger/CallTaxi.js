@@ -131,7 +131,7 @@ class CallTaxi extends Component {
         rest('/passenger/callTaxi.do', {from:from, to:to}).then((result)=>{
             if (result.code === 0) {
                 // 成功叫车
-                ToastAndroid.show('正在叫车:' + JSON.stringify(result), ToastAndroid.LONG);
+                // ToastAndroid.show('正在叫车:' + JSON.stringify(result), ToastAndroid.LONG);
                 this._startPushWaitTaxiLoc();
             } else {
                 ToastAndroid.show(result.message, ToastAndroid.LONG);
@@ -150,7 +150,7 @@ class CallTaxi extends Component {
                 if (result.code === 0) {
                     if (result.payload) {
                         // 分配到司机
-                        ToastAndroid.show('司机已接单:' + JSON.stringify(result.payload), ToastAndroid.LONG);
+                        ToastAndroid.show('司机已接单', ToastAndroid.LONG);
                         this._stopPushWaitTaxiLoc();
                         var allocatedTaxi = result.payload;
                         this._showAllocatedTaxi(allocatedTaxi);
