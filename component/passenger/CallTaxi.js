@@ -185,7 +185,7 @@ class CallTaxi extends Component {
     _cancelCallTaxi = ()=>{
         rest('/passenger/cancelRoute.do').then((result)=>{
             if (result.code === 0) {
-                ToastAndroid.show('发送取消请求成功', ToastAndroid.SHORT);
+                ToastAndroid.show('正在取消', ToastAndroid.SHORT);
             } else {
                 ToastAndroid.show('取消失败:' + result.message, ToastAndroid.SHORT);
             }
