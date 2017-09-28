@@ -7,7 +7,7 @@
 
 import React, { Component } from 'react';
 import { View, Text, ToastAndroid, StyleSheet, ActivityIndicator } from 'react-native';
-import { applySession } from './api/security';
+import { applySession } from './api/session';
 import Login from './Login';
 import { NavigationActions } from 'react-navigation';
 

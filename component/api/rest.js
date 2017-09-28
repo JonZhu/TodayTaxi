@@ -9,7 +9,8 @@
  */
 
 import md5 from 'md5';
-import { getSessionId } from './session';
+import { getSessionId, applySession, exchangeSession} from './session';
+import CommonExceptionCode from './CommonExceptionCode';
 
 // const serverPrefix = 'http://10.10.10.90:8080';
 const serverPrefix = 'http://www.todaytaxi.com:11986';
@@ -54,6 +55,13 @@ async function rest(url, param) {
     absUrl += "?" + queryStr + "&sign=" + sign; // 增加queryStr和签名参数
 
     var response = await fetch(absUrl, option);
+
+    // 从服务端判断session是否将要过期
+    var sessionWillTimeout = response.headers.get('Session-Will-Timeout');
+    if (sessionWillTimeout) {
+        exchangeSession(); // 交换session
+    }
+
     return response.json();
 }
 
@@ -74,3 +82,15 @@ async function getQueryStrForSign() {
 }
 
 export default rest;
+
+export async function rest2(url, param) {
+    var response = await rest(url, param);
+    if (response) {
+        var code = response.code;
+        if (code === CommonExceptionCode.SESSION_NO_PARAM || code === CommonExceptionCode.SESSION_TIMEOUT) {
+            await applySession(); // 重新申请session
+            response = await rest(url, param); // 重新调用rest
+        }
+    }
+    return response;
+}
