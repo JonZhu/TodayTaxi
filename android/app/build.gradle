@@ -97,8 +97,8 @@ android {
         applicationId "com.todaytaxi"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 3            // 主要是用于版本升级所用，是INT类型的，第一个版本定义为1，以后递增，这样只要判断该值就能确定是否需要升级，该值不显示给用户。
-        versionName "1.0.1"      // 这个是我们常说明的版本号，由三部分组成<major>.<minor>.<point>,该值是个字符串，可以显示给用户。
+        versionCode 4            // 主要是用于版本升级所用，是INT类型的，第一个版本定义为1，以后递增，这样只要判断该值就能确定是否需要升级，该值不显示给用户。
+        versionName "1.0.2"      // 这个是我们常说明的版本号，由三部分组成<major>.<minor>.<point>,该值是个字符串，可以显示给用户。
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
